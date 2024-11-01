@@ -71,7 +71,10 @@
     {
       "group": "API Documentation",
       "pages": [
-        "api-reference/introduction"
+        "api-reference/introduction",
+        "api-reference/getting-started",
+        "api-reference/checking-usage"
+
       ]
     },
     {
