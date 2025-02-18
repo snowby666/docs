@@ -41,7 +41,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/Chat"
                   }
                 }
               }
@@ -132,19 +132,20 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
+      "Chat": {
         "required": [
-          "name"
+          "model",
+          "messages"
         ],
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
+          "model": {
+            "description": "The name of the model",
             "type": "string"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "messages": {
+            "description": "Messages",
+            "type": "list"
           }
         }
       },
