@@ -109,7 +109,7 @@
           },
           "messages": {
             "description": "Messages",
-            "type": "list"
+            "type": "array"
           }
         }
       },
