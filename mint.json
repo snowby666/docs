@@ -37,7 +37,8 @@
     {
       "group": "Using the API",
       "pages": [
-        "using-the-api/errors"
+        "using-the-api/errors",
+        "using-the-api/rate-limits"
       ]
     },
     {
