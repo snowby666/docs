@@ -35,6 +35,12 @@
       ]
     },
     {
+      "group": "Using the API",
+      "pages": [
+        "using-the-api/errors"
+      ]
+    },
+    {
       "group": "Essentials",
       "pages": [
         "essentials/markdown",
