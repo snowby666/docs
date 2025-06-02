@@ -1,16 +1,26 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "Electron Hub API",
+    "description": "Unified API platform integrating 200+ AI models for chat, image generation, embeddings, and more.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Electron Hub Support",
+      "email": "support@electronhub.top",
+      "url": "https://discord.com/invite/apUUqbxCBQ"
+    },
     "license": {
       "name": "MIT"
-    },
-    "version": "1.0.0"
+    }
   },
   "servers": [
     {
-      "url": "https://api.electronhub.top"
+      "url": "https://api.electronhub.top/v1",
+      "description": "Production API v1"
+    },
+    {
+      "url": "https://api.electronhub.top",
+      "description": "Production API"
     }
   ],
   "security": [
@@ -19,40 +29,18 @@
     }
   ],
   "paths": {
-    "/v1/chat/completions": {
-      "post": {
-        "description": "Returns all plants from the system that the user has access to",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Chat"
-              }
-            }
-          },
-          "required": true
-        ],
+    "/v1/models": {
+      "get": {
+        "summary": "List Models",
+        "description": "List all available models",
+        "operationId": "listModels",
         "responses": {
           "200": {
-            "description": "Chat response",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Chat"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/ListModelsResponse"
                 }
               }
             }
@@ -60,32 +48,232 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/v1/models/{model}": {
+      "get": {
+        "summary": "Get Model",
+        "description": "Retrieve information about a specific model",
+        "operationId": "getModel",
         "parameters": [
           {
-            "name": "id",
+            "name": "model",
             "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+              "type": "string"
+            },
+            "description": "Model ID"
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/Model"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/chat/completions": {
+      "post": {
+        "summary": "Create Chat Completion",
+        "description": "Create a chat completion using OpenAI format",
+        "operationId": "createChatCompletion",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatCompletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "post": {
+        "summary": "Create Message (Anthropic)",
+        "description": "Create a message using Anthropic format",
+        "operationId": "createMessage",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/responses": {
+      "post": {
+        "summary": "Create Response (OpenAI)",
+        "description": "Create a response using OpenAI's new response format",
+        "operationId": "createResponse",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseOutput"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/images/generations": {
+      "post": {
+        "summary": "Generate Images",
+        "description": "Generate images from text prompts",
+        "operationId": "generateImages",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageGenerationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/images/edits": {
+      "post": {
+        "summary": "Edit Images",
+        "description": "Edit images with prompts",
+        "operationId": "editImages",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageEditRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/embeddings": {
+      "post": {
+        "summary": "Create Embeddings",
+        "description": "Create text embeddings",
+        "operationId": "createEmbeddings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmbeddingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbeddingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/moderations": {
+      "post": {
+        "summary": "Create Moderation",
+        "description": "Check content for moderation",
+        "operationId": "createModeration",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModerationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationResponse"
                 }
               }
             }
@@ -95,65 +283,1171 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your API key (starts with 'ek-')"
+      }
+    },
     "schemas": {
-      "Chat": {
-        "required": [
-          "model",
-          "messages"
-        ],
+      "Model": {
         "type": "object",
         "properties": {
-          "model": {
-            "description": "The name of the model",
-            "type": "string"
+          "id": {
+            "type": "string",
+            "description": "Model identifier"
           },
-          "messages": {
-            "description": "Messages",
-            "type": "array"
+          "object": {
+            "type": "string",
+            "example": "model"
+          },
+          "owned_by": {
+            "type": "string",
+            "description": "Organization that owns the model"
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
+      "ListModelsResponse": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string",
+            "example": "list"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Model"
+            }
+          }
+        }
+      },
+      "ChatCompletionRequest": {
+        "type": "object",
+        "required": ["model", "messages"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model to use for completion",
+            "example": "gpt-4o"
+          },
+          "messages": {
+            "type": "array",
+            "description": "List of messages",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            }
+          },
+          "stream": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable streaming"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "description": "Maximum tokens to generate"
+          },
+          "temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2,
+            "default": 1,
+            "description": "Sampling temperature"
+          },
+          "top_p": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1,
+            "description": "Nucleus sampling"
+          },
+          "top_k": {
+            "type": "integer",
+            "description": "Top-k sampling"
+          },
+          "frequency_penalty": {
+            "type": "number",
+            "minimum": -2,
+            "maximum": 2,
+            "default": 0
+          },
+          "presence_penalty": {
+            "type": "number",
+            "minimum": -2,
+            "maximum": 2,
+            "default": 0
+          },
+          "tools": {
+            "type": "array",
+            "description": "List of tools",
+            "items": {
+              "$ref": "#/components/schemas/Tool"
+            }
+          },
+          "tool_choice": {
+            "oneOf": [
+              {"type": "string", "enum": ["none", "auto"]},
+              {"$ref": "#/components/schemas/ToolChoice"}
+            ]
+          },
+          "web_search": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable web search"
+          },
+          "thinking": {
+            "$ref": "#/components/schemas/ThinkingConfig"
+          },
+          "reasoning_effort": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "Reasoning effort level"
+          }
+        }
+      },
+      "ChatMessage": {
+        "type": "object",
+        "required": ["role", "content"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["system", "user", "assistant", "tool"]
+          },
+          "content": {
+            "oneOf": [
+              {"type": "string"},
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ContentPart"
+                }
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the message author"
+          },
+          "tool_calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolCall"
+            }
+          }
+        }
+      },
+      "ContentPart": {
+        "oneOf": [
+          {"$ref": "#/components/schemas/TextContentPart"},
+          {"$ref": "#/components/schemas/ImageContentPart"}
+        ]
+      },
+      "TextContentPart": {
+        "type": "object",
+        "required": ["type", "text"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["text"]
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "ImageContentPart": {
+        "type": "object",
+        "required": ["type", "image_url"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["image_url"]
+          },
+          "image_url": {
+            "oneOf": [
+              {"type": "string"},
+              {"$ref": "#/components/schemas/ImageUrl"}
+            ]
+          }
+        }
+      },
+      "ImageUrl": {
+        "type": "object",
+        "required": ["url"],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "detail": {
+            "type": "string",
+            "enum": ["low", "high", "auto"],
+            "default": "auto"
+          }
+        }
+      },
+      "Tool": {
+        "type": "object",
+        "required": ["type", "function"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/FunctionDefinition"
+          }
+        }
+      },
+      "FunctionDefinition": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          }
+        }
+      },
+      "ToolChoice": {
+        "type": "object",
+        "required": ["type", "function"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["function"]
+          },
+          "function": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ToolCall": {
+        "type": "object",
+        "required": ["id", "type", "function"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["function"]
+          },
+          "function": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "arguments": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ThinkingConfig": {
+        "type": "object",
+        "required": ["type", "budget_tokens"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["enabled"]
+          },
+          "budget_tokens": {
+            "type": "integer",
+            "description": "Token budget for thinking"
+          }
+        }
+      },
+      "ChatCompletionResponse": {
+        "type": "object",
+        "required": ["id", "object", "created", "model", "choices"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "example": "chat.completion"
+          },
+          "created": {
+            "type": "integer"
+          },
+          "model": {
+            "type": "string"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatChoice"
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/Usage"
+          }
+        }
+      },
+      "ChatChoice": {
+        "type": "object",
+        "required": ["index", "message"],
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "message": {
+            "$ref": "#/components/schemas/ChatMessage"
+          },
+          "finish_reason": {
+            "type": "string",
+            "enum": ["stop", "length", "content_filter", "tool_calls", "function_call"]
+          }
+        }
+      },
+      "Usage": {
+        "type": "object",
+        "required": ["prompt_tokens", "completion_tokens", "total_tokens"],
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer"
+          },
+          "completion_tokens": {
+            "type": "integer"
+          },
+          "total_tokens": {
+            "type": "integer"
+          }
+        }
+      },
+      "MessageRequest": {
+        "type": "object",
+        "required": ["model", "messages"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "claude-3-5-sonnet-20241022"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnthropicMessage"
+            }
+          },
+          "max_tokens": {
+            "type": "integer",
+            "description": "Maximum tokens to generate"
+          },
+          "temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "top_p": {
+            "type": "number"
+          },
+          "top_k": {
+            "type": "integer"
+          },
+          "stream": {
+            "type": "boolean",
+            "default": false
+          },
+          "system": {
+            "type": "string",
+            "description": "System prompt"
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnthropicTool"
+            }
+          },
+          "tool_choice": {
+            "$ref": "#/components/schemas/AnthropicToolChoice"
+          },
+          "thinking": {
+            "$ref": "#/components/schemas/ThinkingConfig"
+          },
+          "reasoning_effort": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          }
+        }
+      },
+      "AnthropicMessage": {
+        "type": "object",
+        "required": ["role", "content"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["user", "assistant"]
+          },
+          "content": {
+            "oneOf": [
+              {"type": "string"},
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AnthropicContentPart"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "AnthropicContentPart": {
+        "oneOf": [
+          {"$ref": "#/components/schemas/AnthropicTextContent"},
+          {"$ref": "#/components/schemas/AnthropicImageContent"},
+          {"$ref": "#/components/schemas/AnthropicToolUseContent"},
+          {"$ref": "#/components/schemas/AnthropicToolResultContent"}
+        ]
+      },
+      "AnthropicTextContent": {
+        "type": "object",
+        "required": ["type", "text"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["text"]
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "AnthropicImageContent": {
+        "type": "object",
+        "required": ["type", "source"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["image"]
+          },
+          "source": {
+            "$ref": "#/components/schemas/AnthropicImageSource"
+          }
+        }
+      },
+      "AnthropicImageSource": {
+        "type": "object",
+        "required": ["type", "media_type", "data"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["base64"]
+          },
+          "media_type": {
+            "type": "string",
+            "example": "image/jpeg"
+          },
+          "data": {
+            "type": "string",
+            "description": "Base64 encoded image data"
+          }
+        }
+      },
+      "AnthropicToolUseContent": {
+        "type": "object",
+        "required": ["type", "id", "name", "input"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["tool_use"]
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "input": {
+            "type": "object"
+          }
+        }
+      },
+      "AnthropicToolResultContent": {
+        "type": "object",
+        "required": ["type", "tool_use_id"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["tool_result"]
+          },
+          "tool_use_id": {
+            "type": "string"
+          },
+          "content": {
+            "oneOf": [
+              {"type": "string"},
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AnthropicContentPart"
+                }
+              }
+            ]
+          },
+          "is_error": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "AnthropicTool": {
+        "type": "object",
+        "required": ["name", "input_schema"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "input_schema": {
+            "type": "object"
+          }
+        }
+      },
+      "AnthropicToolChoice": {
+        "oneOf": [
           {
-            "$ref": "#/components/schemas/Plant"
+            "type": "string",
+            "enum": ["auto", "any"]
           },
           {
-            "required": [
-              "id"
-            ],
             "type": "object",
+            "required": ["type", "name"],
             "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
+              "type": {
+                "type": "string",
+                "enum": ["tool"]
+              },
+              "name": {
+                "type": "string"
               }
             }
           }
         ]
       },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
+      "MessageResponse": {
         "type": "object",
+        "required": ["id", "type", "role", "content", "model", "stop_reason", "usage"],
         "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
+          "id": {
+            "type": "string"
           },
-          "message": {
+          "type": {
+            "type": "string",
+            "enum": ["message"]
+          },
+          "role": {
+            "type": "string",
+            "enum": ["assistant"]
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnthropicContentPart"
+            }
+          },
+          "model": {
+            "type": "string"
+          },
+          "stop_reason": {
+            "type": "string",
+            "enum": ["end_turn", "max_tokens", "stop_sequence", "tool_use"],
+            "nullable": true
+          },
+          "stop_sequence": {
+            "type": "string",
+            "nullable": true
+          },
+          "usage": {
+            "$ref": "#/components/schemas/AnthropicUsage"
+          }
+        }
+      },
+      "AnthropicUsage": {
+        "type": "object",
+        "required": ["input_tokens", "output_tokens"],
+        "properties": {
+          "input_tokens": {
+            "type": "integer"
+          },
+          "output_tokens": {
+            "type": "integer"
+          }
+        }
+      },
+      "ResponseRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "gpt-4o"
+          },
+          "input": {
+            "oneOf": [
+              {"type": "string"},
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ResponseMessage"
+                }
+              }
+            ]
+          },
+          "instructions": {
+            "type": "string",
+            "description": "System instructions"
+          },
+          "max_output_tokens": {
+            "type": "integer",
+            "description": "Maximum output tokens"
+          },
+          "temperature": {
+            "type": "number",
+            "default": 1.0
+          },
+          "top_p": {
+            "type": "number",
+            "default": 1.0
+          },
+          "stream": {
+            "type": "boolean",
+            "default": false
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseTool"
+            }
+          },
+          "tool_choice": {
+            "oneOf": [
+              {"type": "string", "enum": ["auto", "none"]},
+              {"type": "object"}
+            ],
+            "default": "auto"
+          },
+          "web_search": {
+            "type": "boolean",
+            "default": false
+          },
+          "reasoning": {
+            "$ref": "#/components/schemas/ReasoningConfig"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ResponseMessage": {
+        "type": "object",
+        "required": ["role", "content"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["user", "assistant", "system"]
+          },
+          "content": {
+            "oneOf": [
+              {"type": "string"},
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ResponseContentPart"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "ResponseContentPart": {
+        "oneOf": [
+          {"$ref": "#/components/schemas/InputTextContentPart"},
+          {"$ref": "#/components/schemas/InputImageContentPart"},
+          {"$ref": "#/components/schemas/OutputTextContentPart"}
+        ]
+      },
+      "InputTextContentPart": {
+        "type": "object",
+        "required": ["type", "text"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["input_text"]
+          },
+          "text": {
             "type": "string"
           }
         }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      },
+      "InputImageContentPart": {
+        "type": "object",
+        "required": ["type", "image_url"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["input_image"]
+          },
+          "image_url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "OutputTextContentPart": {
+        "type": "object",
+        "required": ["type", "text"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["output_text"]
+          },
+          "text": {
+            "type": "string"
+          },
+          "annotations": {
+            "type": "array",
+            "items": {}
+          }
+        }
+      },
+      "ResponseTool": {
+        "oneOf": [
+          {"$ref": "#/components/schemas/FunctionTool"},
+          {"$ref": "#/components/schemas/WebSearchTool"}
+        ]
+      },
+      "FunctionTool": {
+        "type": "object",
+        "required": ["type", "function"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/FunctionDefinition"
+          }
+        }
+      },
+      "WebSearchTool": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["web_search"]
+          },
+          "web_search": {
+            "type": "object"
+          }
+        }
+      },
+      "ReasoningConfig": {
+        "type": "object",
+        "properties": {
+          "effort": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "summary": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ResponseOutput": {
+        "type": "object",
+        "required": ["id", "object", "created_at", "status", "model", "output"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["response"]
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["in_progress", "completed", "incomplete", "errored"]
+          },
+          "model": {
+            "type": "string"
+          },
+          "output": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseOutputItem"
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ResponseUsage"
+          }
+        }
+      },
+      "ResponseOutputItem": {
+        "type": "object",
+        "required": ["id", "type", "status"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["message", "tool_call", "tool_result", "reasoning"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["in_progress", "completed", "incomplete", "errored"]
+          },
+          "role": {
+            "type": "string",
+            "enum": ["assistant"]
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OutputTextContentPart"
+            }
+          }
+        }
+      },
+      "ResponseUsage": {
+        "type": "object",
+        "required": ["input_tokens", "output_tokens", "total_tokens"],
+        "properties": {
+          "input_tokens": {
+            "type": "integer"
+          },
+          "input_tokens_details": {
+            "type": "object"
+          },
+          "output_tokens": {
+            "type": "integer"
+          },
+          "output_tokens_details": {
+            "type": "object"
+          },
+          "total_tokens": {
+            "type": "integer"
+          }
+        }
+      },
+      "ImageGenerationRequest": {
+        "type": "object",
+        "required": ["model", "prompt"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "dall-e-3"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Text description of the desired image"
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 1,
+            "description": "Number of images to generate"
+          },
+          "quality": {
+            "type": "string",
+            "enum": ["standard", "hd"],
+            "default": "standard"
+          },
+          "size": {
+            "type": "string",
+            "enum": ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"],
+            "default": "1024x1024"
+          },
+          "response_format": {
+            "type": "string",
+            "enum": ["url", "b64_json"],
+            "default": "url"
+          },
+          "public": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to make the image publicly accessible"
+          }
+        }
+      },
+      "ImageEditRequest": {
+        "type": "object",
+        "required": ["image", "prompt", "model"],
+        "properties": {
+          "image": {
+            "type": "string",
+            "format": "binary",
+            "description": "The image to edit"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "A text description of the desired image"
+          },
+          "model": {
+            "type": "string",
+            "example": "dall-e-2"
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 1
+          },
+          "size": {
+            "type": "string",
+            "enum": ["256x256", "512x512", "1024x1024"],
+            "default": "1024x1024"
+          },
+          "response_format": {
+            "type": "string",
+            "enum": ["url", "b64_json"],
+            "default": "url"
+          }
+        }
+      },
+      "ImageResponse": {
+        "type": "object",
+        "required": ["created", "data"],
+        "properties": {
+          "created": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImageData"
+            }
+          }
+        }
+      },
+      "ImageData": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "b64_json": {
+            "type": "string"
+          },
+          "revised_prompt": {
+            "type": "string"
+          }
+        }
+      },
+      "EmbeddingRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "text-embedding-ada-002"
+          },
+          "input": {
+            "oneOf": [
+              {"type": "string"},
+              {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            ],
+            "description": "Input text to embed"
+          },
+          "encoding_format": {
+            "type": "string",
+            "enum": ["float", "base64"],
+            "default": "float"
+          },
+          "dimensions": {
+            "type": "integer",
+            "description": "Number of dimensions for the embedding"
+          }
+        }
+      },
+      "EmbeddingResponse": {
+        "type": "object",
+        "required": ["object", "data", "model", "usage"],
+        "properties": {
+          "object": {
+            "type": "string",
+            "example": "list"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingData"
+            }
+          },
+          "model": {
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/EmbeddingUsage"
+          }
+        }
+      },
+      "EmbeddingData": {
+        "type": "object",
+        "required": ["object", "embedding", "index"],
+        "properties": {
+          "object": {
+            "type": "string",
+            "example": "embedding"
+          },
+          "embedding": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "index": {
+            "type": "integer"
+          }
+        }
+      },
+      "EmbeddingUsage": {
+        "type": "object",
+        "required": ["prompt_tokens", "total_tokens"],
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer"
+          },
+          "total_tokens": {
+            "type": "integer"
+          }
+        }
+      },
+      "ModerationRequest": {
+        "type": "object",
+        "required": ["model", "input"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "text-moderation-latest"
+          },
+          "input": {
+            "oneOf": [
+              {"type": "string"},
+              {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {"type": "string"},
+                    {"type": "object"}
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "ModerationResponse": {
+        "type": "object",
+        "required": ["id", "model", "results"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModerationResult"
+            }
+          }
+        }
+      },
+      "ModerationResult": {
+        "type": "object",
+        "required": ["flagged", "categories", "category_scores"],
+        "properties": {
+          "flagged": {
+            "type": "boolean"
+          },
+          "categories": {
+            "type": "object",
+            "properties": {
+              "sexual": {"type": "boolean"},
+              "hate": {"type": "boolean"},
+              "harassment": {"type": "boolean"},
+              "self-harm": {"type": "boolean"},
+              "sexual/minors": {"type": "boolean"},
+              "hate/threatening": {"type": "boolean"},
+              "violence/graphic": {"type": "boolean"},
+              "self-harm/intent": {"type": "boolean"},
+              "self-harm/instructions": {"type": "boolean"},
+              "harassment/threatening": {"type": "boolean"},
+              "violence": {"type": "boolean"}
+            }
+          },
+          "category_scores": {
+            "type": "object",
+            "properties": {
+              "sexual": {"type": "number"},
+              "hate": {"type": "number"},
+              "harassment": {"type": "number"},
+              "self-harm": {"type": "number"},
+              "sexual/minors": {"type": "number"},
+              "hate/threatening": {"type": "number"},
+              "violence/graphic": {"type": "number"},
+              "self-harm/intent": {"type": "number"},
+              "self-harm/instructions": {"type": "number"},
+              "harassment/threatening": {"type": "number"},
+              "violence": {"type": "number"}
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              }
+            }
+          }
+        }
       }
     }
   }

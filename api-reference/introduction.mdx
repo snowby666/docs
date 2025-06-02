@@ -1,17 +1,193 @@
 ---
 title: 'Introduction'
-description: "Welcome to the Electron Hub API! This guide will show you how to generate keys, make requests, and explore our offerings. Enjoy free access to over 200 advanced AI models across 7 unique API endpoints. Dive in and start your AI journey!"
+description: "Welcome to Electron Hub API - your gateway to 200+ AI models through a unified interface."
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## What is Electron Hub?
 
-<Card
-  title="Getting Started"
-  icon="rocket"
-  href="https://electronhub.mintlify.app/api-reference/getting-started"
->
-  View Electron Hub API docs
-</Card>
+Electron Hub is a unified API platform that provides seamless access to over **200 cutting-edge AI models** from leading providers including OpenAI, Anthropic, Google, Meta, Mistral, and many more. Our platform acts as a single gateway, allowing developers to integrate multiple AI capabilities without managing separate APIs for each provider.
+
+## Why Choose Electron Hub?
+
+<AccordionGroup>
+  <Accordion title="Unified Interface" icon="link">
+    **One API, Many Models**: Access GPT-4, Claude, Gemini, LLaMA, and 200+ other models through a single, consistent interface.
+    
+    **OpenAI Compatible**: Drop-in replacement for OpenAI's API with extended model selection and features.
+    
+    **Native Format Support**: Use OpenAI format for maximum compatibility or Anthropic format for advanced features.
+  </Accordion>
+
+  <Accordion title="Comprehensive Features" icon="tools">
+    **Chat Completions**: Generate human-like text with support for streaming, function calling, and vision.
+    
+    **Image Generation**: Create stunning visuals with DALL-E, Stable Diffusion, and other image models.
+    
+    **Embeddings**: Convert text to vectors for semantic search and AI applications.
+    
+    **Moderation**: Ensure content safety with built-in moderation capabilities.
+  </Accordion>
+
+  <Accordion title="Developer Experience" icon="code">
+    **Easy Integration**: Works with existing OpenAI SDKs - just change the base URL.
+    
+    **Rich Documentation**: Interactive API playground, comprehensive guides, and code examples.
+    
+    **Multiple Languages**: Python, Node.js, cURL examples for every endpoint.
+    
+    **Real-time Support**: Active Discord community and responsive support team.
+  </Accordion>
+
+  <Accordion title="Enterprise Ready" icon="building">
+    **Reliable Infrastructure**: 99.9% uptime with global edge deployment.
+    
+    **Scalable Pricing**: From free tier to enterprise plans with custom rate limits.
+    
+    **Security First**: API key authentication with optional IP whitelisting.
+    
+    **Usage Analytics**: Detailed metrics and monitoring for your applications.
+  </Accordion>
+</AccordionGroup>
+
+## Key Capabilities
+
+### 🤖 Chat & Completions
+Generate human-like text responses with advanced capabilities:
+- **200+ Models**: GPT-4o, Claude 3.5, Gemini Pro, LLaMA 3, and more
+- **Streaming**: Real-time response streaming for interactive applications  
+- **Function Calling**: Enable AI to use external tools and APIs
+- **Vision**: Process and understand images alongside text
+- **Reasoning**: Advanced thinking modes for complex problem solving
+
+### 🎨 Image Generation
+Create stunning visuals from text descriptions:
+- **DALL-E 3 & 2**: Latest OpenAI image generation models
+- **Stable Diffusion**: Open-source alternatives with custom training
+- **Custom Sizes**: From 256x256 to 1792x1024 resolutions
+- **Quality Control**: Standard and HD quality options
+- **Batch Generation**: Create multiple variations efficiently
+
+### 📊 Embeddings
+Convert text into numerical vectors for AI applications:
+- **Semantic Search**: Build intelligent search systems
+- **Recommendations**: Power recommendation engines
+- **Classification**: Categorize and cluster content
+- **Multiple Dimensions**: Various embedding sizes available
+
+### 🛡️ Content Moderation
+Ensure safe and appropriate content:
+- **Comprehensive Filtering**: Detect hate speech, violence, sexual content
+- **Customizable Thresholds**: Adjust sensitivity for your use case
+- **Real-time Processing**: Instant content analysis
+- **Detailed Scores**: Granular category-specific confidence scores
+
+## API Formats
+
+Electron Hub supports multiple API formats for maximum flexibility:
+
+### OpenAI Compatible Format
+Perfect for existing applications and maximum compatibility:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.electronhub.top/v1",
+    api_key="ek-your-api-key"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+```
+
+### Anthropic Native Format
+Access advanced Claude features with native Anthropic API:
+
+```python
+import anthropic
+
+client = anthropic.Anthropic(
+    base_url="https://api.electronhub.top/v1",
+    api_key="ek-your-api-key"
+)
+
+response = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1000,
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+```
+
+## Getting Started
+
+Ready to start building? Here's what you need to do:
+
+<Steps>
+  <Step title="Create Account">
+    Sign up for free at [playground.electronhub.top](https://playground.electronhub.top)
+  </Step>
+  
+  <Step title="Get API Key">
+    Generate your API key from the [console](https://playground.electronhub.top/console)
+  </Step>
+  
+  <Step title="Make First Request">
+    Follow our [quickstart guide](/quickstart) to make your first API call
+  </Step>
+  
+  <Step title="Explore Features">
+    Try different models, streaming, function calling, and more
+  </Step>
+</Steps>
+
+## Popular Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Chatbots & Assistants" icon="robot">
+    Build intelligent conversational AI with memory, personality, and tool access.
+  </Card>
+  <Card title="Content Generation" icon="pen-nib">
+    Generate articles, marketing copy, code, and creative content at scale.
+  </Card>
+  <Card title="Image Creation" icon="image">
+    Create custom visuals, artwork, and designs from text descriptions.
+  </Card>
+  <Card title="Search & Recommendations" icon="magnifying-glass">
+    Build semantic search and intelligent recommendation systems.
+  </Card>
+</CardGroup>
+
+## Community & Support
+
+Join thousands of developers building with Electron Hub:
+
+<CardGroup cols={2}>
+  <Card
+    title="Discord Community"
+    icon="discord"
+    href="https://discord.com/invite/apUUqbxCBQ"
+  >
+    Get help, share projects, and connect with other developers
+  </Card>
+  <Card
+    title="GitHub Examples"
+    icon="github"
+    href="https://github.com/electronhub/examples"
+  >
+    Open-source examples and integration guides
+  </Card>
+</CardGroup>
+
+## What's Next?
+
+<CardGroup cols={1}>
+  <Card
+    title="Authentication Setup"
+    icon="key"
+    href="/getting-started/authentication"
+  >
+    Learn how to securely authenticate your API requests
+  </Card>
+</CardGroup>

@@ -1,48 +1,382 @@
 ---
-title: 'Quickstart'
-description: 'Start building AI applications with Electron Hub API in 5 minutes.'
+title: "Quickstart"
+description: "Start building AI applications with Electron Hub API in under 5 minutes."
 ---
 
-## Make your first API call
-
-Follow these simple steps to make your first API call with Electron Hub API.
+## Get Your API Key
 
 <Steps>
-  <Step title="Create Your Electron Hub Account">
-    [Click here](https://playground.electronhub.top) to sign up for your Electron Hub account
+  <Step title="Sign Up">
+    Create your free account at [playground.electronhub.top](https://playground.electronhub.top)
   </Step>
-
   <Step title="Generate API Key">
-    Visit the [API keys page](https://playground.electronhub.top/console) to create your first API key.
-    Keep this key secure as it will be used to authenticate your API requests.
-  </Step>
+    Visit the [API Keys section](https://playground.electronhub.top/console) to generate your first API key.
 
-  <Step title="Make Your First API Call">
-    Start integrating our API using your generated API key.
-    Here’s an example request:
-
-    <Note>
-      Replace `$YOUR_API_KEY` with the actual API key you generated in the previous step.
-    </Note>
-
-    ```bash
-    curl https://api.electronhub.top/v1/chat/completions \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer $YOUR_API_KEY" \
-      -d '{
-      "model": "gpt-4o",
-      "messages": [
-        {
-          "role": "user",
-          "content": [
-            {
-              "type": "text",
-              "text": "Hi!"
-            }
-          ]
-        }
-      ]
-    }'
-    ```
+    <Warning>
+      Keep your API key secure and never share it publicly. It starts with `ek-`.
+    </Warning>
   </Step>
 </Steps>
+
+## Make Your First Request
+
+Choose your preferred programming language and start building:
+
+<CodeGroup>
+
+```python Python
+from openai import OpenAI
+
+# Initialize the client
+client = OpenAI(
+    base_url="https://api.electronhub.top/v1",
+    api_key="ek-your-api-key-here"
+)
+
+# Make a chat completion request
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Hello! How are you?"}
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+
+
+```javascript Node.js
+import { OpenAI } from 'openai';
+
+// Initialize the client
+const client = new OpenAI({
+    baseURL: 'https://api.electronhub.top/v1',
+    apiKey: 'ek-your-api-key-here'
+});
+
+// Make a chat completion request
+async function main() {
+    const response = await client.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [
+            { role: 'system', content: 'You are a helpful assistant.' },
+            { role: 'user', content: 'Hello! How are you?' }
+        ]
+    });
+    
+    console.log(response.choices[0].message.content);
+}
+
+main();
+```
+
+
+```bash cURL
+curl https://api.electronhub.top/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ek-your-api-key-here" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant."
+      },
+      {
+        "role": "user", 
+        "content": "Hello! How are you?"
+      }
+    ]
+  }'
+```
+
+</CodeGroup>
+
+## Installation
+
+<CodeGroup>
+
+```bash Python
+pip install openai
+```
+
+
+```bash Node.js
+npm install openai
+```
+
+</CodeGroup>
+
+## Try Different Models
+
+Electron Hub supports 200\+ models. Here are some popular options:
+
+<CodeGroup>
+
+```python GPT-4o (OpenAI)
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "user", "content": "Explain quantum computing in simple terms"}
+    ]
+)
+```
+
+
+```python Claude 3.5 Sonnet
+response = client.chat.completions.create(
+    model="claude-3-5-sonnet-20241022",
+    messages=[
+        {"role": "user", "content": "Write a creative story about AI"}
+    ]
+)
+```
+
+
+```python Gemini Pro
+response = client.chat.completions.create(
+    model="gemini-pro",
+    messages=[
+        {"role": "user", "content": "Solve this math problem: 2x + 5 = 15"}
+    ]
+)
+```
+
+</CodeGroup>
+
+## Enable Streaming
+
+For real-time responses, enable streaming:
+
+<CodeGroup>
+
+```python Python Streaming
+stream = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "user", "content": "Write a short poem about space"}
+    ],
+    stream=True
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end="")
+```
+
+
+```javascript Node.js Streaming
+const stream = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+        { role: 'user', content: 'Write a short poem about space' }
+    ],
+    stream: true
+});
+
+for await (const chunk of stream) {
+    if (chunk.choices[0]?.delta?.content) {
+        process.stdout.write(chunk.choices[0].delta.content);
+    }
+}
+```
+
+</CodeGroup>
+
+## Add Vision Capabilities
+
+Process images with vision-enabled models:
+
+<CodeGroup>
+
+```python Python Vision
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "What's in this image?"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://example.com/image.jpg"
+                    }
+                }
+            ]
+        }
+    ]
+)
+```
+
+
+```javascript Node.js Vision
+const response = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+        {
+            role: 'user',
+            content: [
+                { type: 'text', text: "What's in this image?" },
+                {
+                    type: 'image_url',
+                    image_url: {
+                        url: 'https://example.com/image.jpg'
+                    }
+                }
+            ]
+        }
+    ]
+});
+```
+
+</CodeGroup>
+
+## Function Calling
+
+Enable your AI to use external tools:
+
+<CodeGroup>
+
+```python Python Functions
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "Get current weather for a location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state"
+                    }
+                },
+                "required": ["location"]
+            }
+        }
+    }
+]
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "user", "content": "What's the weather in San Francisco?"}
+    ],
+    tools=tools,
+    tool_choice="auto"
+)
+```
+
+
+```javascript Node.js Functions
+const tools = [
+    {
+        type: 'function',
+        function: {
+            name: 'get_weather',
+            description: 'Get current weather for a location',
+            parameters: {
+                type: 'object',
+                properties: {
+                    location: {
+                        type: 'string',
+                        description: 'The city and state'
+                    }
+                },
+                required: ['location']
+            }
+        }
+    }
+];
+
+const response = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+        { role: 'user', content: "What's the weather in San Francisco?" }
+    ],
+    tools: tools,
+    tool_choice: 'auto'
+});
+```
+
+</CodeGroup>
+
+## Generate Images
+
+Create images from text descriptions:
+
+<CodeGroup>
+
+```python Python Images
+response = client.images.generate(
+    model="dall-e-3",
+    prompt="A futuristic city skyline at sunset with flying cars",
+    size="1024x1024",
+    quality="standard",
+    n=1
+)
+
+image_url = response.data[0].url
+print(f"Generated image: {image_url}")
+```
+
+
+```javascript Node.js Images
+const response = await client.images.generate({
+    model: 'dall-e-3',
+    prompt: 'A futuristic city skyline at sunset with flying cars',
+    size: '1024x1024',
+    quality: 'standard',
+    n: 1
+});
+
+const imageUrl = response.data[0].url;
+console.log(`Generated image: ${imageUrl}`);
+```
+
+
+```bash cURL Images
+curl https://api.electronhub.top/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ek-your-api-key-here" \
+  -d '{
+    "model": "dall-e-3",
+    "prompt": "A futuristic city skyline at sunset with flying cars",
+    "size": "1024x1024",
+    "quality": "standard",
+    "n": 1
+  }'
+```
+
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Explore Models" icon="brain" href="/models/chat-models">
+    Discover all available models and their capabilities
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference/chat/completions">
+    Dive deep into all endpoints and parameters
+  </Card>
+  <Card title="Code Examples" icon="code" href="/examples/chat-examples">
+    See more advanced examples and use cases
+  </Card>
+  <Card title="Best Practices" icon="lightbulb" href="/guides/best-practices">
+    Learn optimization tips and best practices
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Join Discord" icon="discord" href="https://discord.com/invite/apUUqbxCBQ">
+    Get help from our community and team
+  </Card>
+  <Card title="Contact Support" icon="envelope" href="mailto:support@electronhub.top">
+    Reach out for technical assistance
+  </Card>
+</CardGroup>

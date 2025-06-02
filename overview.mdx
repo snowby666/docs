@@ -1,30 +1,189 @@
 ---
 title: Overview
-description: 'Electron Hub is a unified API platform that integrates AI APIs for chat, image generation, image processing and more.'
+description: 'Electron Hub is a unified API platform that integrates 200+ AI models for chat, image generation, embeddings, and more.'
 ---
 
-<img alt="Hero Light" classname="block dark:hidden" src="/images/hero-light.svg" />
+<img
+  className="block dark:hidden"
+  src="/images/hero-light.svg"
+  alt="Hero Light"
+/>
+<img
+  className="hidden dark:block"
+  src="/images/hero-dark.svg"
+  alt="Hero Dark"
+/>
 
-<img alt="Hero Dark" classname="hidden dark:block" src="/images/hero-dark.svg" />
+## What is Electron Hub API?
+
+Electron Hub provides a unified API gateway to access over **200 cutting-edge AI models** from leading providers like OpenAI, Anthropic, Google, Meta, and more. Whether you're building chatbots, generating images, or creating embeddings, our platform offers seamless integration with multiple AI capabilities.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card
+    title="200+ AI Models"
+    icon="brain"
+    href="/models/chat-models"
+  >
+    Access the latest models from OpenAI, Anthropic, Google, Meta, Mistral, and more through a single API.
+  </Card>
+  <Card
+    title="OpenAI Compatible"
+    icon="code"
+    href="/api-reference/chat/completions"
+  >
+    Drop-in replacement for OpenAI API with extended features and model selection.
+  </Card>
+  <Card
+    title="Anthropic Support"
+    icon="messages"
+    href="/api-reference/messages/create"
+  >
+    Native Claude API support with advanced reasoning and tool capabilities.
+  </Card>
+  <Card
+    title="Multimodal AI"
+    icon="image"
+    href="/guides/vision-multimodal"
+  >
+    Text, image, and audio processing with vision-enabled models.
+  </Card>
+</CardGroup>
+
+## Supported Capabilities
+
+<AccordionGroup>
+  <Accordion title="Chat Completions" icon="comments">
+    Generate human-like text responses with support for:
+    - **Streaming responses** for real-time applications
+    - **Function calling** for tool integration
+    - **Vision capabilities** for image understanding
+    - **Advanced reasoning** with thinking modes
+    
+    Compatible with OpenAI and Anthropic formats.
+  </Accordion>
+
+  <Accordion title="Image Generation" icon="palette">
+    Create stunning images from text prompts:
+    - **DALL-E 3** and **DALL-E 2** models
+    - **Stable Diffusion** variants
+    - **Midjourney-style** models
+    - Custom sizes and quality settings
+  </Accordion>
+
+  <Accordion title="Embeddings" icon="vector-square">
+    Convert text into numerical vectors for:
+    - **Semantic search** applications
+    - **Recommendation systems**
+    - **Clustering and classification**
+    - Multiple embedding dimensions
+  </Accordion>
+
+  <Accordion title="Content Moderation" icon="shield-check">
+    Ensure safe content with:
+    - **Hate speech detection**
+    - **Violence screening**
+    - **Sexual content filtering**
+    - **Self-harm prevention**
+  </Accordion>
+</AccordionGroup>
 
 ## Getting Started
 
-To start using the ShuttleAI API, you’ll need to:
+Get up and running with Electron Hub API in minutes:
 
 <CardGroup cols={1}>
-  <Card title="Quick Start" icon="book" href="/docs/en/quickstart">
-    Learn the essentials and make your first API call in minutes.
+  <Card
+    title="Quick Start Guide"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Generate your API key and make your first request in under 5 minutes.
   </Card>
 </CardGroup>
 
-## Support
+## Popular Models
 
-<CardGroup cols={1}>
-  <Card title="Community Server" icon="discord" href="https://discord.com/invite/apUUqbxCBQ">
-    See frequently asked questions about api, account and billing questions.
+<CardGroup cols={3}>
+  <Card title="GPT-4o" icon="openai">
+    Latest OpenAI model with vision, reasoning, and multimodal capabilities.
   </Card>
-
-  <Card title="Contact Us" icon="envelope" href="mailto:snowby.dev@gmail.com">
-    Can't find the API you are looking for or having any question? Contact us now.
+  <Card title="Claude 3.5 Sonnet" icon="anthropic">
+    Anthropic's most capable model with advanced reasoning and tool use.
+  </Card>
+  <Card title="Gemini Pro" icon="google">
+    Google's flagship model with exceptional performance across tasks.
   </Card>
 </CardGroup>
+
+## Developer Resources
+
+<CardGroup cols={2}>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/chat/completions"
+  >
+    Complete documentation for all endpoints with interactive examples.
+  </Card>
+  <Card
+    title="Code Examples"
+    icon="code"
+    href="/examples/chat-examples"
+  >
+    Ready-to-use code snippets in Python, Node.js, and cURL.
+  </Card>
+  <Card
+    title="Best Practices"
+    icon="lightbulb"
+    href="/guides/best-practices"
+  >
+    Tips and strategies for optimal API usage and performance.
+  </Card>
+  <Card
+    title="Migration Guide"
+    icon="arrow-right"
+    href="/guides/migration"
+  >
+    Easy migration from OpenAI, Anthropic, or other AI APIs.
+  </Card>
+</CardGroup>
+
+## Support & Community
+
+<CardGroup cols={2}>
+  <Card
+    title="Discord Community"
+    icon="discord"
+    href="https://discord.com/invite/apUUqbxCBQ"
+  >
+    Join our active community for support, updates, and discussions.
+  </Card>
+  <Card
+    title="Contact Support"
+    icon="envelope"
+    href="mailto:support@electronhub.top"
+  >
+    Get help with integration, billing, or technical questions.
+  </Card>
+</CardGroup>
+
+## Pricing
+
+Start building for free with generous rate limits, then scale as you grow:
+
+- **Free Tier**: 7 requests per minute
+- **Starter**: 10 RPM - Perfect for prototypes
+- **Plus**: 20 RPM - Ideal for small applications  
+- **Pro**: 40 RPM - Great for production apps
+- **Business**: 60 RPM - Built for scale
+- **Enterprise**: 100+ RPM - Custom solutions
+
+<Card
+  title="View Rate Limits"
+  icon="gauge"
+  href="/getting-started/rate-limits"
+>
+  See detailed rate limits and pricing for each plan.
+</Card>

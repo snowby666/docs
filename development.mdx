@@ -1,6 +1,6 @@
 ---
-title: 'Development'
-description: 'Learn how to preview changes locally'
+title: "Development"
+description: "Learn how to preview changes locally"
 ---
 
 <Info>
@@ -14,6 +14,7 @@ Step 1. Install Mintlify on your OS:
 ```bash npm
 npm i -g mintlify
 ```
+
 
 ```bash yarn
 yarn global add mintlify
@@ -53,6 +54,7 @@ Each CLI is linked to a specific version of Mintlify. Please update the CLI if y
 npm i -g mintlify@latest
 ```
 
+
 ```bash yarn
 yarn global upgrade mintlify
 ```
@@ -69,7 +71,10 @@ yarn global upgrade mintlify
 You should see the following if the deploy successfully went through:
 
 <Frame>
-  <img src="/images/checks-passed.png" style={{ borderRadius: '0.5rem' }} />
+  <img
+    src="/images/checks-passed.png"
+    style={{ borderRadius:"0.5rem" }}
+  />
 </Frame>
 
 ## Troubleshooting
@@ -81,12 +86,11 @@ Here's how to solve some common problems when working with the CLI.
     Update to Node v18. Run `mintlify install` and try again.
   </Accordion>
   <Accordion title="No such file or directory on Windows">
-Go to the `C:/Users/Username/.mintlify/` directory and remove the `mint`
-folder. Then Open the Git Bash in this location and run `git clone
-https://github.com/mintlify/mint.git`.
+    Go to the `C:/Users/Username/.mintlify/` directory and remove the `mint`
+    folder. Then Open the Git Bash in this location and run `git clone
+    https://github.com/mintlify/mint.git`.
 
-Repeat step 3.
-
+    Repeat step 3.
   </Accordion>
   <Accordion title="Getting an unknown error">
     Try navigating to the root of your device and delete the ~/.mintlify folder.

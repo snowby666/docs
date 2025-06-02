@@ -1,0 +1,304 @@
+---
+title: "Chat Completions"
+openapi: "POST /v1/chat/completions"
+---
+
+Create a chat completion using the OpenAI-compatible format. This endpoint supports 200\+ models including GPT-4, Claude, Gemini, and more through a unified interface.
+
+## Features
+
+- **200\+ Models**: Access models from OpenAI, Anthropic, Google, Meta, and more
+- **Streaming**: Real-time response streaming for interactive applications
+- **Function Calling**: Enable AI to use external tools and APIs
+- **Vision**: Process images alongside text (vision-enabled models)
+- **Advanced Reasoning**: Thinking modes for complex problem solving
+- **Web Search**: Enable AI to search the web for current information
+
+## Popular Models
+
+<CardGroup cols={3}>
+  <Card title="GPT-4o" icon="openai">
+    Latest OpenAI model with vision, reasoning, and multimodal capabilities
+  </Card>
+  <Card title="Claude 3.5 Sonnet" icon="anthropic">
+    Anthropic's most capable model with advanced reasoning
+  </Card>
+  <Card title="Gemini Pro" icon="google">
+    Google's flagship model with exceptional performance
+  </Card>
+</CardGroup>
+
+## Examples
+
+### Basic Chat Completion
+
+<CodeGroup>
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.electronhub.top/v1",
+    api_key="ek-your-api-key"
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Hello! How are you?"}
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+
+
+```javascript Node.js
+import { OpenAI } from 'openai';
+
+const client = new OpenAI({
+    baseURL: 'https://api.electronhub.top/v1',
+    apiKey: 'ek-your-api-key'
+});
+
+const response = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'user', content: 'Hello! How are you?' }
+    ]
+});
+
+console.log(response.choices[0].message.content);
+```
+
+
+```bash cURL
+curl https://api.electronhub.top/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ek-your-api-key" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant."
+      },
+      {
+        "role": "user",
+        "content": "Hello! How are you?"
+      }
+    ]
+  }'
+```
+
+</CodeGroup>
+
+### Streaming Responses
+
+<CodeGroup>
+
+```python Python
+stream = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "user", "content": "Write a short poem about space"}
+    ],
+    stream=True
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end="", flush=True)
+```
+
+
+```javascript Node.js
+const stream = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+        { role: 'user', content: 'Write a short poem about space' }
+    ],
+    stream: true
+});
+
+for await (const chunk of stream) {
+    if (chunk.choices[0]?.delta?.content) {
+        process.stdout.write(chunk.choices[0].delta.content);
+    }
+}
+```
+
+
+```bash cURL
+curl https://api.electronhub.top/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ek-your-api-key" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Write a short poem about space"
+      }
+    ],
+    "stream": true
+  }'
+```
+
+</CodeGroup>
+
+### Vision (Image Input)
+
+<CodeGroup>
+
+```python Python
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "What's in this image?"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://example.com/image.jpg"
+                    }
+                }
+            ]
+        }
+    ]
+)
+```
+
+
+```javascript Node.js
+const response = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+        {
+            role: 'user',
+            content: [
+                { type: 'text', text: "What's in this image?" },
+                {
+                    type: 'image_url',
+                    image_url: {
+                        url: 'https://example.com/image.jpg'
+                    }
+                }
+            ]
+        }
+    ]
+});
+```
+
+
+```bash cURL
+curl https://api.electronhub.top/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ek-your-api-key" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "What'\''s in this image?"
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "https://example.com/image.jpg"
+            }
+          }
+        ]
+      }
+    ]
+  }'
+```
+
+</CodeGroup>
+
+### Function Calling
+
+<CodeGroup>
+
+```python Python
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "Get current weather for a location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA"
+                    }
+                },
+                "required": ["location"]
+            }
+        }
+    }
+]
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "user", "content": "What's the weather in San Francisco?"}
+    ],
+    tools=tools,
+    tool_choice="auto"
+)
+```
+
+
+```javascript Node.js
+const tools = [
+    {
+        type: 'function',
+        function: {
+            name: 'get_weather',
+            description: 'Get current weather for a location',
+            parameters: {
+                type: 'object',
+                properties: {
+                    location: {
+                        type: 'string',
+                        description: 'The city and state, e.g. San Francisco, CA'
+                    }
+                },
+                required: ['location']
+            }
+        }
+    }
+];
+
+const response = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+        { role: 'user', content: "What's the weather in San Francisco?" }
+    ],
+    tools: tools,
+    tool_choice: 'auto'
+});
+```
+
+</CodeGroup>
+
+## Related Endpoints
+
+<CardGroup cols={2}>
+  <Card title="Messages (Anthropic)" icon="anthropic" href="/api-reference/messages/create">
+    Use native Anthropic format for advanced Claude features
+  </Card>
+  <Card title="List Models" icon="list" href="/api-reference/models/list-models">
+    View all available models
+  </Card>
+</CardGroup>

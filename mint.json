@@ -17,15 +17,33 @@
   },
   "topbarLinks": [
     {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "name": "Playground",
+      "url": "https://playground.electronhub.top"
+    },
+    {
+      "name": "Discord",
+      "url": "https://discord.com/invite/apUUqbxCBQ"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "name": "Get API Key",
+    "url": "https://playground.electronhub.top/console"
   },
-  
+  "api": {
+    "baseUrl": [
+      "https://api.electronhub.top/v1",
+      "https://api.electronhub.top"
+    ],
+    "auth": {
+      "method": "bearer",
+      "name": "Authorization",
+      "inputPrefix": "Bearer "
+    },
+    "playground": {
+      "mode": "show"
+    }
+  },
+  "openapi": "/api-reference/openapi.json",
   "navigation": [
     {
       "group": "Get Started",
@@ -35,44 +53,100 @@
       ]
     },
     {
-      "group": "Using the API",
+      "group": "Getting Started",
       "pages": [
-        "using-the-api/errors",
-        "using-the-api/rate-limits"
+        "getting-started/introduction",
+        "getting-started/authentication",
+        "getting-started/rate-limits",
+        "getting-started/errors"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Models",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "models/chat-models",
+        "models/image-models", 
+        "models/embedding-models",
+        "models/model-comparison"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "API Reference",
       "pages": [
-        "api-reference/introduction",
-        "api-reference/getting-started",
-        "api-reference/checking-usage"
-
+        {
+          "group": "Models",
+          "pages": [
+            "api-reference/models/list-models",
+            "api-reference/models/get-model"
+          ]
+        },
+        {
+          "group": "Chat",
+          "pages": [
+            "api-reference/chat/completions"
+          ]
+        },
+        {
+          "group": "Messages (Anthropic)",
+          "pages": [
+            "api-reference/messages/create"
+          ]
+        },
+        {
+          "group": "Responses (OpenAI)",
+          "pages": [
+            "api-reference/responses/create"
+          ]
+        },
+        {
+          "group": "Images",
+          "pages": [
+            "api-reference/images/generations",
+            "api-reference/images/edits"
+          ]
+        },
+        {
+          "group": "Embeddings",
+          "pages": [
+            "api-reference/embeddings/create"
+          ]
+        },
+        {
+          "group": "Moderations",
+          "pages": [
+            "api-reference/moderations/create"
+          ]
+        }
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Examples",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "examples/chat-examples",
+        "examples/streaming-examples",
+        "examples/vision-examples",
+        "examples/tool-calling",
+        "examples/image-examples"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/streaming",
+        "guides/function-calling",
+        "guides/vision-multimodal",
+        "guides/best-practices",
+        "guides/migration"
       ]
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://linkedin.com/company/mintlify"
+    "discord": "https://discord.com/invite/apUUqbxCBQ",
+    "github": "https://github.com/electronhub",
+    "website": "https://electronhub.top"
+  },
+  "feedback": {
+    "suggestEdit": true,
+    "raiseIssue": true
   }
 }

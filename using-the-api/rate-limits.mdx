@@ -1,17 +1,429 @@
 ---
-title: "Rate limits"
-description: "Electron Hub API has a rate limit system to prevent abusive activities and ensure fair usage among all users, and this document lists the default rate limits for each subscription plans"
+title: "Rate Limits"
+description: "Understand Electron Hub API rate limits and learn how to optimize your usage across different subscription plans."
 ---
 
+## Overview
+
+Electron Hub implements rate limiting to ensure fair usage and maintain service quality for all users. Rate limits are measured in **Requests Per Minute (RPM)** and vary by subscription plan.
+
 <Tip>
-  You can check your actual rate limits anytime on [the API Keys section](https://platform.monica.im/dashboard/limits) in the console.
+  You can check your current rate limits and usage anytime in the [API Keys section](https://playground.electronhub.top/console) of your dashboard.
 </Tip>
 
-| Subscription Plan | Requests per minute (RPM) |
-| ----------------- | ------------------------- |
-| Free              | 7 RPM                     |
-| Starter           | 10 RPM                    |
-| Plus              | 20 RPM                    |
-| Pro               | 40 RPM                    |
-| Business          | 60 RPM                    |
-| Enterprise        | 100 RPM                   |
+## Rate Limit Tiers
+
+| Subscription Plan | Requests per minute (RPM) | Best For                |
+| ----------------- | ------------------------- | ----------------------- |
+| **Free**          | 7 RPM                     | Testing and prototypes  |
+| **Starter**       | 10 RPM                    | Small applications      |
+| **Plus**          | 20 RPM                    | Growing projects        |
+| **Pro**           | 40 RPM                    | Production applications |
+| **Business**      | 60 RPM                    | High-volume usage       |
+| **Enterprise**    | 100\+ RPM                 | Custom enterprise needs |
+
+## How Rate Limiting Works
+
+### Request Counting
+
+- Each API call counts as **one request** regardless of model or complexity
+- Both successful and failed requests count toward your limit
+- Streaming requests count as a single request when initiated
+
+### Time Windows
+
+- Rate limits are calculated using a **sliding window** of 60 seconds
+- If you exceed your limit, you'll receive a `429` error
+- The limit resets continuously, not at fixed intervals
+
+### Rate Limit Headers
+
+Every API response includes headers showing your current status:
+
+```http
+X-RateLimit-Limit: 20
+X-RateLimit-Remaining: 15
+X-RateLimit-Reset: 1640995200
+```
+
+## Handling Rate Limits
+
+### Error Response
+
+When you exceed your rate limit, you'll receive a `429` status code:
+
+```json
+{
+  "error": {
+    "message": "Rate limit reached for requests",
+    "type": "rate_limit_exceeded",
+    "code": "rate_limit_exceeded"
+  }
+}
+```
+
+### Implementing Retry Logic
+
+<CodeGroup>
+
+```python Python Retry Logic
+import time
+import random
+from openai import OpenAI, RateLimitError
+
+client = OpenAI(
+    base_url="https://api.electronhub.top/v1",
+    api_key="ek-your-api-key"
+)
+
+def make_request_with_retry(max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[{"role": "user", "content": "Hello!"}]
+            )
+            return response
+            
+        except RateLimitError:
+            if attempt < max_retries - 1:
+                # Exponential backoff with jitter
+                wait_time = (2 ** attempt) + random.uniform(0, 1)
+                print(f"Rate limited. Waiting {wait_time:.2f} seconds...")
+                time.sleep(wait_time)
+            else:
+                raise
+    
+    return None
+
+# Usage
+response = make_request_with_retry()
+```
+
+
+```javascript Node.js Retry Logic
+import { OpenAI } from 'openai';
+
+const client = new OpenAI({
+    baseURL: 'https://api.electronhub.top/v1',
+    apiKey: 'ek-your-api-key'
+});
+
+async function makeRequestWithRetry(maxRetries = 3) {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            const response = await client.chat.completions.create({
+                model: 'gpt-4o',
+                messages: [{ role: 'user', content: 'Hello!' }]
+            });
+            return response;
+            
+        } catch (error) {
+            if (error.status === 429 && attempt < maxRetries - 1) {
+                // Exponential backoff with jitter
+                const waitTime = (2 ** attempt + Math.random()) * 1000;
+                console.log(`Rate limited. Waiting ${waitTime/1000:.2f} seconds...`);
+                await new Promise(resolve => setTimeout(resolve, waitTime));
+            } else {
+                throw error;
+            }
+        }
+    }
+}
+
+// Usage
+const response = await makeRequestWithRetry();
+```
+
+</CodeGroup>
+
+### Request Queuing
+
+For applications with variable load, implement a request queue:
+
+<CodeGroup>
+
+```python Python Queue
+import asyncio
+import time
+from typing import List, Callable
+
+class RateLimitedClient:
+    def __init__(self, client, rpm_limit: int):
+        self.client = client
+        self.rpm_limit = rpm_limit
+        self.request_times: List[float] = []
+        self.lock = asyncio.Lock()
+    
+    async def make_request(self, request_func: Callable):
+        async with self.lock:
+            now = time.time()
+            
+            # Remove requests older than 60 seconds
+            cutoff = now - 60
+            self.request_times = [t for t in self.request_times if t > cutoff]
+            
+            # Check if we need to wait
+            if len(self.request_times) >= self.rpm_limit:
+                wait_time = 60 - (now - self.request_times[0])
+                if wait_time > 0:
+                    await asyncio.sleep(wait_time)
+                    now = time.time()
+            
+            # Make the request
+            self.request_times.append(now)
+            return await request_func()
+
+# Usage
+rate_limited_client = RateLimitedClient(client, rpm_limit=20)
+
+async def my_request():
+    return client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": "Hello!"}]
+    )
+
+response = await rate_limited_client.make_request(my_request)
+```
+
+
+```javascript Node.js Queue
+class RateLimitedClient {
+    constructor(client, rpmLimit) {
+        this.client = client;
+        this.rpmLimit = rpmLimit;
+        this.requestTimes = [];
+    }
+    
+    async makeRequest(requestFunc) {
+        const now = Date.now();
+        
+        // Remove requests older than 60 seconds
+        const cutoff = now - 60000;
+        this.requestTimes = this.requestTimes.filter(t => t > cutoff);
+        
+        // Check if we need to wait
+        if (this.requestTimes.length >= this.rpmLimit) {
+            const waitTime = 60000 - (now - this.requestTimes[0]);
+            if (waitTime > 0) {
+                await new Promise(resolve => setTimeout(resolve, waitTime));
+            }
+        }
+        
+        // Make the request
+        this.requestTimes.push(Date.now());
+        return await requestFunc();
+    }
+}
+
+// Usage
+const rateLimitedClient = new RateLimitedClient(client, 20);
+
+const response = await rateLimitedClient.makeRequest(() =>
+    client.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: 'Hello!' }]
+    })
+);
+```
+
+</CodeGroup>
+
+## Optimization Strategies
+
+### 1. Batch Processing
+
+Group multiple operations when possible:
+
+```python
+# Instead of multiple separate requests
+results = []
+for text in texts:
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": f"Analyze: {text}"}]
+    )
+    results.append(response)
+
+# Combine into fewer requests
+combined_text = "\n---\n".join(texts)
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{
+        "role": "user", 
+        "content": f"Analyze each section:\n{combined_text}"
+    }]
+)
+```
+
+### 2. Efficient Model Selection
+
+Choose the right model for your task:
+
+- **GPT-3.5-turbo**: Fast and cost-effective for simple tasks
+- **GPT-4o**: Best for complex reasoning and analysis
+- **Claude-3-haiku**: Fastest for quick responses
+- **Claude-3-5-sonnet**: Balanced performance and capability
+
+### 3. Request Optimization
+
+Optimize your requests to reduce unnecessary calls:
+
+```python
+# Use system messages efficiently
+system_message = "You are a helpful assistant. Always respond concisely."
+
+# Reuse conversations instead of starting fresh
+conversation = [
+    {"role": "system", "content": system_message},
+    {"role": "user", "content": "First question"},
+]
+
+# Add to conversation instead of new requests
+conversation.append({"role": "assistant", "content": previous_response})
+conversation.append({"role": "user", "content": "Follow-up question"})
+```
+
+### 4. Caching Results
+
+Cache responses for repeated queries:
+
+```python
+import hashlib
+import json
+from functools import lru_cache
+
+@lru_cache(maxsize=1000)
+def cached_completion(model, messages_hash, **kwargs):
+    return client.chat.completions.create(
+        model=model,
+        messages=json.loads(messages_hash),
+        **kwargs
+    )
+
+def make_cached_request(model, messages, **kwargs):
+    # Create hash of messages for caching
+    messages_str = json.dumps(messages, sort_keys=True)
+    messages_hash = hashlib.md5(messages_str.encode()).hexdigest()
+    
+    return cached_completion(model, messages_hash, **kwargs)
+```
+
+## Monitoring Usage
+
+### Check Current Usage
+
+Monitor your API usage programmatically:
+
+<CodeGroup>
+
+```python Python Usage Check
+def check_rate_limit_status(response):
+    headers = response.response.headers
+    limit = int(headers.get('x-ratelimit-limit', 0))
+    remaining = int(headers.get('x-ratelimit-remaining', 0))
+    reset_time = int(headers.get('x-ratelimit-reset', 0))
+    
+    print(f"Rate Limit: {limit}")
+    print(f"Remaining: {remaining}")
+    print(f"Resets at: {reset_time}")
+    
+    if remaining < 5:
+        print("⚠️  Warning: Approaching rate limit!")
+```
+
+
+```javascript Node.js Usage Check
+function checkRateLimitStatus(response) {
+    const headers = response.response.headers;
+    const limit = parseInt(headers['x-ratelimit-limit'] || '0');
+    const remaining = parseInt(headers['x-ratelimit-remaining'] || '0');
+    const resetTime = parseInt(headers['x-ratelimit-reset'] || '0');
+    
+    console.log(`Rate Limit: ${limit}`);
+    console.log(`Remaining: ${remaining}`);
+    console.log(`Resets at: ${resetTime}`);
+    
+    if (remaining < 5) {
+        console.log('⚠️  Warning: Approaching rate limit!');
+    }
+}
+```
+
+</CodeGroup>
+
+### Dashboard Monitoring
+
+Use the [dashboard](https://playground.electronhub.top/console) to:
+
+- View real-time usage statistics
+- Set up usage alerts
+- Monitor trends over time
+- Identify peak usage periods
+
+## Upgrading Your Plan
+
+### When to Upgrade
+
+Consider upgrading when you:
+
+- Consistently hit rate limits
+- Need higher throughput for production
+- Want to reduce latency from queuing
+- Require dedicated support
+
+### How to Upgrade
+
+1. Visit your [dashboard](https://playground.electronhub.top/console)
+2. Go to "Billing & Plans"
+3. Select your desired plan
+4. Complete the upgrade process
+5. New limits take effect immediately
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Implement Graceful Degradation" icon="shield-check">
+    Design your application to handle rate limits gracefully:
+
+    - Show loading states during retries
+    - Provide fallback responses when possible
+    - Queue non-urgent requests for later processing
+    - Inform users about temporary delays
+  </Accordion>
+  <Accordion title="Monitor and Alert" icon="bell">
+    Set up monitoring for rate limit issues:
+
+    - Track 429 error rates
+    - Alert when approaching limits
+    - Monitor request patterns
+    - Analyze peak usage times
+  </Accordion>
+  <Accordion title="Optimize Request Patterns" icon="chart-line">
+    Structure your requests efficiently:
+
+    - Batch similar operations
+    - Use appropriate models for tasks
+    - Cache common responses
+    - Implement smart retry logic
+  </Accordion>
+  <Accordion title="Plan for Growth" icon="arrow-up">
+    Prepare for scaling:
+
+    - Start with higher limits before launch
+    - Monitor usage trends
+    - Have upgrade path ready
+    - Consider enterprise plans for large scale
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Error Handling" icon="triangle-exclamation" href="/getting-started/errors">
+    Learn how to handle and debug API errors effectively
+  </Card>
+  <Card title="Best Practices" icon="lightbulb" href="/guides/best-practices">
+    Discover advanced optimization techniques
+  </Card>
+</CardGroup>
