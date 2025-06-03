@@ -2,23 +2,23 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "Electron Hub API",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/electronhub-text.png",
+    "light": "/logo/electronhub-text.png"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/logo/electron.png",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#8B5CF6",
+    "light": "#A855F7",
+    "dark": "#7C3AED",
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#8B5CF6",
+      "to": "#A855F7"
     }
   },
   "topbarLinks": [
     {
       "name": "Playground",
-      "url": "https://playground.electronhub.top"
+      "url": "https://playground.electronhub.ai"
     },
     {
       "name": "Discord",
@@ -27,12 +27,12 @@
   ],
   "topbarCtaButton": {
     "name": "Get API Key",
-    "url": "https://playground.electronhub.top/console"
+    "url": "https://playground.electronhub.ai/console"
   },
   "api": {
     "baseUrl": [
-      "https://api.electronhub.top/v1",
-      "https://api.electronhub.top"
+      "https://api.electronhub.ai/v1",
+      "https://api.electronhub.ai"
     ],
     "auth": {
       "method": "bearer",
@@ -46,104 +46,102 @@
   "openapi": "/api-reference/openapi.json",
   "navigation": [
     {
-      "group": "Get Started",
-      "pages": [
-        "overview",
-        "quickstart"
-      ]
-    },
-    {
       "group": "Getting Started",
+      "icon": "rocket",
       "pages": [
         "getting-started/introduction",
+        "getting-started/quickstart",
         "getting-started/authentication",
         "getting-started/rate-limits",
         "getting-started/errors"
       ]
     },
     {
-      "group": "Models",
-      "pages": [
-        "models/chat-models",
-        "models/image-models", 
-        "models/embedding-models",
-        "models/model-comparison"
-      ]
-    },
-    {
       "group": "API Reference",
+      "icon": "code",
       "pages": [
         {
           "group": "Models",
+          "icon": "brain",
           "pages": [
-            "api-reference/models/list-models",
-            "api-reference/models/get-model"
+            "api-reference/models",
+            "api-reference/model"
           ]
         },
         {
           "group": "Chat",
+          "icon": "message",
           "pages": [
             "api-reference/chat/completions"
           ]
         },
-        {
-          "group": "Messages (Anthropic)",
-          "pages": [
-            "api-reference/messages/create"
-          ]
-        },
-        {
-          "group": "Responses (OpenAI)",
-          "pages": [
-            "api-reference/responses/create"
-          ]
-        },
+        "api-reference/messages",
+        "api-reference/responses",
         {
           "group": "Images",
+          "icon": "image",
           "pages": [
             "api-reference/images/generations",
             "api-reference/images/edits"
           ]
         },
+        "api-reference/moderations",
+        "api-reference/embeddings",
         {
-          "group": "Embeddings",
+          "group": "User",
+          "icon": "user",
           "pages": [
-            "api-reference/embeddings/create"
+            "api-reference/usage",
+            "api-reference/user-logs"
           ]
         },
         {
-          "group": "Moderations",
+          "group": "Proxy Keys",
+          "icon": "key",
           "pages": [
-            "api-reference/moderations/create"
+            "api-reference/proxy-keys",
+            "api-reference/proxy-create",
+            "api-reference/proxy-update",
+            "api-reference/proxy-toggle",
+            "api-reference/proxy-delete",
+            "api-reference/proxy-delete-all",
+            "api-reference/proxy-validate"
           ]
-        }
-      ]
-    },
-    {
-      "group": "Examples",
-      "pages": [
-        "examples/chat-examples",
-        "examples/streaming-examples",
-        "examples/vision-examples",
-        "examples/tool-calling",
-        "examples/image-examples"
+        },
+        "api-reference/regenerate-key"
       ]
     },
     {
       "group": "Guides",
+      "icon": "book-open",
       "pages": [
-        "guides/streaming",
-        "guides/function-calling",
-        "guides/vision-multimodal",
         "guides/best-practices",
-        "guides/migration"
+        "guides/openai-sdks",
+        "guides/anthropic-sdks"
+      ]
+    },
+    {
+      "group": "Examples",
+      "icon": "play",
+      "pages": [
+        "examples/chat-examples",
+        "examples/image-examples",
+        "examples/embedding-examples"
+      ]
+    },
+    {
+      "group": "Resources",
+      "icon": "folder",
+      "pages": [
+        "TODO",
+        "CHANGELOG"
       ]
     }
   ],
   "footerSocials": {
     "discord": "https://discord.com/invite/apUUqbxCBQ",
     "github": "https://github.com/electronhub",
-    "website": "https://electronhub.top"
+    "website": "https://electronhub.ai"
   },
   "feedback": {
     "suggestEdit": true,
