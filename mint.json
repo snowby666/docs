@@ -128,14 +128,6 @@
         "examples/image-examples",
         "examples/embedding-examples"
       ]
-    },
-    {
-      "group": "Resources",
-      "icon": "folder",
-      "pages": [
-        "TODO",
-        "CHANGELOG"
-      ]
     }
   ],
   "footerSocials": {
