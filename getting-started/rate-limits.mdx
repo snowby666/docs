@@ -36,6 +36,11 @@ Electron Hub implements rate limiting to ensure fair usage and maintain service 
 - Rate limits are calculated using a **sliding window** of 60 seconds
 - If you exceed your limit, you'll receive a `429` error
 - The limit resets continuously, not at fixed intervals
+- **Important**: When you exceed your rate limit, there's a **3-minute cooldown period** before you can make requests again
+
+<Warning>
+**Cooldown Period**: If you exceed your rate limit, you must wait 3 minutes (180 seconds) before making any new requests. This cooldown is enforced even if your normal rate limit window would have reset.
+</Warning>
 
 ### Rate Limit Headers
 
@@ -49,19 +54,93 @@ X-RateLimit-Reset: 1640995200
 
 ## Handling Rate Limits
 
-### Error Response
+### Error Responses
 
-When you exceed your rate limit, you'll receive a `429` status code:
+When you encounter rate limits, you'll receive different error codes depending on the type of limit:
 
+**Rate Limit Exceeded (429)**
 ```json
 {
   "error": {
-    "message": "Rate limit reached for requests",
-    "type": "rate_limit_exceeded",
-    "code": "rate_limit_exceeded"
+    "message": "Rate limit exceeded. Try again in 180 seconds.",
+    "type": "error",
+    "param": null,
+    "code": 429
   }
 }
 ```
+
+**IP Address Limit (403)**
+```json
+{
+  "error": {
+    "message": "IP address limit reached. Maximum 3 API keys for IP 192.168.1.1. Please upgrade to a premium plan to bypass this limit.",
+    "type": "error",
+    "param": null,
+    "code": 403
+  }
+}
+```
+
+**Insufficient Balance (402)**
+```json
+{
+  "error": {
+    "message": "Insufficient balance.\n\nPlease wait for the next daily reset or purchase more tokens in Electron Hub.",
+    "type": "error",
+    "param": null,
+    "code": 402
+  }
+}
+```
+
+**Proxy Key Limit Exceeded (402)**
+```json
+{
+  "error": {
+    "message": "Exceeded allocated amount for this key.",
+    "type": "error",
+    "param": null,
+    "code": 402
+  }
+}
+```
+
+## Special Model Limits
+
+Some models have additional daily limits beyond the standard rate limits:
+
+### Google Models (Daily Limits)
+
+Google experimental and preview models have daily usage limits that reset at 21:00 UTC:
+
+| Subscription Plan | Daily Requests | Models Affected |
+| ----------------- | -------------- | --------------- |
+| **Free**          | 50             | Experimental/Preview models only |
+| **Starter**       | 50             | Experimental/Preview models only |
+| **Plus**          | 75             | Experimental/Preview models only |
+| **Pro**           | 100            | Experimental/Preview models only |
+| **Business**      | 200            | Experimental/Preview models only |
+| **Enterprise**    | 300            | Experimental/Preview models only |
+
+<Info>
+**Experimental/Preview models** include models with `-exp` or `-preview` in their names, such as:
+- `gemini-1.5-flash-exp`
+- `gemini-2.0-flash-exp` 
+- `gemini-2.0-flash-thinking-exp-1219`
+- `gemini-2.5-flash-preview-05-20`
+- `gemini-2.5-pro-preview-05-06`
+
+Regular Google models (like `gemini-1.5-flash`, `gemini-1.5-pro`, `gemma-3-27b-it`) are **not** subject to these daily limits.
+</Info>
+
+### Midjourney Models (Daily Limits)
+
+Midjourney image generation has a separate daily limit:
+
+- **Daily Limit**: 20 requests per day
+- **Reset Time**: 21:00 UTC
+- **Applies to**: All Midjourney image generation endpoints
 
 ### Implementing Retry Logic
 
