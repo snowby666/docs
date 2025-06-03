@@ -660,17 +660,8 @@
             "description": "Organization that owns the model"
           },
           "tokens": {
-            "type": "object",
-            "properties": {
-              "input": {
-                "type": "integer",
-                "description": "Maximum input tokens"
-              },
-              "output": {
-                "type": "integer", 
-                "description": "Maximum output tokens"
-              }
-            }
+            "type": "integer",
+            "description": "Context length of the model (maximum combined input and output tokens)"
           },
           "pricing": {
             "type": "object",
