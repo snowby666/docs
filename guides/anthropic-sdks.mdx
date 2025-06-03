@@ -21,7 +21,7 @@ import Anthropic from '@anthropic-ai/sdk';
 
 const anthropic = new Anthropic({
   apiKey: 'ek-your-api-key-here',
-  baseURL: 'https://api.electronhub.top/v1',
+  baseURL: 'https://api.electronhub.ai/v1',
 });
 
 // Create a message using Claude
@@ -142,7 +142,7 @@ import anthropic
 
 client = anthropic.Anthropic(
     api_key="ek-your-api-key-here",
-    base_url="https://api.electronhub.top/v1"
+    base_url="https://api.electronhub.ai/v1"
 )
 
 # Create a message
@@ -406,7 +406,7 @@ class ClaudeChatbot {
   constructor() {
     this.anthropic = new Anthropic({
       apiKey: 'ek-your-api-key-here',
-      baseURL: 'https://api.electronhub.top/v1',
+      baseURL: 'https://api.electronhub.ai/v1',
     });
     this.conversation = [];
   }
@@ -468,7 +468,7 @@ async function analyzeDocument(documentText) {
 
 When migrating from Anthropic's direct API to Electron Hub:
 
-1. **Change the base URL** to `https://api.electronhub.top/v1`
+1. **Change the base URL** to `https://api.electronhub.ai/v1`
 2. **Update your API key** to use your Electron Hub key (starts with `ek-`)
 3. **No code changes needed** - All parameters and responses remain the same
 4. **Access to more models** - You can also use OpenAI, Google, and other models
