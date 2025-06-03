@@ -1,0 +1,155 @@
+---
+title: "Validate Proxy Key Access"
+api: "POST https://api.electronhub.ai/v1/auth/proxy/validate"
+description: "Validate if a proxy key can access a specific model from the current IP"
+openapi: "POST /auth/proxy/validate"
+---
+
+import { CodeGroup } from '@mintlify/mdx'
+
+<RequestExample>
+
+```bash cURL
+curl https://api.electronhub.ai/v1/auth/proxy/validate \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ek-proxy-1234567890abcdef" \
+  -d '{
+    "model": "gpt-4o"
+  }'
+```
+
+```python Python
+import httpx
+
+# Use proxy key for validation
+proxy_key = "ek-proxy-1234567890abcdef"
+
+client = httpx.Client()
+response = client.post(
+    "https://api.electronhub.ai/v1/auth/proxy/validate",
+    headers={
+        "Authorization": f"Bearer {proxy_key}",
+        "Content-Type": "application/json"
+    },
+    json={
+        "model": "gpt-4o"
+    }
+)
+
+result = response.json()
+if result["valid"]:
+    print(f"Access granted: {result['message']}")
+else:
+    print(f"Access denied: {result['message']}")
+```
+
+```javascript Node.js
+const proxyKey = 'ek-proxy-1234567890abcdef';
+
+const response = await fetch('https://api.electronhub.ai/v1/auth/proxy/validate', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${proxyKey}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'gpt-4o'
+  }),
+});
+
+const result = await response.json();
+if (result.valid) {
+  console.log(`Access granted: ${result.message}`);
+} else {
+  console.log(`Access denied: ${result.message}`);
+}
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Valid Access
+{
+  "valid": true,
+  "message": "Access granted"
+}
+```
+
+```json Invalid Model
+{
+  "valid": false,
+  "message": "Model 'gpt-4o' not in whitelist"
+}
+```
+
+```json IP Restricted
+{
+  "valid": false,
+  "message": "IP address not in whitelist"
+}
+```
+
+```json Expired Key
+{
+  "valid": false,
+  "message": "Proxy key has expired"
+}
+```
+
+</ResponseExample>
+
+## Overview
+
+Validate whether a proxy key can access a specific model from the current IP address. This endpoint is useful for pre-flight checks before making API requests, especially in applications that need to handle access restrictions gracefully.
+
+<Info>
+**Proxy Key Only**: This endpoint only works with proxy keys (starting with `ek-proxy-`). Regular API keys will receive a 400 error.
+</Info>
+
+## Request Body
+
+<ParamField body="model" type="string" optional>
+  The model ID to validate access for. If omitted, validates general proxy key access without model-specific checks.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="valid" type="boolean">
+  Whether the proxy key has valid access (`true`) or is restricted (`false`)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable explanation of the validation result
+</ResponseField>
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Pre-flight Checks" icon="plane-departure">
+    Validate access before making expensive API calls
+  </Card>
+  <Card title="User Experience" icon="user-check">
+    Show users which models they can access
+  </Card>
+  <Card title="Error Prevention" icon="shield-check">
+    Avoid authentication errors in production workflows
+  </Card>
+  <Card title="Access Auditing" icon="clipboard-list">
+    Log and monitor access patterns and restrictions
+  </Card>
+</CardGroup>
+
+## Error Codes
+
+<ResponseField name="400" type="error">
+  **Bad Request** - Not a proxy key or invalid request format
+</ResponseField>
+
+<ResponseField name="401" type="error">
+  **Unauthorized** - Invalid proxy key
+</ResponseField>
+
+<ResponseField name="429" type="error">
+  **Rate Limited** - Too many validation requests
+</ResponseField> 

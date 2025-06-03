@@ -1,0 +1,121 @@
+---
+title: 'Embeddings'
+openapi: 'POST /embeddings'
+description: 'Generate vector embeddings for text'
+---
+
+The Embeddings API enables you to generate numerical representations of text that can be used for semantic search, clustering, and other machine learning tasks.
+
+## Create Embeddings
+
+`POST /embeddings`
+
+Generate embeddings for input text.
+
+### Request Body
+
+<ParamField body="input" type="string | array" required>
+  Input text to embed, encoded as a string or array of strings
+</ParamField>
+
+<ParamField body="model" type="string" required>
+  The model to use for generating embeddings (e.g., "text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large")
+</ParamField>
+
+<ParamField body="encoding_format" type="string">
+  The format to return the embeddings in ("float" or "base64")
+</ParamField>
+
+<ParamField body="dimensions" type="integer">
+  The number of dimensions the resulting output embeddings should have (only supported in text-embedding-3 models)
+</ParamField>
+
+<ParamField body="user" type="string">
+  A unique identifier representing your end-user
+</ParamField>
+
+### Response
+
+Returns an embedding object containing the vector embeddings.
+
+### Example
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    input: 'The quick brown fox jumps over the lazy dog',
+    model: 'text-embedding-3-small'
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/embeddings',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'input': 'The quick brown fox jumps over the lazy dog',
+        'model': 'text-embedding-3-small'
+    }
+)
+
+print(response.json())
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/embeddings" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "input": "The quick brown fox jumps over the lazy dog",
+    "model": "text-embedding-3-small"
+  }'
+```
+
+</CodeGroup>
+
+### Multiple Inputs
+
+You can embed multiple text inputs in a single request:
+
+```javascript
+{
+  "input": [
+    "Text to embed 1",
+    "Text to embed 2",
+    "Text to embed 3"
+  ],
+  "model": "text-embedding-3-small"
+}
+```
+
+### Use Cases
+
+- **Semantic Search**: Find documents similar to a query
+- **Clustering**: Group similar texts together
+- **Classification**: Train classifiers on embedding features
+- **Recommendation**: Recommend items based on similarity
+- **Anomaly Detection**: Identify outliers in text data
+
+### Best Practices
+
+- Use `text-embedding-3-small` for most use cases (good balance of performance and cost)
+- Use `text-embedding-3-large` for maximum performance
+- Batch multiple inputs in a single request for efficiency
+- Store embeddings for reuse rather than regenerating them 
+

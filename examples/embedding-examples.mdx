@@ -1,0 +1,615 @@
+---
+title: 'Embedding Examples'
+description: 'Text embeddings for semantic search and recommendations'
+icon: 'vector-square'
+---
+
+Learn how to use text embeddings for semantic search, similarity matching, and other ML applications.
+
+## Basic Embeddings
+
+### Simple Text Embedding
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    input: 'The quick brown fox jumps over the lazy dog',
+    model: 'text-embedding-3-small'
+  })
+});
+
+const data = await response.json();
+console.log('Embedding vector:', data.data[0].embedding);
+console.log('Vector dimensions:', data.data[0].embedding.length);
+```
+
+```python Python
+import requests
+import numpy as np
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/embeddings',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'input': 'The quick brown fox jumps over the lazy dog',
+        'model': 'text-embedding-3-small'
+    }
+)
+
+data = response.json()
+embedding = data['data'][0]['embedding']
+print(f'Embedding vector: {embedding[:5]}...')  # First 5 dimensions
+print(f'Vector dimensions: {len(embedding)}')
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/embeddings" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "input": "The quick brown fox jumps over the lazy dog",
+    "model": "text-embedding-3-small"
+  }'
+```
+
+</CodeGroup>
+
+## Batch Embeddings
+
+### Processing Multiple Texts
+
+```javascript
+async function getBatchEmbeddings(texts, model = 'text-embedding-3-small') {
+  const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      input: texts,
+      model: model
+    })
+  });
+
+  const data = await response.json();
+  
+  return texts.map((text, index) => ({
+    text: text,
+    embedding: data.data[index].embedding,
+    index: index
+  }));
+}
+
+// Usage
+const documents = [
+  'Machine learning is a subset of artificial intelligence',
+  'Deep learning uses neural networks with many layers',
+  'Natural language processing helps computers understand text',
+  'Computer vision enables machines to interpret images',
+  'Robotics combines AI with mechanical engineering'
+];
+
+const embeddings = await getBatchEmbeddings(documents);
+console.log(`Generated ${embeddings.length} embeddings`);
+```
+
+## Semantic Search
+
+### Document Search System
+
+```javascript
+class SemanticSearchEngine {
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+    this.documents = [];
+    this.embeddings = [];
+  }
+
+  async addDocuments(documents) {
+    const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: documents,
+        model: 'text-embedding-3-small'
+      })
+    });
+
+    const data = await response.json();
+    
+    documents.forEach((doc, index) => {
+      this.documents.push({
+        id: this.documents.length,
+        text: doc,
+        embedding: data.data[index].embedding
+      });
+    });
+    
+    console.log(`Added ${documents.length} documents to search index`);
+  }
+
+  async search(query, topK = 5) {
+    // Get query embedding
+    const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: query,
+        model: 'text-embedding-3-small'
+      })
+    });
+
+    const data = await response.json();
+    const queryEmbedding = data.data[0].embedding;
+
+    // Calculate similarities
+    const similarities = this.documents.map(doc => ({
+      ...doc,
+      similarity: this.cosineSimilarity(queryEmbedding, doc.embedding)
+    }));
+
+    // Sort by similarity and return top results
+    return similarities
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, topK);
+  }
+
+  cosineSimilarity(a, b) {
+    const dotProduct = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
+    const magnitudeA = Math.sqrt(a.reduce((sum, ai) => sum + ai * ai, 0));
+    const magnitudeB = Math.sqrt(b.reduce((sum, bi) => sum + bi * bi, 0));
+    return dotProduct / (magnitudeA * magnitudeB);
+  }
+}
+
+// Usage
+const searchEngine = new SemanticSearchEngine('YOUR_API_KEY');
+
+// Add knowledge base
+const knowledgeBase = [
+  'Python is a high-level programming language known for its simplicity',
+  'JavaScript is the language of the web, used for both frontend and backend',
+  'Machine learning algorithms can learn patterns from data',
+  'APIs enable different software applications to communicate',
+  'Databases store and organize large amounts of structured data',
+  'Cloud computing provides on-demand computing resources',
+  'Cybersecurity protects systems from digital attacks and threats'
+];
+
+await searchEngine.addDocuments(knowledgeBase);
+
+// Search for relevant documents
+const results = await searchEngine.search('web development programming', 3);
+
+console.log('Search Results:');
+results.forEach((result, index) => {
+  console.log(`${index + 1}. [${result.similarity.toFixed(3)}] ${result.text}`);
+});
+```
+
+## Similarity Matching
+
+### Content Recommendation System
+
+```javascript
+class ContentRecommendationEngine {
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+    this.contentItems = [];
+  }
+
+  async addContent(items) {
+    // Items should be objects with id, title, description, category
+    const descriptions = items.map(item => 
+      `${item.title}. ${item.description}. Category: ${item.category}`
+    );
+
+    const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: descriptions,
+        model: 'text-embedding-3-small'
+      })
+    });
+
+    const data = await response.json();
+    
+    items.forEach((item, index) => {
+      this.contentItems.push({
+        ...item,
+        embedding: data.data[index].embedding
+      });
+    });
+  }
+
+  async getRecommendations(userPreferences, count = 5) {
+    // Get embedding for user preferences
+    const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: userPreferences,
+        model: 'text-embedding-3-small'
+      })
+    });
+
+    const data = await response.json();
+    const userEmbedding = data.data[0].embedding;
+
+    // Calculate similarities and rank content
+    const recommendations = this.contentItems.map(item => ({
+      ...item,
+      similarity: this.cosineSimilarity(userEmbedding, item.embedding)
+    }));
+
+    return recommendations
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, count);
+  }
+
+  async findSimilarContent(contentId, count = 5) {
+    const targetContent = this.contentItems.find(item => item.id === contentId);
+    if (!targetContent) return [];
+
+    const similarities = this.contentItems
+      .filter(item => item.id !== contentId)
+      .map(item => ({
+        ...item,
+        similarity: this.cosineSimilarity(targetContent.embedding, item.embedding)
+      }));
+
+    return similarities
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, count);
+  }
+
+  cosineSimilarity(a, b) {
+    const dotProduct = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
+    const magnitudeA = Math.sqrt(a.reduce((sum, ai) => sum + ai * ai, 0));
+    const magnitudeB = Math.sqrt(b.reduce((sum, bi) => sum + bi * bi, 0));
+    return dotProduct / (magnitudeA * magnitudeB);
+  }
+}
+
+// Usage
+const recommender = new ContentRecommendationEngine('YOUR_API_KEY');
+
+const contentCatalog = [
+  {
+    id: 1,
+    title: 'Introduction to Machine Learning',
+    description: 'Learn the basics of ML algorithms and applications',
+    category: 'Technology'
+  },
+  {
+    id: 2,
+    title: 'Cooking Italian Pasta',
+    description: 'Traditional recipes for authentic Italian pasta dishes',
+    category: 'Food'
+  },
+  {
+    id: 3,
+    title: 'JavaScript for Beginners',
+    description: 'Complete guide to learning JavaScript programming',
+    category: 'Technology'
+  },
+  {
+    id: 4,
+    title: 'Yoga and Meditation',
+    description: 'Mindfulness practices for physical and mental wellness',
+    category: 'Health'
+  },
+  {
+    id: 5,
+    title: 'Data Science with Python',
+    description: 'Analyze data and build predictive models using Python',
+    category: 'Technology'
+  }
+];
+
+await recommender.addContent(contentCatalog);
+
+// Get recommendations based on user preferences
+const userPrefs = 'I am interested in programming and software development';
+const recommendations = await recommender.getRecommendations(userPrefs, 3);
+
+console.log('Recommended content:');
+recommendations.forEach((rec, index) => {
+  console.log(`${index + 1}. ${rec.title} (${rec.similarity.toFixed(3)})`);
+});
+
+// Find similar content to a specific item
+const similar = await recommender.findSimilarContent(3, 2); // Similar to JavaScript course
+console.log('\nSimilar to JavaScript course:');
+similar.forEach((item, index) => {
+  console.log(`${index + 1}. ${item.title} (${item.similarity.toFixed(3)})`);
+});
+```
+
+## Advanced Use Cases
+
+### Multilingual Document Clustering
+
+```javascript
+class DocumentClusterer {
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+  }
+
+  async clusterDocuments(documents, numClusters = 3) {
+    // Get embeddings for all documents
+    const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: documents,
+        model: 'text-embedding-3-small'
+      })
+    });
+
+    const data = await response.json();
+    const embeddings = data.data.map(item => item.embedding);
+
+    // Simple k-means clustering
+    const clusters = await this.kMeansClustering(embeddings, numClusters);
+    
+    // Group documents by cluster
+    const clusteredDocs = {};
+    clusters.forEach((clusterIndex, docIndex) => {
+      if (!clusteredDocs[clusterIndex]) {
+        clusteredDocs[clusterIndex] = [];
+      }
+      clusteredDocs[clusterIndex].push({
+        index: docIndex,
+        text: documents[docIndex],
+        embedding: embeddings[docIndex]
+      });
+    });
+
+    return clusteredDocs;
+  }
+
+  async kMeansClustering(embeddings, k, maxIterations = 100) {
+    const dimensions = embeddings[0].length;
+    
+    // Initialize centroids randomly
+    let centroids = Array.from({ length: k }, () => 
+      Array.from({ length: dimensions }, () => Math.random() * 2 - 1)
+    );
+
+    let assignments = new Array(embeddings.length);
+    
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
+      // Assign points to closest centroids
+      const newAssignments = embeddings.map(embedding => {
+        let closestCentroid = 0;
+        let closestDistance = this.euclideanDistance(embedding, centroids[0]);
+        
+        for (let i = 1; i < k; i++) {
+          const distance = this.euclideanDistance(embedding, centroids[i]);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestCentroid = i;
+          }
+        }
+        
+        return closestCentroid;
+      });
+
+      // Check for convergence
+      if (JSON.stringify(assignments) === JSON.stringify(newAssignments)) {
+        break;
+      }
+      
+      assignments = newAssignments;
+
+      // Update centroids
+      for (let i = 0; i < k; i++) {
+        const clusterPoints = embeddings.filter((_, index) => assignments[index] === i);
+        if (clusterPoints.length > 0) {
+          centroids[i] = this.calculateCentroid(clusterPoints);
+        }
+      }
+    }
+
+    return assignments;
+  }
+
+  euclideanDistance(a, b) {
+    return Math.sqrt(a.reduce((sum, ai, i) => sum + Math.pow(ai - b[i], 2), 0));
+  }
+
+  calculateCentroid(points) {
+    const dimensions = points[0].length;
+    const centroid = new Array(dimensions).fill(0);
+    
+    points.forEach(point => {
+      point.forEach((value, i) => {
+        centroid[i] += value;
+      });
+    });
+    
+    return centroid.map(sum => sum / points.length);
+  }
+}
+
+// Usage
+const clusterer = new DocumentClusterer('YOUR_API_KEY');
+
+const documents = [
+  'Machine learning algorithms learn from data to make predictions',
+  'Deep neural networks have multiple hidden layers for complex patterns',
+  'Pizza is a traditional Italian dish with tomato sauce and cheese',
+  'Pasta comes in many shapes and is often served with various sauces',
+  'Basketball is played by two teams of five players each',
+  'Soccer is the most popular sport worldwide with billions of fans',
+  'Artificial intelligence aims to create machines that can think',
+  'Lasagna is a layered pasta dish baked in the oven',
+  'Tennis is played on a rectangular court with a net in the middle'
+];
+
+const clusters = await clusterer.clusterDocuments(documents, 3);
+
+console.log('Document Clusters:');
+Object.entries(clusters).forEach(([clusterIndex, docs]) => {
+  console.log(`\nCluster ${parseInt(clusterIndex) + 1}:`);
+  docs.forEach(doc => {
+    console.log(`  - ${doc.text}`);
+  });
+});
+```
+
+### Question Answering with Embeddings
+
+```javascript
+class EmbeddingQASystem {
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+    this.knowledgeBase = [];
+  }
+
+  async addKnowledge(qaPairs) {
+    // qaPairs: [{question: string, answer: string}]
+    const questions = qaPairs.map(pair => pair.question);
+    
+    const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: questions,
+        model: 'text-embedding-3-small'
+      })
+    });
+
+    const data = await response.json();
+    
+    qaPairs.forEach((pair, index) => {
+      this.knowledgeBase.push({
+        question: pair.question,
+        answer: pair.answer,
+        embedding: data.data[index].embedding
+      });
+    });
+  }
+
+  async answerQuestion(userQuestion, threshold = 0.7) {
+    // Get embedding for user question
+    const response = await fetch('https://api.electronhub.ai/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: userQuestion,
+        model: 'text-embedding-3-small'
+      })
+    });
+
+    const data = await response.json();
+    const questionEmbedding = data.data[0].embedding;
+
+    // Find most similar question
+    const similarities = this.knowledgeBase.map(item => ({
+      ...item,
+      similarity: this.cosineSimilarity(questionEmbedding, item.embedding)
+    }));
+
+    const bestMatch = similarities.reduce((best, current) => 
+      current.similarity > best.similarity ? current : best
+    );
+
+    if (bestMatch.similarity >= threshold) {
+      return {
+        answer: bestMatch.answer,
+        confidence: bestMatch.similarity,
+        matchedQuestion: bestMatch.question
+      };
+    } else {
+      return {
+        answer: "I don't have enough information to answer that question.",
+        confidence: bestMatch.similarity,
+        matchedQuestion: bestMatch.question
+      };
+    }
+  }
+
+  cosineSimilarity(a, b) {
+    const dotProduct = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
+    const magnitudeA = Math.sqrt(a.reduce((sum, ai) => sum + ai * ai, 0));
+    const magnitudeB = Math.sqrt(b.reduce((sum, bi) => sum + bi * bi, 0));
+    return dotProduct / (magnitudeA * magnitudeB);
+  }
+}
+
+// Usage
+const qaSystem = new EmbeddingQASystem('YOUR_API_KEY');
+
+const knowledgeBase = [
+  {
+    question: "What is machine learning?",
+    answer: "Machine learning is a subset of AI that enables computers to learn and improve from experience without being explicitly programmed."
+  },
+  {
+    question: "How do neural networks work?",
+    answer: "Neural networks are computing systems inspired by biological neural networks, consisting of interconnected nodes that process information."
+  },
+  {
+    question: "What is the difference between AI and ML?",
+    answer: "AI is the broader concept of machines being able to carry out tasks in a smart way, while ML is a subset of AI that focuses on learning from data."
+  },
+  {
+    question: "What programming languages are used for data science?",
+    answer: "Python and R are the most popular languages for data science, along with SQL for database operations."
+  }
+];
+
+await qaSystem.addKnowledge(knowledgeBase);
+
+// Test questions
+const testQuestions = [
+  "What exactly is machine learning?",
+  "Can you explain neural networks?",
+  "What's the relationship between AI and machine learning?",
+  "What should I learn to become a data scientist?"
+];
+
+for (const question of testQuestions) {
+  const result = await qaSystem.answerQuestion(question);
+  console.log(`\nQ: ${question}`);
+  console.log(`A: ${result.answer}`);
+  console.log(`Confidence: ${result.confidence.toFixed(3)}`);
+  console.log(`Matched: ${result.matchedQuestion}`);
+}
+``` 
+

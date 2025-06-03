@@ -1,0 +1,108 @@
+---
+title: 'Image Generations'
+openapi: 'POST /images/generations'
+description: 'Generate images using AI models'
+---
+
+Create original images using AI models like DALL-E.
+
+## Generate Images
+
+`POST /images/generations`
+
+Generate images from text descriptions.
+
+### Request Body
+
+<ParamField body="prompt" type="string" required>
+  A text description of the desired image(s)
+</ParamField>
+
+<ParamField body="model" type="string">
+  The model to use for image generation (e.g., "dall-e-3", "dall-e-2")
+</ParamField>
+
+<ParamField body="n" type="integer">
+  Number of images to generate (1-10 for dall-e-2, 1 for dall-e-3)
+</ParamField>
+
+<ParamField body="size" type="string">
+  Size of the generated images ("256x256", "512x512", "1024x1024", "1792x1024", "1024x1792")
+</ParamField>
+
+<ParamField body="quality" type="string">
+  Quality of the image ("standard" or "hd")
+</ParamField>
+
+<ParamField body="style" type="string">
+  Style of the generated images ("vivid" or "natural")
+</ParamField>
+
+<ParamField body="response_format" type="string">
+  Format of the generated images ("url" or "b64_json")
+</ParamField>
+
+### Response
+
+Returns an array of image objects with URLs or base64-encoded images.
+
+### Example
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/images/generations', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    prompt: 'A futuristic cityscape at sunset',
+    model: 'dall-e-3',
+    n: 1,
+    size: '1024x1024',
+    quality: 'hd'
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/images/generations',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'prompt': 'A futuristic cityscape at sunset',
+        'model': 'dall-e-3',
+        'n': 1,
+        'size': '1024x1024',
+        'quality': 'hd'
+    }
+)
+
+print(response.json())
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/images/generations" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A futuristic cityscape at sunset",
+    "model": "dall-e-3",
+    "n": 1,
+    "size": "1024x1024",
+    "quality": "hd"
+  }'
+```
+
+</CodeGroup> 
+

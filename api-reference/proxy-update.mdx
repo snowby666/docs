@@ -1,0 +1,214 @@
+---
+title: "Update Proxy Key"
+api: "POST https://api.electronhub.ai/v1/auth/proxy/update/{proxy_key}"
+description: "Update an existing proxy key's configuration"
+openapi: "POST /auth/proxy/update/{proxy_key}"
+---
+
+import { CodeGroup } from '@mintlify/mdx'
+
+<RequestExample>
+
+```bash cURL
+curl https://api.electronhub.ai/v1/auth/proxy/update/ek-proxy-1234567890abcdef \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ELECTRONHUB_API_KEY" \
+  -d '{
+    "name": "Updated Production Key",
+    "expires_at": 1767225600,
+    "allocated_ammount": 150.0,
+    "model_whitelist": ["gpt-4o", "claude-3-5-sonnet-20241022", "dall-e-3"],
+    "ip_whitelist": ["192.168.1.0/24"]
+  }'
+```
+
+```python Python
+import httpx
+import time
+
+# Calculate new expiration date (60 days from now)
+expires_at = int(time.time()) + (60 * 24 * 60 * 60)
+
+proxy_key_id = "ek-proxy-1234567890abcdef"
+
+client = httpx.Client()
+response = client.post(
+    f"https://api.electronhub.ai/v1/auth/proxy/update/{proxy_key_id}",
+    headers={
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    },
+    json={
+        "name": "Updated Production Key",
+        "expires_at": expires_at,
+        "allocated_ammount": 150.0,
+        "model_whitelist": ["gpt-4o", "claude-3-5-sonnet-20241022", "dall-e-3"],
+        "ip_whitelist": ["192.168.1.0/24"]
+    }
+)
+
+result = response.json()
+print(f"Update result: {result['message']}")
+```
+
+```javascript Node.js
+// Calculate new expiration date (60 days from now)
+const expiresAt = Math.floor(Date.now() / 1000) + (60 * 24 * 60 * 60);
+const proxyKeyId = 'ek-proxy-1234567890abcdef';
+
+const response = await fetch(`https://api.electronhub.ai/v1/auth/proxy/update/${proxyKeyId}`, {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${process.env.ELECTRONHUB_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    name: 'Updated Production Key',
+    expires_at: expiresAt,
+    allocated_ammount: 150.0,
+    model_whitelist: ['gpt-4o', 'claude-3-5-sonnet-20241022', 'dall-e-3'],
+    ip_whitelist: ['192.168.1.0/24']
+  }),
+});
+
+const result = await response.json();
+console.log(`Update result: ${result.message}`);
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "message": "Proxy key updated"
+}
+```
+
+```json Error Response
+{
+  "detail": "Allocated ammount cannot exceed your daily limit of 100"
+}
+```
+
+</ResponseExample>
+
+## Overview
+
+Update the configuration of an existing proxy key. You can modify all settings including name, expiration, credit allocation, and access restrictions. This is useful for adjusting permissions as project requirements change.
+
+## Path Parameters
+
+<ParamField path="proxy_key" type="string" required>
+  The proxy key ID to update (starts with `ek-proxy-`)
+</ParamField>
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  Updated human-readable name for the proxy key (max 25 characters)
+</ParamField>
+
+<ParamField body="expires_at" type="integer" required>
+  New expiration timestamp in seconds since Unix epoch. Use `-1` for no expiration
+</ParamField>
+
+<ParamField body="allocated_ammount" type="number" required>
+  New credit amount to allocate to this proxy key (must be positive)
+</ParamField>
+
+<ParamField body="model_whitelist" type="array" optional>
+  Updated list of model IDs this key can access. Leave empty to allow all models
+</ParamField>
+
+<ParamField body="ip_whitelist" type="array" optional>
+  Updated list of IP addresses or CIDR blocks allowed to use this key. Leave empty to allow all IPs
+</ParamField>
+
+## Important Notes
+
+<Warning>
+**Credit Changes**: When increasing `allocated_ammount`, the difference is deducted from your account. When decreasing, unused credits are returned.
+</Warning>
+
+<Warning>
+**Active Requests**: Changes take effect immediately. Any ongoing requests with the proxy key will continue with the old settings.
+</Warning>
+
+<Info>
+**Usage Preservation**: The `used_ammount` is preserved when updating. Only the allocation limit changes.
+</Info>
+
+## Common Update Scenarios
+
+<AccordionGroup>
+  <Accordion title="Extend Expiration Date">
+    ```json
+    {
+      "name": "Production Key",
+      "expires_at": 1767225600,  // New date
+      "allocated_ammount": 100.0,
+      "model_whitelist": ["gpt-4o"],
+      "ip_whitelist": ["192.168.1.0/24"]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Increase Credit Limit">
+    ```json
+    {
+      "name": "Production Key", 
+      "expires_at": 1735689600,
+      "allocated_ammount": 200.0,  // Increased from 100.0
+      "model_whitelist": ["gpt-4o"],
+      "ip_whitelist": ["192.168.1.0/24"]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Add Model Restrictions">
+    ```json
+    {
+      "name": "Production Key",
+      "expires_at": 1735689600, 
+      "allocated_ammount": 100.0,
+      "model_whitelist": ["gpt-4o", "claude-3-5-sonnet-20241022"],  // Added restrictions
+      "ip_whitelist": ["192.168.1.0/24"]
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Update IP Whitelist">
+    ```json
+    {
+      "name": "Production Key",
+      "expires_at": 1735689600,
+      "allocated_ammount": 100.0, 
+      "model_whitelist": ["gpt-4o"],
+      "ip_whitelist": ["10.0.0.0/8", "203.0.113.0/24"]  // New IP ranges
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Error Codes
+
+<ResponseField name="400" type="error">
+  **Bad Request** - Invalid input data or validation failed
+</ResponseField>
+
+<ResponseField name="401" type="error">
+  **Unauthorized** - Invalid or missing API key
+</ResponseField>
+
+<ResponseField name="403" type="error">
+  **Forbidden** - You don't have permission to update this proxy key
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  **Not Found** - Proxy key doesn't exist
+</ResponseField>
+
+<ResponseField name="429" type="error">
+  **Rate Limited** - Too many requests, please slow down
+</ResponseField> 

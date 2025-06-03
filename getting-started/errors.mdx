@@ -1,0 +1,167 @@
+---
+title: 'Error Handling'
+description: 'Common errors and how to handle them gracefully'
+icon: 'triangle-exclamation'
+---
+
+This guide covers the error codes you might encounter when using the Electron Hub API, along with solutions and best practices for handling them.
+
+## HTTP Status Codes
+
+The Electron Hub API uses standard HTTP status codes to indicate the success or failure of requests.
+
+| Code | Status | Description |
+|------|--------|-------------|
+| **200** | OK | Request successful |
+| **400** | Bad Request | Invalid request format or parameters |
+| **401** | Unauthorized | Invalid or missing API key |
+| **403** | Forbidden | API key lacks required permissions |
+| **404** | Not Found | Endpoint or resource not found |
+| **429** | Too Many Requests | Rate limit exceeded |
+| **500** | Internal Server Error | Server-side error |
+| **503** | Service Unavailable | Service temporarily unavailable |
+
+## Common Error Codes
+
+### 401 - Authentication Errors
+
+**Invalid API Key**
+- **Cause:** The API key is incorrect, missing, or malformed
+- **Solution:** Verify your API key from the [Electron Hub Console](https://playground.electronhub.ai/console)
+
+**Expired API Key**
+- **Cause:** Your API key has been revoked or expired
+- **Solution:** Generate a new API key from your dashboard
+
+### 429 - Rate Limit Errors
+
+**Request Rate Limit**
+- **Cause:** Too many requests sent in a short time period
+- **Solution:** Implement exponential backoff and respect rate limits
+
+**Token Rate Limit**
+- **Cause:** Token usage has exceeded your plan limits
+- **Solution:** Upgrade your plan or wait for the limit to reset
+
+### 400 - Bad Request Errors
+
+**Invalid Model**
+- **Cause:** The specified model is not available or misspelled
+- **Solution:** Check the [models documentation](/models/overview) for available models
+
+**Invalid Parameters**
+- **Cause:** Request parameters are missing or invalid
+- **Solution:** Verify all required parameters are provided with correct types
+
+**Content Policy Violation**
+- **Cause:** Input content violates usage policies
+- **Solution:** Review and modify your content to comply with policies
+
+### 402 - Payment Required
+
+**Insufficient Credits**
+- **Cause:** Your account has insufficient credits or balance
+- **Solution:** Purchase additional credits or upgrade your plan
+
+**Premium Model Access**
+- **Cause:** Attempting to use a premium model without subscription
+- **Solution:** Upgrade to a plan that includes premium model access
+
+### 500 - Server Errors
+
+**Internal Server Error**
+- **Cause:** Unexpected error on our servers
+- **Solution:** Retry with exponential backoff; contact support if persistent
+
+### 503 - Service Unavailable
+
+**Model Temporarily Unavailable**
+- **Cause:** The requested model is temporarily offline
+- **Solution:** Try again later or use an alternative model
+
+## Error Response Format
+
+All errors return a consistent JSON format:
+
+```json
+{
+  "error": {
+    "message": "Description of the error",
+    "type": "invalid_request_error",
+    "param": "parameter_name",
+    "code": "specific_error_code"
+  }
+}
+```
+
+## Best Practices
+
+### Implement Retry Logic
+```javascript
+async function makeAPICall(requestFn, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await requestFn();
+    } catch (error) {
+      if (error.status >= 400 && error.status < 500 && error.status !== 429) {
+        throw error; // Don't retry client errors (except rate limits)
+      }
+      
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      
+      // Exponential backoff
+      const delay = Math.pow(2, attempt) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+```
+
+### Handle Specific Error Types
+```javascript
+try {
+  const response = await electronhubAPI.chat.completions.create({
+    model: 'gpt-4',
+    messages: messages
+  });
+} catch (error) {
+  switch (error.status) {
+    case 401:
+      console.error('Invalid API key');
+      break;
+    case 429:
+      console.error('Rate limit exceeded');
+      break;
+    case 400:
+      console.error('Invalid request:', error.message);
+      break;
+    default:
+      console.error('API error:', error.message);
+  }
+}
+```
+
+### Monitor Rate Limits
+Check response headers for rate limit information:
+```javascript
+const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: { 'Authorization': 'Bearer YOUR_API_KEY' },
+  body: JSON.stringify(requestData)
+});
+
+console.log('Rate limit remaining:', response.headers.get('x-ratelimit-remaining'));
+console.log('Rate limit reset:', response.headers.get('x-ratelimit-reset'));
+```
+
+## Getting Help
+
+If you encounter persistent errors or need assistance:
+
+- Check our [status page](https://status.electronhub.ai) for service updates
+- Join our [Discord community](https://discord.com/invite/apUUqbxCBQ) for help
+- Contact support at [support@electronhub.ai](mailto:support@electronhub.ai)
+- Review our [best practices guide](/guides/best-practices) for optimization tips 
+

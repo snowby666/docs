@@ -1,0 +1,184 @@
+---
+title: 'Changelog'
+description: 'API updates, changes, and release notes'
+---
+
+Track all updates, changes, and new features to the Electron Hub API.
+
+## [2024-06-02] - Documentation Restructure
+
+### Added
+- Complete documentation restructure following new organization
+- Comprehensive getting started guide
+- Detailed model documentation for all supported models
+- Best practices guide with security and performance recommendations
+- Error handling guide with retry strategies
+- Migration guide for users switching from other APIs
+- Extensive examples for chat, image, and embedding APIs
+- TODO file for planned features and improvements
+
+### Changed
+- Reorganized documentation structure for better navigation
+- Updated navigation in mint.json to reflect new structure
+- Improved code examples with better error handling
+- Enhanced API reference documentation
+
+### Fixed
+- File organization and path references
+- Navigation structure in documentation
+
+## [1.2.0] - November 2024
+
+### Added
+- Claude 3 Haiku model support
+- Enhanced image generation with DALL-E 3
+- Improved embedding models (text-embedding-3-small, text-embedding-3-large)
+- Better rate limiting with per-model limits
+
+### Changed
+- Updated OpenAI compatibility layer
+- Improved response times across all endpoints
+- Enhanced error messages with more detail
+
+### Fixed
+- Streaming response stability
+- Token counting accuracy
+- Image generation timeouts
+
+## [1.1.0] - October 2024
+
+### Added
+- GPT-4 Turbo model support
+- Streaming responses for chat completions
+- Function calling capabilities
+- Content moderation improvements
+
+### Changed
+- Increased rate limits for premium plans
+- Optimized embedding generation performance
+- Updated model pricing
+
+### Deprecated
+- Legacy completion format (use chat completions instead)
+
+## [1.0.5] - September 2024
+
+### Fixed
+- Image editing endpoint stability
+- Embedding dimension consistency
+- Rate limit header accuracy
+
+### Security
+- Enhanced API key validation
+- Improved request sanitization
+
+## [1.0.4] - August 2024
+
+### Added
+- Image variations endpoint
+- Batch embedding support up to 100 texts
+- Enhanced error codes and messages
+
+### Changed
+- Improved image generation quality
+- Faster embedding processing
+- Better handling of large requests
+
+## [1.0.3] - July 2024
+
+### Fixed
+- Chat completion streaming edge cases
+- Image URL expiration times
+- Moderation false positives
+
+### Changed
+- Extended image URL validity to 24 hours
+- Improved moderation accuracy
+
+## [1.0.2] - June 2024
+
+### Added
+- DALL-E 2 support for image editing
+- Multiple image generation (DALL-E 2)
+- Enhanced moderation categories
+
+### Fixed
+- Token usage reporting accuracy
+- Response format consistency
+- Timeout handling improvements
+
+## [1.0.1] - May 2024
+
+### Fixed
+- Authentication error messages
+- CORS headers for web applications
+- Response time optimization
+
+### Security
+- Rate limiting improvements
+- Enhanced DDoS protection
+
+## [1.0.0] - April 2024
+
+### Added
+- Initial public release
+- Chat completions API (OpenAI compatible)
+- Messages API (Anthropic compatible)
+- Image generation with DALL-E 3
+- Text embeddings API
+- Content moderation API
+- Comprehensive documentation
+- Rate limiting and usage tracking
+
+### Models Supported
+- GPT-4, GPT-4 Turbo
+- GPT-3.5 Turbo, GPT-3.5 Turbo Instruct
+- Claude 3 Opus, Claude 3 Sonnet
+- DALL-E 3, DALL-E 2
+- text-embedding-3-large, text-embedding-3-small
+- text-embedding-ada-002
+- text-moderation-latest
+
+## Migration Notes
+
+### From 1.1.x to 1.2.x
+- No breaking changes
+- New models available immediately
+- Rate limits may have increased (check your dashboard)
+
+### From 1.0.x to 1.1.x
+- Function calling requires model support (GPT-4, GPT-3.5-turbo)
+- Streaming format follows OpenAI specification
+- Legacy completion endpoint deprecated but still functional
+
+## Upcoming Changes
+
+See our [TODO page](/TODO.mdx) for planned features and improvements.
+
+## API Versioning
+
+We use semantic versioning for our API:
+- **Major version** (X.0.0): Breaking changes that require code updates
+- **Minor version** (X.Y.0): New features that are backward compatible  
+- **Patch version** (X.Y.Z): Bug fixes and improvements
+
+### Version Support
+- **Current version**: v1.2.0 (fully supported)
+- **Previous version**: v1.1.0 (security updates only)
+- **Legacy versions**: v1.0.x (deprecated, sunset in 6 months)
+
+## Breaking Changes Policy
+
+We avoid breaking changes whenever possible. When necessary:
+- 90-day advance notice via email and documentation
+- Migration guides provided
+- Legacy endpoint support during transition period
+- Developer support for migration assistance
+
+## Feedback
+
+Have feedback on our changes or suggestions for future updates?
+- Join our [Discord community](https://discord.com/invite/apUUqbxCBQ)
+- Email us at [api-feedback@electronhub.ai](mailto:api-feedback@electronhub.ai)
+- Create an issue on our [GitHub repository](https://github.com/electronhub/api) 
+

@@ -1,0 +1,68 @@
+---
+title: "Get User Logs"
+openapi: "GET /user/logs"
+---
+
+Retrieve recent API request logs for the authenticated user. This endpoint provides detailed information about your API usage history, including model usage, costs, timestamps, and request status.
+
+## Response
+
+Returns an array of log entries containing information about recent API requests made with your API key.
+
+## Log Entry Fields
+
+- **key** - The API key used for the request
+- **model** - The model that was used
+- **route** - The API endpoint that was called
+- **credits** - The cost in credits for this request
+- **timestamp** - Unix timestamp when the request was made
+- **status** - Request status (success, cancelled, error)
+- **ip** - IP address from which the request was made
+- **input_tokens** - Number of input tokens (for text models)
+- **output_tokens** - Number of output tokens (for text models)
+
+## Example Response
+
+```json
+[
+  {
+    "key": "ek-abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567",
+    "model": "gpt-4o",
+    "route": "chat.completions",
+    "credits": 0.001475,
+    "timestamp": 1747802046,
+    "status": "success",
+    "input_tokens": 23,
+    "output_tokens": 9,
+    "ip": "14.161.20.81"
+  },
+  {
+    "key": "ek-abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567",
+    "model": "dall-e-3",
+    "route": "images.generations",
+    "credits": 0.2,
+    "timestamp": 1747245603,
+    "status": "success",
+    "ip": "2001:ee0:d781:2280:e9d8:c4d6:c683:e48"
+  },
+  {
+    "key": "ek-abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567",
+    "model": "claude-3-5-sonnet-20241022",
+    "route": "chat.completions",
+    "credits": 0.000609,
+    "timestamp": 1747802047,
+    "status": "success",
+    "input_tokens": 23,
+    "output_tokens": 36,
+    "ip": "14.161.20.81"
+  }
+]
+```
+
+## Use Cases
+
+- **Usage Tracking** - Monitor your API usage patterns and costs
+- **Debugging** - Identify failed requests and troubleshoot issues
+- **Analytics** - Analyze which models you use most frequently
+- **Billing** - Track credit consumption over time
+- **Security** - Monitor IP addresses accessing your API key 

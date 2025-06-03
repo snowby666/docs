@@ -1,0 +1,217 @@
+---
+title: "Delete All Proxy Keys"
+api: "DELETE https://api.electronhub.ai/v1/auth/proxy"
+description: "Delete all proxy keys for the authenticated user"
+openapi: "DELETE /auth/proxy"
+---
+
+import { CodeGroup } from '@mintlify/mdx'
+
+<RequestExample>
+
+```bash cURL
+curl -X DELETE https://api.electronhub.ai/v1/auth/proxy \
+  -H "Authorization: Bearer $ELECTRONHUB_API_KEY"
+```
+
+```python Python
+import httpx
+
+client = httpx.Client()
+response = client.delete(
+    "https://api.electronhub.ai/v1/auth/proxy",
+    headers={
+        "Authorization": f"Bearer {api_key}"
+    }
+)
+
+result = response.json()
+print(f"Bulk delete result: {result['message']}")
+```
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/auth/proxy', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': `Bearer ${process.env.ELECTRONHUB_API_KEY}`,
+  },
+});
+
+const result = await response.json();
+console.log(`Bulk delete result: ${result.message}`);
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "message": "Proxy keys deleted"
+}
+```
+
+```json No Keys Response
+{
+  "message": "Proxy keys deleted"
+}
+```
+
+</ResponseExample>
+
+## Overview
+
+Delete all proxy keys associated with your account in a single operation. This is useful for bulk cleanup, security incidents, or account reset scenarios.
+
+<Warning>
+**Irreversible Action**: This permanently deletes ALL proxy keys. This action cannot be undone, and all deleted keys will immediately stop working.
+</Warning>
+
+## Important Considerations
+
+<AccordionGroup>
+  <Accordion title="Immediate Effect">
+    All proxy keys stop working immediately. Any applications using these keys will start receiving authentication errors.
+  </Accordion>
+  
+  <Accordion title="Credit Recovery">
+    All unused credits from deleted proxy keys are returned to your main account balance.
+  </Accordion>
+  
+  <Accordion title="Permanent Deletion">
+    Deleted keys cannot be recovered. You'll need to recreate any keys you still need.
+  </Accordion>
+  
+  <Accordion title="No Confirmation">
+    The operation executes immediately without additional confirmation prompts.
+  </Accordion>
+</AccordionGroup>
+
+## Before Bulk Deletion
+
+Make sure to:
+
+1. **Audit Current Keys**: Use [List Proxy Keys](/api-reference/proxy-keys) to review what will be deleted
+2. **Update Applications**: Remove or replace proxy keys in all applications
+3. **Backup Configurations**: Save key settings if you might need to recreate them
+4. **Notify Team**: Inform team members who might be using the keys
+5. **Check Dependencies**: Verify no critical services depend on the proxy keys
+
+## Example Workflow
+
+```python Python - Safe Bulk Deletion
+import httpx
+
+def safe_bulk_delete_proxy_keys(api_key: str) -> dict:
+    """Safely delete all proxy keys with confirmation"""
+    client = httpx.Client()
+    
+    # First, list current keys for confirmation
+    list_response = client.get(
+        "https://api.electronhub.ai/v1/auth/proxy",
+        headers={"Authorization": f"Bearer {api_key}"}
+    )
+    proxy_keys = list_response.json()
+    
+    if not proxy_keys:
+        print("No proxy keys to delete")
+        return {"message": "No proxy keys found"}
+    
+    print(f"Found {len(proxy_keys)} proxy keys:")
+    for key in proxy_keys:
+        print(f"  - {key['name']} ({key['key']})")
+    
+    # Confirm deletion
+    confirm = input("Delete ALL proxy keys? (type 'DELETE' to confirm): ")
+    if confirm != "DELETE":
+        print("Deletion cancelled")
+        return {"message": "Deletion cancelled"}
+    
+    # Perform bulk deletion
+    delete_response = client.delete(
+        "https://api.electronhub.ai/v1/auth/proxy",
+        headers={"Authorization": f"Bearer {api_key}"}
+    )
+    
+    result = delete_response.json()
+    print(f"Bulk deletion completed: {result['message']}")
+    return result
+
+# Execute safe bulk deletion
+result = safe_bulk_delete_proxy_keys(api_key)
+```
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Security Incident" icon="shield-exclamation">
+    Quickly revoke all delegated access during a security breach
+  </Card>
+  <Card title="Account Reset" icon="refresh">
+    Clean slate when restructuring API access patterns
+  </Card>
+  <Card title="Project Cleanup" icon="broom">
+    Remove all temporary keys after project completion
+  </Card>
+  <Card title="Key Rotation" icon="key">
+    Part of a complete key rotation strategy
+  </Card>
+</CardGroup>
+
+## Alternative Approaches
+
+Consider these alternatives before using bulk deletion:
+
+<AccordionGroup>
+  <Accordion title="Individual Deletion">
+    Delete specific keys using [Delete Proxy Key](/api-reference/proxy-delete) for more control
+  </Accordion>
+  
+  <Accordion title="Bulk Toggle">
+    Temporarily disable all keys instead of deleting them:
+    ```python
+    # Disable all keys instead of deleting
+    for key in proxy_keys:
+        toggle_response = client.post(
+            f"https://api.electronhub.ai/v1/auth/proxy/toggle/{key['key']}",
+            headers={"Authorization": f"Bearer {api_key}"}
+        )
+    ```
+  </Accordion>
+  
+  <Accordion title="Selective Cleanup">
+    Filter and delete only specific types of keys:
+    ```python
+    # Delete only expired keys
+    import time
+    current_time = int(time.time())
+    
+    for key in proxy_keys:
+        if key['expires_at'] != -1 and key['expires_at'] < current_time:
+            delete_response = client.delete(
+                f"https://api.electronhub.ai/v1/auth/proxy/delete/{key['key']}",
+                headers={"Authorization": f"Bearer {api_key}"}
+            )
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Error Codes
+
+<ResponseField name="401" type="error">
+  **Unauthorized** - Invalid or missing API key
+</ResponseField>
+
+<ResponseField name="403" type="error">
+  **Forbidden** - API key doesn't have permission to delete proxy keys
+</ResponseField>
+
+<ResponseField name="429" type="error">
+  **Rate Limited** - Too many requests, please slow down
+</ResponseField>
+
+## Related Endpoints
+
+- [List Proxy Keys](/api-reference/proxy-keys) - Review keys before deletion
+- [Delete Proxy Key](/api-reference/proxy-delete) - Delete individual keys
+- [Toggle Proxy Key Status](/api-reference/proxy-toggle) - Temporarily disable keys instead 

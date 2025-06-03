@@ -1,0 +1,484 @@
+---
+title: 'Chat Examples'
+description: 'Real-world examples using chat completion models'
+icon: 'message'
+---
+
+Explore practical examples for implementing chat functionality with the Electron Hub API.
+
+## Basic Chat Completion
+
+### Simple Question and Answer
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-3.5-turbo',
+    messages: [
+      { role: 'user', content: 'What is the capital of France?' }
+    ],
+    max_tokens: 100
+  })
+});
+
+const data = await response.json();
+console.log(data.choices[0].message.content);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/chat/completions',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'model': 'gpt-3.5-turbo',
+        'messages': [
+            {'role': 'user', 'content': 'What is the capital of France?'}
+        ],
+        'max_tokens': 100
+    }
+)
+
+print(response.json()['choices'][0]['message']['content'])
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-3.5-turbo",
+    "messages": [
+      {"role": "user", "content": "What is the capital of France?"}
+    ],
+    "max_tokens": 100
+  }'
+```
+
+</CodeGroup>
+
+## Conversation with Context
+
+### Multi-turn Conversation
+
+```javascript
+const conversationHistory = [
+  { role: 'system', content: 'You are a helpful assistant.' },
+  { role: 'user', content: 'Hello! Can you help me with math?' },
+  { role: 'assistant', content: 'Of course! I\'d be happy to help you with math. What would you like to work on?' },
+  { role: 'user', content: 'What is 25 * 4?' }
+];
+
+const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-3.5-turbo',
+    messages: conversationHistory,
+    max_tokens: 150,
+    temperature: 0.7
+  })
+});
+
+const data = await response.json();
+console.log(data.choices[0].message.content);
+```
+
+## Specialized Chat Applications
+
+### Customer Support Bot
+
+```javascript
+async function customerSupportChat(userMessage, customerData) {
+  const systemPrompt = `You are a helpful customer support agent for TechCorp. 
+Customer Info:
+- Name: ${customerData.name}
+- Account Type: ${customerData.accountType}
+- Recent Orders: ${customerData.recentOrders}
+
+Provide helpful, professional responses. If you need to escalate, say "Let me connect you with a specialist."`;
+
+  const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage }
+      ],
+      max_tokens: 300,
+      temperature: 0.3
+    })
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+// Usage
+const response = await customerSupportChat(
+  "I can't access my account",
+  {
+    name: "John Doe",
+    accountType: "Premium",
+    recentOrders: ["Order #12345", "Order #12346"]
+  }
+);
+```
+
+### Code Assistant
+
+```javascript
+async function codeAssistant(codeQuestion, programmingLanguage = 'JavaScript') {
+  const systemPrompt = `You are an expert ${programmingLanguage} developer. 
+Provide clear, well-commented code examples. 
+Explain complex concepts in simple terms.
+Always include error handling when appropriate.`;
+
+  const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-4',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: codeQuestion }
+      ],
+      max_tokens: 1000,
+      temperature: 0.2
+    })
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+// Usage
+const codeHelp = await codeAssistant(
+  "How do I implement a binary search algorithm?",
+  "Python"
+);
+```
+
+## Streaming Responses
+
+### Real-time Chat with Streaming
+
+```javascript
+async function streamingChat(messages) {
+  const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo',
+      messages: messages,
+      stream: true,
+      max_tokens: 500
+    })
+  });
+
+  const reader = response.body.getReader();
+  let assistantMessage = '';
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      
+      if (done) break;
+      
+      const chunk = new TextDecoder().decode(value);
+      const lines = chunk.split('\n');
+      
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          
+          if (data === '[DONE]') {
+            return assistantMessage;
+          }
+          
+          try {
+            const parsed = JSON.parse(data);
+            const content = parsed.choices?.[0]?.delta?.content;
+            
+            if (content) {
+              assistantMessage += content;
+              // Update UI in real-time
+              updateChatUI(content);
+            }
+          } catch (e) {
+            // Ignore parsing errors for malformed chunks
+          }
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  
+  return assistantMessage;
+}
+
+function updateChatUI(newContent) {
+  // Update your chat interface with the new content
+  const chatContainer = document.getElementById('chat-messages');
+  const lastMessage = chatContainer.lastElementChild;
+  lastMessage.textContent += newContent;
+}
+```
+
+## Advanced Examples
+
+### Function Calling
+
+```javascript
+const tools = [
+  {
+    type: "function",
+    function: {
+      name: "get_weather",
+      description: "Get the current weather for a location",
+      parameters: {
+        type: "object",
+        properties: {
+          location: {
+            type: "string",
+            description: "The city and state or country"
+          },
+          unit: {
+            type: "string",
+            enum: ["celsius", "fahrenheit"],
+            description: "Temperature unit"
+          }
+        },
+        required: ["location"]
+      }
+    }
+  }
+];
+
+async function chatWithFunctions(userMessage) {
+  const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-4',
+      messages: [
+        { role: 'user', content: userMessage }
+      ],
+      tools: tools,
+      tool_choice: 'auto'
+    })
+  });
+
+  const data = await response.json();
+  const message = data.choices[0].message;
+
+  if (message.tool_calls) {
+    // Handle function calls
+    for (const toolCall of message.tool_calls) {
+      if (toolCall.function.name === 'get_weather') {
+        const args = JSON.parse(toolCall.function.arguments);
+        const weather = await getWeather(args.location, args.unit);
+        
+        // Send function result back to the model
+        const followUpResponse = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer YOUR_API_KEY',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4',
+            messages: [
+              { role: 'user', content: userMessage },
+              message,
+              {
+                role: 'tool',
+                tool_call_id: toolCall.id,
+                content: JSON.stringify(weather)
+              }
+            ]
+          })
+        });
+        
+        const followUpData = await followUpResponse.json();
+        return followUpData.choices[0].message.content;
+      }
+    }
+  }
+
+  return message.content;
+}
+
+async function getWeather(location, unit = 'celsius') {
+  // Mock weather API call
+  return {
+    location: location,
+    temperature: unit === 'celsius' ? '22' : '72',
+    unit: unit,
+    description: 'Sunny'
+  };
+}
+```
+
+### Content Moderation Integration
+
+```javascript
+async function moderatedChat(userMessage, conversationHistory = []) {
+  // First, check if the user message is appropriate
+  const moderationResponse = await fetch('https://api.electronhub.ai/v1/moderations', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      input: userMessage,
+      model: 'text-moderation-latest'
+    })
+  });
+
+  const moderationData = await moderationResponse.json();
+  
+  if (moderationData.results[0].flagged) {
+    return {
+      response: "I'm sorry, but I can't respond to that type of content. Please keep our conversation respectful.",
+      flagged: true
+    };
+  }
+
+  // If content is safe, proceed with chat
+  const messages = [
+    ...conversationHistory,
+    { role: 'user', content: userMessage }
+  ];
+
+  const chatResponse = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo',
+      messages: messages,
+      max_tokens: 300
+    })
+  });
+
+  const chatData = await chatResponse.json();
+  
+  return {
+    response: chatData.choices[0].message.content,
+    flagged: false
+  };
+}
+```
+
+## Error Handling Examples
+
+### Robust Chat Implementation
+
+```javascript
+class ChatService {
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+    this.baseURL = 'https://api.electronhub.ai/v1';
+  }
+
+  async sendMessage(messages, options = {}) {
+    const {
+      model = 'gpt-3.5-turbo',
+      maxTokens = 500,
+      temperature = 0.7,
+      retries = 3
+    } = options;
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const response = await fetch(`${this.baseURL}/chat/completions`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model,
+            messages,
+            max_tokens: maxTokens,
+            temperature
+          })
+        });
+
+        if (!response.ok) {
+          if (response.status === 429) {
+            // Rate limited - wait and retry
+            const delay = Math.pow(2, attempt) * 1000;
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          }
+          
+          if (response.status >= 500) {
+            // Server error - retry
+            if (attempt < retries) continue;
+          }
+          
+          throw new Error(`API request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.choices[0].message.content;
+
+      } catch (error) {
+        if (attempt === retries) {
+          throw new Error(`Failed to get response after ${retries} attempts: ${error.message}`);
+        }
+        
+        console.warn(`Attempt ${attempt} failed:`, error.message);
+      }
+    }
+  }
+}
+
+// Usage
+const chatService = new ChatService('YOUR_API_KEY');
+
+try {
+  const response = await chatService.sendMessage([
+    { role: 'user', content: 'Hello, how are you?' }
+  ]);
+  console.log(response);
+} catch (error) {
+  console.error('Chat failed:', error.message);
+  // Handle error appropriately
+}
+``` 
+

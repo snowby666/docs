@@ -1,0 +1,185 @@
+---
+title: "Toggle Proxy Key Status"
+api: "POST https://api.electronhub.ai/v1/auth/proxy/toggle/{proxy_key}"
+description: "Enable or disable a proxy key without deleting it"
+openapi: "POST /auth/proxy/toggle/{proxy_key}"
+---
+
+import { CodeGroup } from '@mintlify/mdx'
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.electronhub.ai/v1/auth/proxy/toggle/ek-proxy-1234567890abcdef \
+  -H "Authorization: Bearer $ELECTRONHUB_API_KEY"
+```
+
+```python Python
+import httpx
+
+proxy_key_id = "ek-proxy-1234567890abcdef"
+
+client = httpx.Client()
+response = client.post(
+    f"https://api.electronhub.ai/v1/auth/proxy/toggle/{proxy_key_id}",
+    headers={
+        "Authorization": f"Bearer {api_key}"
+    }
+)
+
+result = response.json()
+print(f"Status updated: {result['message']}")
+print(f"New status: {'Active' if result['status'] else 'Inactive'}")
+```
+
+```javascript Node.js
+const proxyKeyId = 'ek-proxy-1234567890abcdef';
+
+const response = await fetch(`https://api.electronhub.ai/v1/auth/proxy/toggle/${proxyKeyId}`, {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${process.env.ELECTRONHUB_API_KEY}`,
+  },
+});
+
+const result = await response.json();
+console.log(`Status updated: ${result.message}`);
+console.log(`New status: ${result.status ? 'Active' : 'Inactive'}`);
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Enable Response
+{
+  "message": "Proxy key status updated",
+  "status": true
+}
+```
+
+```json Disable Response
+{
+  "message": "Proxy key status updated", 
+  "status": false
+}
+```
+
+</ResponseExample>
+
+## Overview
+
+Toggle the active status of a proxy key between enabled and disabled states. This provides a non-destructive way to temporarily revoke access without losing the key's configuration.
+
+## Path Parameters
+
+<ParamField path="proxy_key" type="string" required>
+  The proxy key ID to toggle (starts with `ek-proxy-`)
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="message" type="string">
+  Confirmation message that the status was updated
+</ResponseField>
+
+<ResponseField name="status" type="boolean">
+  The new status of the proxy key (`true` = active, `false` = inactive)
+</ResponseField>
+
+## Behavior
+
+The toggle endpoint switches the proxy key between two states:
+
+- **Active (`true`)**: The proxy key can be used for API requests
+- **Inactive (`false`)**: The proxy key is rejected with authentication errors
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Temporary Suspension" icon="pause">
+    Quickly disable access during maintenance or investigations
+  </Card>
+  <Card title="Conditional Access" icon="key">
+    Enable/disable keys based on business logic or schedules
+  </Card>
+  <Card title="Security Response" icon="shield">
+    Immediately block suspicious activity without permanent deletion
+  </Card>
+  <Card title="Testing" icon="flask">
+    Safely test key revocation and restoration workflows
+  </Card>
+</CardGroup>
+
+## Advantages Over Deletion
+
+<AccordionGroup>
+  <Accordion title="Preservation">
+    All key settings (name, expiration, credits, restrictions) are preserved
+  </Accordion>
+  
+  <Accordion title="Reversibility">
+    Can be quickly re-enabled without reconfiguring settings
+  </Accordion>
+  
+  <Accordion title="Audit Trail">
+    Key history and usage statistics remain intact
+  </Accordion>
+  
+  <Accordion title="Credit Protection">
+    Allocated credits stay with the key and aren't returned to main balance
+  </Accordion>
+</AccordionGroup>
+
+## Example Workflow
+
+```python Python - Automated Key Management
+import httpx
+import time
+
+def toggle_proxy_key(api_key: str, proxy_key_id: str) -> bool:
+    """Toggle proxy key status and return new status"""
+    client = httpx.Client()
+    response = client.post(
+        f"https://api.electronhub.ai/v1/auth/proxy/toggle/{proxy_key_id}",
+        headers={"Authorization": f"Bearer {api_key}"}
+    )
+    result = response.json()
+    return result["status"]
+
+# Disable key during maintenance window
+proxy_key_id = "ek-proxy-1234567890abcdef"
+new_status = toggle_proxy_key(api_key, proxy_key_id)
+print(f"Key disabled: {not new_status}")
+
+# Perform maintenance...
+time.sleep(60)
+
+# Re-enable key after maintenance
+new_status = toggle_proxy_key(api_key, proxy_key_id) 
+print(f"Key re-enabled: {new_status}")
+```
+
+## Error Codes
+
+<ResponseField name="401" type="error">
+  **Unauthorized** - Invalid or missing API key
+</ResponseField>
+
+<ResponseField name="403" type="error">
+  **Forbidden** - You don't have permission to modify this proxy key
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  **Not Found** - Proxy key doesn't exist
+</ResponseField>
+
+<ResponseField name="429" type="error">
+  **Rate Limited** - Too many requests, please slow down
+</ResponseField>
+
+## Related Endpoints
+
+- [List Proxy Keys](/api-reference/proxy-keys) - View current status of all keys
+- [Update Proxy Key](/api-reference/proxy-update) - Modify key configuration
+- [Delete Proxy Key](/api-reference/proxy-delete) - Permanently remove a key 

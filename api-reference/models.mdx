@@ -1,0 +1,35 @@
+---
+title: "List Models"
+openapi: "GET /models"
+---
+
+Retrieve a list of available models that can be used with the API.
+
+## Response
+
+Returns a list of model objects containing information about each available model including their capabilities and pricing tier.
+
+## Example Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "gpt-4o",
+      "object": "model",
+      "owned_by": "openai"
+    },
+    {
+      "id": "claude-3-5-sonnet-20241022", 
+      "object": "model",
+      "owned_by": "anthropic"
+    },
+    {
+      "id": "gemini-pro",
+      "object": "model", 
+      "owned_by": "google"
+    }
+  ]
+}
+``` 

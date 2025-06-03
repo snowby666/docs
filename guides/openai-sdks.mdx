@@ -1,0 +1,354 @@
+---
+title: 'OpenAI SDKs'
+description: 'Learn how to use OpenAI SDKs with Electron Hub as your base URL'
+icon: 'code'
+---
+
+Use Electron Hub with the official OpenAI SDKs by simply changing the base URL. This allows you to access 200+ AI models through familiar OpenAI interfaces.
+
+## JavaScript/Node.js SDK
+
+Install the OpenAI SDK:
+
+```bash
+npm install openai
+```
+
+Configure it to use Electron Hub:
+
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: 'ek-your-api-key-here',
+  baseURL: 'https://api.electronhub.ai/v1',
+});
+
+// Use any model available on Electron Hub
+const completion = await openai.chat.completions.create({
+  model: "gpt-4o",
+  messages: [
+    { role: "user", content: "Hello, world!" }
+  ],
+});
+
+console.log(completion.choices[0].message);
+```
+
+### Using Different Models
+
+Switch between any supported model:
+
+```javascript
+// OpenAI models
+const gptResponse = await openai.chat.completions.create({
+  model: "gpt-4o",
+  messages: [{ role: "user", content: "Explain quantum computing" }],
+});
+
+// Anthropic models through OpenAI format
+const claudeResponse = await openai.chat.completions.create({
+  model: "claude-3-5-sonnet-20241022",
+  messages: [{ role: "user", content: "Write a poem about AI" }],
+});
+
+// Google models
+const geminiResponse = await openai.chat.completions.create({
+  model: "gemini-pro",
+  messages: [{ role: "user", content: "Summarize the news" }],
+});
+```
+
+### Image Generation
+
+```javascript
+const image = await openai.images.generate({
+  model: "dall-e-3",
+  prompt: "A futuristic city skyline at sunset",
+  n: 1,
+  size: "1024x1024",
+});
+
+console.log(image.data[0].url);
+```
+
+### Embeddings
+
+```javascript
+const embedding = await openai.embeddings.create({
+  model: "text-embedding-3-large",
+  input: "The quick brown fox jumps over the lazy dog",
+});
+
+console.log(embedding.data[0].embedding);
+```
+
+### Moderations
+
+Check content for policy violations using text and image moderation:
+
+```javascript
+// Single string moderation
+const textModeration = await openai.moderations.create({
+  model: "omni-moderation-latest",
+  input: "I want to kill them."
+});
+
+console.log(textModeration);
+```
+
+```javascript
+// Image and text moderation
+const multiModalModeration = await openai.moderations.create({
+  model: "omni-moderation-latest",
+  input: [
+    {
+      type: "text", 
+      text: "I want to shoot people"
+    },
+    {
+      type: "image_url",
+      image_url: {
+        url: "https://example.com/image.jpg"
+        // can also use base64 encoded image URLs
+        // url: "data:image/jpeg;base64,abcdefg..."
+      }
+    }
+  ]
+});
+
+console.log(multiModalModeration);
+```
+
+## Python SDK
+
+Install the OpenAI Python SDK:
+
+```bash
+pip install openai
+```
+
+Configure it for Electron Hub:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="ek-your-api-key-here",
+    base_url="https://api.electronhub.ai/v1"
+)
+
+# Chat completion
+completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "user", "content": "Hello, world!"}
+    ]
+)
+
+print(completion.choices[0].message.content)
+```
+
+### Streaming Responses
+
+```python
+stream = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Tell me a story"}],
+    stream=True
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end="")
+```
+
+### Function Calling
+
+```python
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "Get current weather for a location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA"
+                    }
+                },
+                "required": ["location"]
+            }
+        }
+    }
+]
+
+completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "What's the weather in Paris?"}],
+    tools=tools,
+    tool_choice="auto"
+)
+
+print(completion.choices[0].message)
+```
+
+### Moderations
+
+```python
+# Single string moderation
+moderation = client.moderations.create(
+    model="omni-moderation-latest", 
+    input="I want to kill them."
+)
+print(moderation)
+```
+
+```python
+# Image and text moderation
+response = client.moderations.create(
+    model="omni-moderation-latest",
+    input=[
+        {"type": "text", "text": "I want to shoot people"},
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": "https://example.com/image.jpg"
+                # can also use base64 encoded image URLs
+                # "url": "data:image/jpeg;base64,abcdefg..."
+            }
+        }
+    ]
+)
+
+print(response)
+```
+
+## Go SDK
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "github.com/sashabaranov/go-openai"
+)
+
+func main() {
+    config := openai.DefaultConfig("ek-your-api-key-here")
+    config.BaseURL = "https://api.electronhub.ai/v1"
+    
+    client := openai.NewClientWithConfig(config)
+    
+    resp, err := client.CreateChatCompletion(
+        context.Background(),
+        openai.ChatCompletionRequest{
+            Model: openai.GPT4o,
+            Messages: []openai.ChatCompletionMessage{
+                {
+                    Role:    openai.ChatMessageRoleUser,
+                    Content: "Hello, world!",
+                },
+            },
+        },
+    )
+    
+    if err != nil {
+        fmt.Printf("Error: %v\n", err)
+        return
+    }
+    
+    fmt.Println(resp.Choices[0].Message.Content)
+}
+```
+
+## Advanced Features
+
+### Model Selection
+
+Electron Hub provides access to models from multiple providers:
+
+```javascript
+// Access different model families
+const models = {
+  openai: ['gpt-4o', 'gpt-4', 'gpt-3.5-turbo'],
+  anthropic: ['claude-3-5-sonnet-20241022', 'claude-3-opus-20240229'],
+  google: ['gemini-pro', 'gemini-pro-vision'],
+  meta: ['llama-2-70b-chat', 'llama-2-13b-chat'],
+  mistral: ['mistral-large', 'mistral-medium'],
+};
+
+// Use any model with the same interface
+for (const [provider, modelList] of Object.entries(models)) {
+  for (const model of modelList) {
+    const response = await openai.chat.completions.create({
+      model: model,
+      messages: [{ role: "user", content: "Hello!" }],
+      max_tokens: 10
+    });
+    console.log(`${model}: ${response.choices[0].message.content}`);
+  }
+}
+```
+
+### Error Handling
+
+```javascript
+try {
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [{ role: "user", content: "Hello!" }],
+  });
+} catch (error) {
+  if (error instanceof OpenAI.APIError) {
+    console.error('OpenAI API Error:', error.message);
+    console.error('Status:', error.status);
+    console.error('Code:', error.code);
+  } else {
+    console.error('Unexpected error:', error);
+  }
+}
+```
+
+## Best Practices
+
+1. **Always handle errors** - API calls can fail for various reasons
+2. **Use appropriate timeouts** - Set reasonable timeouts for your requests
+3. **Implement rate limiting** - Respect rate limits to avoid throttling
+4. **Cache responses** - Cache responses when appropriate to reduce costs
+5. **Monitor usage** - Keep track of your token usage and costs
+
+Handle rate limits gracefully:
+
+```javascript
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function makeRequestWithRetry(requestFn, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await requestFn();
+    } catch (error) {
+      if (error.status === 429 && i < maxRetries - 1) {
+        const delay = Math.pow(2, i) * 1000; // Exponential backoff
+        await sleep(delay);
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+```
+
+## Migration Notes
+
+When migrating from OpenAI directly to Electron Hub:
+
+1. **Change the base URL** to `https://api.electronhub.ai/v1`
+2. **Update your API key** to use your Electron Hub key (starts with `ek-`)
+3. **No code changes needed** - All endpoints and parameters remain the same
+4. **Access to more models** - You can now use Claude, Gemini, and other models
+5. **Unified billing** - All model usage is billed through Electron Hub 

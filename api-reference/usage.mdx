@@ -1,0 +1,109 @@
+---
+title: "Get Usage"
+openapi: "GET /user/me"
+---
+
+Retrieve current user usage statistics, account information, and billing details.
+
+## Response
+
+Returns comprehensive usage information including subscription status, remaining credits, token usage, request history, and endpoint-specific usage statistics.
+
+## Example Response
+
+```json
+{
+  "subscription": "pro",
+  "credits": 1250,
+  "usage": {
+    "input_tokens": 45230,
+    "output_tokens": 12870
+  },
+  "history": [
+    {
+      "date": "2024-12-26",
+      "requests": 142
+    },
+    {
+      "date": "2024-12-25",
+      "requests": 98
+    }
+  ],
+  "endpoints": {
+    "chat.completions": 95,
+    "images.generations": 23,
+    "images.edits": 5,
+    "videos.generations": 2
+  }
+}
+```
+
+## Code Examples
+
+<CodeGroup>
+
+```python Python
+from httpx import Client
+
+api_key = "ek-your-api-key"
+headers = {
+    "Authorization": f"Bearer {api_key}"
+}
+
+client = Client()
+response = client.get("https://api.electronhub.ai/user/me", headers=headers)
+print(response.json())
+```
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/user/me', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```bash cURL
+curl -X GET "https://api.electronhub.ai/user/me" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+</CodeGroup>
+
+## Response Fields
+
+### subscription
+Your current subscription plan (e.g., "free", "starter", "pro", "enterprise")
+
+### credits  
+Number of credits remaining in your account
+
+### usage
+Token usage statistics:
+- `input_tokens` - Total input tokens consumed
+- `output_tokens` - Total output tokens generated
+
+### history
+Array of daily usage records showing request counts by date
+
+### endpoints
+Usage breakdown by API endpoint:
+- `chat.completions` - Chat completion requests
+- `images.generations` - Image generation requests  
+- `images.edits` - Image editing requests
+- `videos.generations` - Video generation requests
+
+## Use Cases
+
+- **Monitor Usage**: Track API consumption to manage costs
+- **Billing Information**: Check remaining credits and subscription status
+- **Usage Analytics**: Analyze patterns in API usage over time
+- **Endpoint Analysis**: Understand which endpoints are used most frequently
+
+## Rate Limits
+
+This endpoint is subject to standard rate limits. You can check usage information up to once per minute without impacting your request quota. 

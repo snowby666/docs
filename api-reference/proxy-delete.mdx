@@ -1,0 +1,140 @@
+---
+title: "Delete Proxy Key"
+api: "DELETE https://api.electronhub.ai/v1/auth/proxy/delete/{proxy_key}"
+description: "Delete a specific proxy key permanently"
+openapi: "DELETE /auth/proxy/delete/{proxy_key}"
+---
+
+import { CodeGroup } from '@mintlify/mdx'
+
+<RequestExample>
+
+```bash cURL
+curl -X DELETE https://api.electronhub.ai/v1/auth/proxy/delete/ek-proxy-1234567890abcdef \
+  -H "Authorization: Bearer $ELECTRONHUB_API_KEY"
+```
+
+```python Python
+import httpx
+
+proxy_key_id = "ek-proxy-1234567890abcdef"
+
+client = httpx.Client()
+response = client.delete(
+    f"https://api.electronhub.ai/v1/auth/proxy/delete/{proxy_key_id}",
+    headers={
+        "Authorization": f"Bearer {api_key}"
+    }
+)
+
+result = response.json()
+print(f"Delete result: {result['message']}")
+```
+
+```javascript Node.js
+const proxyKeyId = 'ek-proxy-1234567890abcdef';
+
+const response = await fetch(`https://api.electronhub.ai/v1/auth/proxy/delete/${proxyKeyId}`, {
+  method: 'DELETE',
+  headers: {
+    'Authorization': `Bearer ${process.env.ELECTRONHUB_API_KEY}`,
+  },
+});
+
+const result = await response.json();
+console.log(`Delete result: ${result.message}`);
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "message": "Proxy key deleted"
+}
+```
+
+```json Error Response
+{
+  "detail": "Proxy key not found"
+}
+```
+
+</ResponseExample>
+
+## Overview
+
+Permanently delete a specific proxy key. This action cannot be undone, and the proxy key will immediately stop working for all API requests.
+
+## Path Parameters
+
+<ParamField path="proxy_key" type="string" required>
+  The proxy key ID to delete (starts with `ek-proxy-`)
+</ParamField>
+
+## Important Considerations
+
+<Warning>
+**Immediate Effect**: The proxy key stops working immediately after deletion. Any applications using this key will start receiving authentication errors.
+</Warning>
+
+<Warning>
+**Irreversible**: Deletion is permanent. You cannot recover a deleted proxy key - you'll need to create a new one.
+</Warning>
+
+<Info>
+**Credit Recovery**: Any unused credits allocated to the proxy key are returned to your main account balance.
+</Info>
+
+## Before Deleting
+
+Make sure to:
+
+1. **Update Applications**: Remove or replace the proxy key in any applications that use it
+2. **Check Dependencies**: Verify no critical services depend on this specific key
+3. **Document Changes**: Record the deletion for audit purposes
+4. **Backup Configuration**: Save the key's settings if you might need to recreate it later
+
+## Bulk Operations
+
+To delete all proxy keys at once, use the [Delete All Proxy Keys](/api-reference/proxy-delete-all) endpoint instead.
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Security Incident" icon="shield-exclamation">
+    Quickly revoke access when a key is compromised
+  </Card>
+  <Card title="Project Completion" icon="check-circle">
+    Clean up keys when projects are finished
+  </Card>
+  <Card title="Team Changes" icon="user-minus">
+    Remove access when team members leave
+  </Card>
+  <Card title="Key Rotation" icon="refresh">
+    Delete old keys as part of regular security practices
+  </Card>
+</CardGroup>
+
+## Error Codes
+
+<ResponseField name="401" type="error">
+  **Unauthorized** - Invalid or missing API key
+</ResponseField>
+
+<ResponseField name="403" type="error">
+  **Forbidden** - You don't have permission to delete this proxy key
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  **Not Found** - Proxy key doesn't exist or was already deleted
+</ResponseField>
+
+<ResponseField name="429" type="error">
+  **Rate Limited** - Too many requests, please slow down
+</ResponseField>
+
+## Alternative: Toggle Status
+
+If you want to temporarily disable a proxy key instead of permanently deleting it, consider using the [Toggle Proxy Key Status](/api-reference/proxy-toggle) endpoint instead. This allows you to disable and re-enable keys as needed. 

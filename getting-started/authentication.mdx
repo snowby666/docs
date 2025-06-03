@@ -1,0 +1,61 @@
+---
+title: 'Authentication'
+description: 'Learn how to authenticate with the Electron Hub API'
+icon: 'shield'
+---
+
+The Electron Hub API uses API keys for authentication. You'll need to include your API key in the `Authorization` header of every request.
+
+## Getting Your API Key
+
+1. Visit the [Electron Hub Console](https://playground.electronhub.ai/console)
+2. Sign up or log in to your account
+3. Navigate to the API Keys section
+4. Generate a new API key
+5. Copy and securely store your API key
+
+<Warning>
+Keep your API key secure and never share it publicly. Treat it like a password.
+</Warning>
+
+## Using Your API Key
+
+Include your API key in the `Authorization` header with the `Bearer` prefix:
+
+```bash
+curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-3.5-turbo",
+    "messages": [
+      {"role": "user", "content": "Hello!"}
+    ]
+  }'
+```
+
+## Environment Variables
+
+For security, store your API key as an environment variable:
+
+```bash
+export ELECTRONHUB_API_KEY="your_api_key_here"
+```
+
+Then use it in your code:
+
+```python
+import os
+api_key = os.getenv("ELECTRONHUB_API_KEY")
+```
+
+## API Key Management
+
+- **Regenerate Keys**: You can regenerate your API key at any time in the console
+- **Multiple Keys**: Create separate keys for different environments (development, production)
+- **Monitor Usage**: Track your API usage in the console dashboard
+
+## Rate Limiting
+
+API keys are subject to rate limits based on your plan. See our [rate limits guide](/getting-started/rate-limits) for more information. 
+

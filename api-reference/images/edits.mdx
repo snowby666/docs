@@ -1,0 +1,132 @@
+---
+title: 'Image Edits'
+openapi: 'POST /images/edits'
+description: 'Edit existing images using AI'
+---
+
+Create variations or edits of existing images using AI models.
+
+## Edit Images
+
+`POST /images/edits`
+
+Create edited or extended versions of an existing image.
+
+### Request Body
+
+<ParamField body="image" type="file" required>
+  The image to edit. Must be a valid PNG file, less than 4MB, and square.
+</ParamField>
+
+<ParamField body="mask" type="file">
+  Additional image whose fully transparent areas indicate where image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
+</ParamField>
+
+<ParamField body="prompt" type="string" required>
+  A text description of the desired image(s)
+</ParamField>
+
+<ParamField body="model" type="string">
+  The model to use for image editing (currently only "dall-e-2")
+</ParamField>
+
+<ParamField body="n" type="integer">
+  Number of images to generate (1-10)
+</ParamField>
+
+<ParamField body="size" type="string">
+  Size of the generated images ("256x256", "512x512", "1024x1024")
+</ParamField>
+
+<ParamField body="response_format" type="string">
+  Format of the generated images ("url" or "b64_json")
+</ParamField>
+
+### Response
+
+Returns an array of image objects with URLs or base64-encoded images.
+
+### Example
+
+<CodeGroup>
+
+```javascript Node.js
+const formData = new FormData();
+formData.append('image', imageFile);
+formData.append('prompt', 'Add a blue sky to this image');
+formData.append('n', '1');
+formData.append('size', '1024x1024');
+
+const response = await fetch('https://api.electronhub.ai/v1/images/edits', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: formData
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+with open('image.png', 'rb') as image_file:
+    response = requests.post(
+        'https://api.electronhub.ai/v1/images/edits',
+        headers={
+            'Authorization': 'Bearer YOUR_API_KEY'
+        },
+        files={
+            'image': image_file
+        },
+        data={
+            'prompt': 'Add a blue sky to this image',
+            'n': 1,
+            'size': '1024x1024'
+        }
+    )
+
+print(response.json())
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/images/edits" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F image="@image.png" \
+  -F prompt="Add a blue sky to this image" \
+  -F n=1 \
+  -F size="1024x1024"
+```
+
+</CodeGroup>
+
+## Image Variations
+
+`POST /images/variations`
+
+Create variations of an existing image.
+
+### Request Body
+
+<ParamField body="image" type="file" required>
+  The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
+</ParamField>
+
+<ParamField body="model" type="string">
+  The model to use for generating variations (currently only "dall-e-2")
+</ParamField>
+
+<ParamField body="n" type="integer">
+  Number of images to generate (1-10)
+</ParamField>
+
+<ParamField body="size" type="string">
+  Size of the generated images ("256x256", "512x512", "1024x1024")
+</ParamField>
+
+<ParamField body="response_format" type="string">
+  Format of the generated images ("url" or "b64_json")
+</ParamField> 
+

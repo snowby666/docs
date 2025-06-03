@@ -1,0 +1,106 @@
+---
+title: 'Moderations'
+openapi: 'POST /moderations'
+description: 'Classify text content for safety violations'
+---
+
+The Moderations API helps detect potentially harmful content in text.
+
+## Create Moderation
+
+`POST /moderations`
+
+Classify a text to see if it violates OpenAI's usage policies.
+
+### Request Body
+
+<ParamField body="input" type="string | array" required>
+  The input text to classify
+</ParamField>
+
+<ParamField body="model" type="string">
+  The moderation model to use (e.g., "text-moderation-latest", "text-moderation-stable")
+</ParamField>
+
+### Response
+
+Returns a moderation object with classification results.
+
+### Example
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/moderations', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    input: 'I want to hurt someone.',
+    model: 'text-moderation-latest'
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/moderations',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'input': 'I want to hurt someone.',
+        'model': 'text-moderation-latest'
+    }
+)
+
+print(response.json())
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/moderations" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "input": "I want to hurt someone.",
+    "model": "text-moderation-latest"
+  }'
+```
+
+</CodeGroup>
+
+### Response Format
+
+The response contains the following fields:
+
+- `id`: Unique identifier for the moderation request
+- `model`: The model used for moderation
+- `results`: Array of result objects with the following properties:
+  - `flagged`: Whether the content was flagged
+  - `categories`: Object with boolean values for each category
+  - `category_scores`: Object with confidence scores for each category
+
+### Categories
+
+The moderation model checks for the following categories:
+
+- **hate**: Content that expresses, incites, or promotes hate based on race, gender, ethnicity, religion, nationality, sexual orientation, disability status, or caste
+- **hate/threatening**: Hateful content that also includes violence or serious harm towards the targeted group
+- **harassment**: Content that expresses, incites, or promotes harassing language towards any target
+- **harassment/threatening**: Harassment content that also includes violence or serious harm towards any target
+- **self-harm**: Content that promotes, encourages, or depicts acts of self-harm
+- **self-harm/intent**: Content where the speaker expresses that they are engaging or intend to engage in acts of self-harm
+- **self-harm/instructions**: Content that encourages performing acts of self-harm
+- **sexual**: Content meant to arouse sexual excitement
+- **sexual/minors**: Sexual content that includes an individual who is under 18 years old
+- **violence**: Content that depicts death, violence, or physical injury
+- **violence/graphic**: Content that depicts death, violence, or physical injury in graphic detail 
+

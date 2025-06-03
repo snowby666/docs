@@ -1,0 +1,478 @@
+---
+title: 'Anthropic SDKs'
+description: 'Learn how to use Anthropic SDKs with Electron Hub as your base URL'
+icon: 'robot'
+---
+
+Use Electron Hub with the official Anthropic SDKs by simply changing the base URL. This allows you to access Claude models and 200+ other AI models through familiar Anthropic interfaces.
+
+## JavaScript/TypeScript SDK
+
+Install the Anthropic SDK:
+
+```bash
+npm install @anthropic-ai/sdk
+```
+
+Configure it to use Electron Hub:
+
+```javascript
+import Anthropic from '@anthropic-ai/sdk';
+
+const anthropic = new Anthropic({
+  apiKey: 'ek-your-api-key-here',
+  baseURL: 'https://api.electronhub.top/v1',
+});
+
+// Create a message using Claude
+const message = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1000,
+  temperature: 0,
+  system: "You are a helpful assistant.",
+  messages: [
+    {
+      role: 'user',
+      content: 'Hello, Claude!'
+    }
+  ]
+});
+
+console.log(message.content);
+```
+
+### Using Different Claude Models
+
+Switch between different Claude models:
+
+```javascript
+// Latest Claude 3.5 Sonnet
+const sonnetResponse = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1000,
+  messages: [
+    { role: 'user', content: 'Explain machine learning briefly' }
+  ]
+});
+
+// Claude 3 Opus for complex reasoning
+const opusResponse = await anthropic.messages.create({
+  model: 'claude-3-opus-20240229',
+  max_tokens: 1000,
+  messages: [
+    { role: 'user', content: 'Write a complex analysis of economic trends' }
+  ]
+});
+
+// Claude 3 Haiku for fast responses
+const haikuResponse = await anthropic.messages.create({
+  model: 'claude-3-haiku-20240307',
+  max_tokens: 1000,
+  messages: [
+    { role: 'user', content: 'Quick summary of the news' }
+  ]
+});
+```
+
+### Vision Capabilities
+
+Use Claude's vision capabilities with images:
+
+```javascript
+const message = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1000,
+  messages: [
+    {
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: 'What do you see in this image?'
+        },
+        {
+          type: 'image',
+          source: {
+            type: 'base64',
+            media_type: 'image/jpeg',
+            data: '/9j/4AAQSkZJRgABAQEAYABgAAD/2wBD...' // base64 image data
+          }
+        }
+      ]
+    }
+  ]
+});
+
+console.log(message.content);
+```
+
+### Streaming Responses
+
+Stream responses for real-time output:
+
+```javascript
+const stream = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1000,
+  messages: [
+    { role: 'user', content: 'Tell me a long story about space exploration' }
+  ],
+  stream: true
+});
+
+for await (const event of stream) {
+  if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+    process.stdout.write(event.delta.text);
+  }
+}
+```
+
+## Python SDK
+
+Install the Anthropic Python SDK:
+
+```bash
+pip install anthropic
+```
+
+Configure it for Electron Hub:
+
+```python
+import anthropic
+
+client = anthropic.Anthropic(
+    api_key="ek-your-api-key-here",
+    base_url="https://api.electronhub.top/v1"
+)
+
+# Create a message
+message = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1000,
+    temperature=0,
+    system="You are a helpful assistant.",
+    messages=[
+        {
+            "role": "user",
+            "content": "Hello, Claude!"
+        }
+    ]
+)
+
+print(message.content)
+```
+
+### Tool Use (Function Calling)
+
+Use Claude's tool calling capabilities:
+
+```python
+import json
+
+# Define tools
+tools = [
+    {
+        "name": "get_weather",
+        "description": "Get the current weather in a given location",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "The city and state, e.g. San Francisco, CA"
+                }
+            },
+            "required": ["location"]
+        }
+    }
+]
+
+message = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1000,
+    tools=tools,
+    messages=[
+        {
+            "role": "user", 
+            "content": "What's the weather like in Paris?"
+        }
+    ]
+)
+
+print(message.content)
+
+# Handle tool use
+for content in message.content:
+    if content.type == "tool_use":
+        print(f"Tool: {content.name}")
+        print(f"Input: {content.input}")
+```
+
+### Streaming with Python
+
+```python
+stream = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1000,
+    messages=[
+        {"role": "user", "content": "Write a poem about AI"}
+    ],
+    stream=True
+)
+
+for event in stream:
+    if event.type == "content_block_delta":
+        if event.delta.type == "text_delta":
+            print(event.delta.text, end="")
+```
+
+## Advanced Features
+
+### System Messages
+
+Use system messages to set Claude's behavior:
+
+```javascript
+const message = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1000,
+  system: `You are a helpful AI assistant that specializes in explaining complex technical concepts in simple terms. Always:
+  1. Use analogies and examples
+  2. Break down complex ideas into steps
+  3. Ask clarifying questions if needed
+  4. Provide practical applications`,
+  messages: [
+    {
+      role: 'user',
+      content: 'Explain quantum computing'
+    }
+  ]
+});
+```
+
+### Multi-turn Conversations
+
+Handle multi-turn conversations:
+
+```javascript
+const conversation = [
+  { role: 'user', content: 'What is photosynthesis?' },
+  { role: 'assistant', content: 'Photosynthesis is the process by which plants...' },
+  { role: 'user', content: 'How does this relate to climate change?' }
+];
+
+const message = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1000,
+  messages: conversation
+});
+```
+
+### Structured Output
+
+Use Claude for structured data generation:
+
+```javascript
+const message = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 1000,
+  system: 'You are a JSON generator. Always respond with valid JSON.',
+  messages: [
+    {
+      role: 'user',
+      content: 'Generate a JSON object with information about a fictional character including name, age, occupation, and three personality traits.'
+    }
+  ]
+});
+
+const characterData = JSON.parse(message.content[0].text);
+console.log(characterData);
+```
+
+## Error Handling
+
+Handle errors gracefully:
+
+```javascript
+try {
+  const message = await anthropic.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 1000,
+    messages: [
+      { role: 'user', content: 'Hello!' }
+    ]
+  });
+} catch (error) {
+  if (error instanceof Anthropic.APIError) {
+    console.error('Anthropic API Error:', error.message);
+    console.error('Status:', error.status);
+    console.error('Type:', error.error?.type);
+  } else {
+    console.error('Unexpected error:', error);
+  }
+}
+```
+
+## Rate Limiting
+
+Implement rate limiting and retry logic:
+
+```javascript
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function createMessageWithRetry(params, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await anthropic.messages.create(params);
+    } catch (error) {
+      if (error.status === 429 && i < maxRetries - 1) {
+        // Exponential backoff
+        const delay = Math.pow(2, i) * 1000;
+        console.log(`Rate limited. Waiting ${delay}ms before retry...`);
+        await sleep(delay);
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+```
+
+## Best Practices
+
+### 1. Optimize Token Usage
+
+```javascript
+// Be specific and concise in prompts
+const message = await anthropic.messages.create({
+  model: 'claude-3-5-sonnet-20241022',
+  max_tokens: 500, // Set appropriate limits
+  messages: [
+    {
+      role: 'user',
+      content: 'Summarize this article in 3 bullet points: [article text]'
+    }
+  ]
+});
+```
+
+### 2. Use Appropriate Models
+
+```javascript
+// Use Haiku for simple tasks
+const quickResponse = await anthropic.messages.create({
+  model: 'claude-3-haiku-20240307',
+  max_tokens: 100,
+  messages: [{ role: 'user', content: 'What time is it in UTC?' }]
+});
+
+// Use Opus for complex reasoning
+const complexAnalysis = await anthropic.messages.create({
+  model: 'claude-3-opus-20240229',
+  max_tokens: 2000,
+  messages: [{ role: 'user', content: 'Analyze the economic implications of...' }]
+});
+```
+
+### 3. Implement Caching
+
+```javascript
+const cache = new Map();
+
+async function getCachedResponse(prompt, model = 'claude-3-5-sonnet-20241022') {
+  const cacheKey = `${model}:${prompt}`;
+  
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
+  
+  const message = await anthropic.messages.create({
+    model,
+    max_tokens: 1000,
+    messages: [{ role: 'user', content: prompt }]
+  });
+  
+  cache.set(cacheKey, message);
+  return message;
+}
+```
+
+## Integration Examples
+
+### Chatbot Implementation
+
+```javascript
+class ClaudeChatbot {
+  constructor() {
+    this.anthropic = new Anthropic({
+      apiKey: 'ek-your-api-key-here',
+      baseURL: 'https://api.electronhub.top/v1',
+    });
+    this.conversation = [];
+  }
+
+  async chat(userMessage) {
+    this.conversation.push({ role: 'user', content: userMessage });
+    
+    const message = await this.anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 1000,
+      system: 'You are a helpful assistant.',
+      messages: this.conversation
+    });
+
+    const assistantMessage = message.content[0].text;
+    this.conversation.push({ role: 'assistant', content: assistantMessage });
+    
+    return assistantMessage;
+  }
+
+  clearHistory() {
+    this.conversation = [];
+  }
+}
+
+// Usage
+const chatbot = new ClaudeChatbot();
+const response = await chatbot.chat('Hello! How are you?');
+console.log(response);
+```
+
+### Document Analysis
+
+```javascript
+async function analyzeDocument(documentText) {
+  const message = await anthropic.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 2000,
+    system: 'You are a document analyst. Provide structured analysis of documents.',
+    messages: [
+      {
+        role: 'user',
+        content: `Please analyze this document and provide:
+        1. Main topics
+        2. Key insights
+        3. Action items
+        4. Summary
+        
+        Document: ${documentText}`
+      }
+    ]
+  });
+
+  return message.content[0].text;
+}
+```
+
+## Migration from Anthropic Direct
+
+When migrating from Anthropic's direct API to Electron Hub:
+
+1. **Change the base URL** to `https://api.electronhub.top/v1`
+2. **Update your API key** to use your Electron Hub key (starts with `ek-`)
+3. **No code changes needed** - All parameters and responses remain the same
+4. **Access to more models** - You can also use OpenAI, Google, and other models
+5. **Unified billing** - All model usage is billed through Electron Hub
+6. **Enhanced features** - Access to additional capabilities like web search
+
+Monitor your usage through the Electron Hub dashboard at `https://playground.electronhub.ai/console`. 

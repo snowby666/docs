@@ -1,0 +1,109 @@
+---
+title: 'Responses API'
+openapi: 'POST /responses'
+description: 'Create completions using OpenAI-style format'
+---
+
+The Responses API provides OpenAI-compatible completion endpoints.
+
+## Create Completion Response
+
+`POST /completions`
+
+Create a text completion using OpenAI's completion format.
+
+### Request Body
+
+<ParamField body="model" type="string" required>
+  The model to use for completion (e.g., "gpt-3.5-turbo-instruct")
+</ParamField>
+
+<ParamField body="prompt" type="string" required>
+  The prompt to generate completions for
+</ParamField>
+
+<ParamField body="max_tokens" type="integer">
+  Maximum number of tokens to generate
+</ParamField>
+
+<ParamField body="temperature" type="number">
+  Temperature for randomness (0.0 to 2.0)
+</ParamField>
+
+<ParamField body="top_p" type="number">
+  Nucleus sampling parameter (0.0 to 1.0)
+</ParamField>
+
+<ParamField body="n" type="integer">
+  Number of completions to generate
+</ParamField>
+
+<ParamField body="stream" type="boolean">
+  Whether to stream back partial progress
+</ParamField>
+
+<ParamField body="stop" type="string | array">
+  Up to 4 sequences where the API will stop generating
+</ParamField>
+
+### Response
+
+Returns a completion object with the generated text.
+
+### Example
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-3.5-turbo-instruct',
+    prompt: 'Write a short story about a robot:',
+    max_tokens: 500,
+    temperature: 0.7
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/completions',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'model': 'gpt-3.5-turbo-instruct',
+        'prompt': 'Write a short story about a robot:',
+        'max_tokens': 500,
+        'temperature': 0.7
+    }
+)
+
+print(response.json())
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/completions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-3.5-turbo-instruct",
+    "prompt": "Write a short story about a robot:",
+    "max_tokens": 500,
+    "temperature": 0.7
+  }'
+```
+
+</CodeGroup> 
+

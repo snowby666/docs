@@ -1,0 +1,100 @@
+---
+title: 'Messages API'
+openapi: 'POST /messages'
+description: 'Create messages using Anthropic-style format'
+---
+
+The Messages API provides Anthropic-style message creation for Claude models.
+
+## Create Message
+
+`POST /messages`
+
+Create a message completion using Anthropic's message format.
+
+### Request Body
+
+<ParamField body="model" type="string" required>
+  The model to use for completion (e.g., "claude-3-sonnet-20240229")
+</ParamField>
+
+<ParamField body="messages" type="array" required>
+  An array of message objects
+</ParamField>
+
+<ParamField body="max_tokens" type="integer" required>
+  Maximum number of tokens to generate
+</ParamField>
+
+<ParamField body="temperature" type="number">
+  Temperature for randomness (0.0 to 1.0)
+</ParamField>
+
+<ParamField body="system" type="string">
+  System message to set context
+</ParamField>
+
+### Response
+
+Returns a message completion object with the generated response.
+
+### Example
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/messages', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'claude-3-sonnet-20240229',
+    max_tokens: 1000,
+    messages: [
+      { role: 'user', content: 'Hello, Claude!' }
+    ]
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/messages',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'model': 'claude-3-sonnet-20240229',
+        'max_tokens': 1000,
+        'messages': [
+            {'role': 'user', 'content': 'Hello, Claude!'}
+        ]
+    }
+)
+
+print(response.json())
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/messages" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-3-sonnet-20240229",
+    "max_tokens": 1000,
+    "messages": [
+      {"role": "user", "content": "Hello, Claude!"}
+    ]
+  }'
+```
+
+</CodeGroup> 
+
