@@ -17,34 +17,31 @@ Returns detailed information about the specified model including its capabilitie
 
 ```json
 {
+  "name": "OpenAI: GPT-4o",
+  "description": "GPT-4o (\"o\" for \"omni\") is OpenAI's latest AI model, supporting both text and image inputs with text outputs. It maintains the intelligence level of GPT-4 Turbo while being twice as fast and 50% more cost-effective. GPT-4o also offers improved performance in processing non-English languages and enhanced visual capabilities.",
   "id": "gpt-4o",
   "object": "model",
+  "created": 1748957251,
   "owned_by": "openai",
-  "created": 1677610602,
-  "context_length": 128000,
-  "capabilities": {
-    "chat": true,
+  "tokens": 128000,
+  "pricing": {
+    "type": "per_million_tokens",
+    "input": 2.5,
+    "output": 10
+  },
+  "endpoints": [
+    "/v1/chat/completions",
+    "/v1/responses"
+  ],
+  "premium_model": false,
+  "metadata": {
     "vision": true,
-    "function_calling": true,
-    "streaming": true
+    "function_call": true,
+    "web_search": false,
+    "reasoning": false
   }
 }
 ```
-
-## Common Models
-
-### GPT Models
-- `gpt-4o` - Latest GPT-4 model with vision
-- `gpt-4` - Standard GPT-4 model
-- `gpt-3.5-turbo` - Fast and efficient model
-
-### Claude Models  
-- `claude-3-5-sonnet-20241022` - Latest Claude model
-- `claude-3-haiku-20240307` - Fastest Claude model
-
-### Gemini Models
-- `gemini-pro` - Google's flagship model
-- `gemini-pro-vision` - Gemini with vision capabilities
 
 ## Error Responses
 
