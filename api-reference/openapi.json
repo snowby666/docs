@@ -2190,33 +2190,10 @@
             "maxLength": 4096,
             "example": "Hello, world! This is a text-to-speech example."
           },
-          "text": {
-            "type": "string",
-            "description": "Text to convert to speech (Kokoro, CSM, ElevenLabs models)",
-            "minLength": 1,
-            "maxLength": 5000,
-            "example": "Hello, world! This is a text-to-speech example."
-          },
-          "prompt": {
-            "type": "string",
-            "description": "Text description for audio generation (MeloTTS model)",
-            "minLength": 1,
-            "example": "Hello, world! This is a text-to-speech example."
-          },
           "voice": {
             "type": "string",
             "description": "The voice to use for speech generation (OpenAI, Orpheus, PlayAI, ElevenLabs models)",
             "example": "alloy"
-          },
-          "preset_voice": {
-            "type": "string",
-            "description": "Voice preset to use (Kokoro, CSM models)",
-            "example": "af_alloy"
-          },
-          "lang": {
-            "type": "string",
-            "description": "Speech language for MeloTTS (e.g., 'en', 'fr', 'es')",
-            "example": "en"
           },
           "response_format": {
             "type": "string",

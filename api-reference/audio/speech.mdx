@@ -18,32 +18,16 @@ Convert text to natural-sounding speech audio.
   The TTS model to use for speech generation (e.g., "tts-1", "tts-1-hd", "elevenlabs")
 </ParamField>
 
-#### Text Input Parameters (use only one)
+#### Text Input Parameters
 
 <ParamField body="input" type="string">
-  **OpenAI models**: The text to convert to speech (1-4096 characters)
+  The text to convert to speech (1-4096 characters)
 </ParamField>
 
-<ParamField body="text" type="string">
-  **Kokoro, CSM, ElevenLabs models**: Text to convert to speech (1-5000 characters)
-</ParamField>
-
-<ParamField body="prompt" type="string">
-  **MeloTTS model**: Text description for audio generation
-</ParamField>
-
-#### Voice Parameters (use appropriate one for your model)
+#### Voice Parameters
 
 <ParamField body="voice" type="string">
-  **OpenAI, Orpheus, PlayAI, ElevenLabs models**: Voice name or ID for speech generation
-</ParamField>
-
-<ParamField body="preset_voice" type="string">
-  **Kokoro, CSM models**: Voice preset identifier (e.g., "af_alloy", "am_echo")
-</ParamField>
-
-<ParamField body="lang" type="string">
-  **MeloTTS model**: Speech language code (e.g., "en", "fr", "es", "de", "zh")
+  Voice name or ID for speech generation
 </ParamField>
 
 #### Common Parameters
@@ -187,7 +171,7 @@ curl https://api.electronhub.ai/v1/audio/speech \
 ```javascript ElevenLabs
 {
   "model": "elevenlabs",
-  "text": "Hello, this is ElevenLabs TTS.",
+  "input": "Hello, this is ElevenLabs TTS.",
   "voice": "Will (US male)"
 }
 ```
@@ -197,7 +181,7 @@ requests.post(
     'https://api.electronhub.ai/v1/audio/speech',
     json={
         'model': 'elevenlabs',
-        'text': 'Bonjour, je parle français!',
+        'input': 'Bonjour, je parle français!',
         'voice': 'Guillaume (French male)'
     }
 )
@@ -212,8 +196,8 @@ requests.post(
 ```javascript Kokoro
 {
   "model": "kokoro-82m",
-  "text": "Hello from Kokoro TTS!",
-  "preset_voice": "af_alloy",
+  "input": "Hello from Kokoro TTS!",
+  "voice": "af_alloy",
   "speed": 1.2
 }
 ```
@@ -223,8 +207,8 @@ requests.post(
     'https://api.electronhub.ai/v1/audio/speech',
     json={
         'model': 'kokoro-82m',
-        'text': 'こんにちは、世界！',
-        'preset_voice': 'jf_alpha'
+        'input': 'こんにちは、世界！',
+        'voice': 'jf_alpha'
     }
 )
 ```
@@ -269,20 +253,20 @@ requests.post(
 ```javascript MeloTTS
 {
   "model": "melotts",
-  "prompt": "Bonjour, comment allez-vous?",
-  "lang": "fr"
+  "input": "Bonjour, comment allez-vous?",
+  "voice": "fr"
 }
 ```
 
 ```python Python - MeloTTS Languages
 # English
-requests.post('/audio/speech', json={'model': 'melotts', 'prompt': 'Hello world', 'lang': 'en'})
+requests.post('/audio/speech', json={'model': 'melotts', 'input': 'Hello world', 'voice': 'en'})
 
 # Spanish  
-requests.post('/audio/speech', json={'model': 'melotts', 'prompt': 'Hola mundo', 'lang': 'es'})
+requests.post('/audio/speech', json={'model': 'melotts', 'input': 'Hola mundo', 'voice': 'es'})
 
 # Chinese
-requests.post('/audio/speech', json={'model': 'melotts', 'prompt': '你好世界', 'lang': 'zh'})
+requests.post('/audio/speech', json={'model': 'melotts', 'input': '你好世界', 'voice': 'zh'})
 ```
 
 </CodeGroup>
@@ -320,7 +304,7 @@ requests.post(
 ```javascript Microsoft Basic
 {
   "model": "microsoft-tts",
-  "text": "Hello, this is Microsoft Azure Text-to-Speech.",
+  "input": "Hello, this is Microsoft Azure Text-to-Speech.",
   "voice": "en-US-JennyNeural"
 }
 ```
@@ -328,7 +312,7 @@ requests.post(
 ```javascript Microsoft Advanced
 {
   "model": "microsoft-tts",
-  "text": "Welcome to our exciting new product launch!",
+  "input": "Welcome to our exciting new product launch!",
   "voice": "en-US-AriaNeural",
   "speech_rate": 10,
   "pitch_adjustment": 5,
@@ -341,7 +325,7 @@ requests.post(
     'https://api.electronhub.ai/v1/audio/speech',
     json={
         'model': 'microsoft-tts',
-        'text': '你好，欢迎使用微软语音合成服务！',
+        'input': '你好，欢迎使用微软语音合成服务！',
         'voice': 'zh-CN-XiaoxiaoNeural',
         'speech_rate': -10,
         'emotional_style': 'gentle'
@@ -354,7 +338,7 @@ requests.post(
     'https://api.electronhub.ai/v1/audio/speech',
     json={
         'model': 'microsoft-tts',
-        'text': 'I am so sorry to hear about that.',
+        'input': 'I am so sorry to hear about that.',
         'voice': 'en-US-SaraNeural',
         'emotional_style': 'sad',
         'speech_rate': -20
@@ -437,7 +421,7 @@ const elevenlabsVoices = {
 // Use with voice parameter and text input
 {
   "model": "elevenlabs",
-  "text": "Hello world",
+  "input": "Hello world",
   "voice": "Will (US male)"
 }
 ```
@@ -473,28 +457,14 @@ const microsoftVoices = {
 // Use with text input and advanced controls
 {
   "model": "microsoft-tts",
-  "text": "Hello world",
+  "input": "Hello world",
   "voice": "en-US-AriaNeural",
   "emotional_style": "cheerful",
   "speech_rate": 10
 }
 ```
 
-## Parameter Mapping by Provider
-
-Different TTS providers use different parameter names for similar functionality. Here's a mapping guide:
-
-### Text Input Parameter
-- **OpenAI models**: `input`
-- **Kokoro, CSM, ElevenLabs, Microsoft TTS**: `text`  
-- **MeloTTS**: `prompt`
-
-### Voice Selection Parameter
-- **OpenAI, Orpheus, PlayAI, ElevenLabs, Microsoft TTS**: `voice`
-- **Kokoro, CSM**: `preset_voice`
-- **MeloTTS**: `lang` (language code)
-
-### Model-Specific Parameters
+## Model-Specific Parameters
 
 | Provider | Special Parameters | Usage |
 |----------|-------------------|--------|
@@ -550,7 +520,7 @@ Microsoft TTS offers fine-grained control over speech characteristics:
 ```json
 {
   "model": "microsoft-tts",
-  "text": "This text will be spoken faster.",
+  "input": "This text will be spoken faster.",
   "voice": "en-US-JennyNeural",
   "speech_rate": 50
 }
@@ -560,7 +530,7 @@ Microsoft TTS offers fine-grained control over speech characteristics:
 ```json
 {
   "model": "microsoft-tts",
-  "text": "This text has a higher pitch.",
+  "input": "This text has a higher pitch.",
   "voice": "en-US-AriaNeural",
   "pitch_adjustment": 25
 }
@@ -572,7 +542,7 @@ Different voices support different emotional styles:
 ```json
 {
   "model": "microsoft-tts",
-  "text": "I'm so excited about this news!",
+  "input": "I'm so excited about this news!",
   "voice": "en-US-AriaNeural",
   "emotional_style": "cheerful",
   "speech_rate": 10
