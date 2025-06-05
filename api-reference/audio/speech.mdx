@@ -1,0 +1,275 @@
+---
+title: 'Text-to-Speech'
+openapi: 'POST /audio/speech'
+description: 'Generate natural-sounding speech from text using AI voice models'
+---
+
+Generate high-quality speech audio from text using our collection of state-of-the-art text-to-speech models from leading AI providers.
+
+## Create Speech
+
+`POST /audio/speech`
+
+Convert text to natural-sounding speech audio.
+
+### Request Body
+
+<ParamField body="model" type="string" required>
+  The TTS model to use for speech generation (e.g., "tts-1", "tts-1-hd", "elevenlabs")
+</ParamField>
+
+<ParamField body="input" type="string" required>
+  The text to convert to speech (1-4096 characters depending on model)
+</ParamField>
+
+<ParamField body="voice" type="string">
+  The voice to use for speech generation. Available voices depend on the selected model
+</ParamField>
+
+<ParamField body="response_format" type="string">
+  The audio format for the generated speech ("mp3", "opus", "aac", "flac", "wav", "pcm")
+</ParamField>
+
+<ParamField body="speed" type="number">
+  The speed of the generated audio (0.25 to 4.0, default: 1.0)
+</ParamField>
+
+<ParamField body="temperature" type="number">
+  Temperature for randomness in speech generation (0.0 to 2.0)
+</ParamField>
+
+<ParamField body="instructions" type="string">
+  Additional instructions to control voice generation (model-specific)
+</ParamField>
+
+### Response
+
+Returns an audio file in the specified format.
+
+### Basic Example
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/audio/speech', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'tts-1',
+    input: 'Hello! Welcome to Electron Hub text-to-speech.',
+    voice: 'alloy',
+    response_format: 'mp3'
+  })
+});
+
+const audioBuffer = await response.arrayBuffer();
+const fs = require('fs');
+fs.writeFileSync('speech.mp3', Buffer.from(audioBuffer));
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/audio/speech',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'model': 'tts-1',
+        'input': 'Hello! Welcome to Electron Hub text-to-speech.',
+        'voice': 'alloy',
+        'response_format': 'mp3'
+    }
+)
+
+with open('speech.mp3', 'wb') as f:
+    f.write(response.content)
+```
+
+```bash cURL
+curl https://api.electronhub.ai/v1/audio/speech \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "tts-1",
+    "input": "Hello! Welcome to Electron Hub text-to-speech.",
+    "voice": "alloy",
+    "response_format": "mp3"
+  }' \
+  --output speech.mp3
+```
+
+</CodeGroup>
+
+## Available Models
+
+### OpenAI Models
+
+**TTS-1** (`tts-1`)
+- Optimized for real-time text-to-speech
+- Cost-effective for most applications
+- 11 available voices: alloy, ash, ballad, coral, echo, fable, onyx, nova, sage, shimmer, verse
+
+**TTS-1 HD** (`tts-1-hd`)
+- High-quality text-to-speech
+- Best audio quality with slower generation
+- Same 11 voices as TTS-1
+
+**GPT-4o Mini TTS** (`gpt-4o-mini-tts`)
+- Advanced TTS with instruction following
+- Supports voice control via instructions
+- Same 11 voices as TTS-1
+
+### Premium Models
+
+**ElevenLabs** (`elevenlabs`)
+- Ultra-realistic human-like voices
+- 40+ multilingual voices
+- Supports English, Spanish, French, German, Arabic, Chinese, Hindi, Polish
+
+**PlayAI Dialog** (`playai-tts`)
+- Specialized for conversational content
+- 27 expressive voices
+- Optimized for dialogue and storytelling
+
+### Specialized Models
+
+**Kokoro 82M** (`kokoro-82m`)
+- Lightweight but high-quality
+- 80+ voices in multiple languages
+- Open-source Apache-licensed model
+
+**Microsoft TTS** (`microsoft-tts`)
+- Enterprise-grade quality
+- 100+ neural voices
+- Extensive language support
+
+## Voice Examples
+
+### OpenAI Voices
+
+```javascript
+// Available voices for OpenAI models
+const openaiVoices = [
+  'alloy',    // Neutral, balanced
+  'echo',     // Clear, professional
+  'fable',    // Warm, storytelling
+  'onyx',     // Deep, authoritative
+  'nova',     // Bright, energetic
+  'shimmer'   // Gentle, soothing
+];
+```
+
+### ElevenLabs Voices
+
+```javascript
+// Sample of ElevenLabs voices by language
+const elevenlabsVoices = {
+  english: ['Will (US male)', 'Jessica (US female)', 'George (UK male)', 'Lily (UK female)'],
+  spanish: ['Juan (Spanish male)', 'Gabriela (Spanish female)'],
+  french: ['Guillaume (French male)', 'Darine (French female)'],
+  german: ['Kurt (German male)', 'Leonie (German female)']
+};
+```
+
+## Advanced Features
+
+### Speed Control
+
+Adjust playback speed for different use cases:
+
+```json
+{
+  "model": "tts-1",
+  "input": "This text will be spoken faster.",
+  "voice": "alloy",
+  "speed": 1.5
+}
+```
+
+### Audio Formats
+
+Choose the optimal format for your application:
+
+- **MP3**: Standard, widely compatible
+- **WAV**: Uncompressed, highest quality
+- **OGG/Opus**: Efficient compression
+- **FLAC**: Lossless compression
+- **AAC**: Good balance of quality and size
+
+### Instruction-Based Control (GPT-4o Mini TTS)
+
+Control voice characteristics with natural language:
+
+```json
+{
+  "model": "gpt-4o-mini-tts",
+  "input": "Welcome to our store!",
+  "voice": "alloy",
+  "instructions": "Speak with enthusiasm and excitement, like a friendly shopkeeper"
+}
+```
+
+## Best Practices
+
+### Text Optimization
+
+- Use clear punctuation for natural pauses
+- Spell out numbers and abbreviations
+- Use SSML tags for fine-grained control (model-dependent)
+
+### Voice Selection
+
+- **Customer Service**: Professional voices (echo, George)
+- **Storytelling**: Warm voices (fable, nova)
+- **Educational**: Clear voices (alloy, shimmer)
+- **Gaming**: Character voices (onyx, sage)
+
+### Performance Tips
+
+- Cache generated audio when possible
+- Use appropriate audio formats for your platform
+- Consider real-time vs. high-quality models based on use case
+
+## Error Handling
+
+Common error scenarios:
+
+```javascript
+try {
+  const response = await fetch('/audio/speech', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'tts-1',
+      input: text,
+      voice: 'alloy'
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    console.error('TTS Error:', error);
+  }
+} catch (error) {
+  console.error('Network Error:', error);
+}
+```
+
+## Use Cases
+
+- **Voice Assistants**: Natural conversation interfaces
+- **Audiobooks**: Long-form content narration
+- **E-learning**: Educational content delivery
+- **Accessibility**: Screen reader alternatives
+- **Gaming**: Character voice generation
+- **Customer Service**: Automated phone systems
+- **Content Creation**: Podcast and video narration 

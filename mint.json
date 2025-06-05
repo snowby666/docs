@@ -85,6 +85,13 @@
             "api-reference/images/edits"
           ]
         },
+        {
+          "group": "Audio",
+          "icon": "volume-high",
+          "pages": [
+            "api-reference/audio/speech"
+          ]
+        },
         "api-reference/moderations",
         "api-reference/embeddings",
         {
