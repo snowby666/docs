@@ -2176,7 +2176,7 @@
       },
       "AudioSpeechRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": ["model"],
         "properties": {
           "model": {
             "type": "string",
@@ -2185,15 +2185,38 @@
           },
           "input": {
             "type": "string",
-            "description": "The text to convert to speech",
+            "description": "The text to convert to speech (OpenAI models)",
             "minLength": 1,
             "maxLength": 4096,
             "example": "Hello, world! This is a text-to-speech example."
           },
+          "text": {
+            "type": "string",
+            "description": "Text to convert to speech (Kokoro, CSM, ElevenLabs models)",
+            "minLength": 1,
+            "maxLength": 5000,
+            "example": "Hello, world! This is a text-to-speech example."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Text description for audio generation (MeloTTS model)",
+            "minLength": 1,
+            "example": "Hello, world! This is a text-to-speech example."
+          },
           "voice": {
             "type": "string",
-            "description": "The voice to use for speech generation. Available voices depend on the selected model.",
+            "description": "The voice to use for speech generation (OpenAI, Orpheus, PlayAI, ElevenLabs models)",
             "example": "alloy"
+          },
+          "preset_voice": {
+            "type": "string",
+            "description": "Voice preset to use (Kokoro, CSM models)",
+            "example": "af_alloy"
+          },
+          "lang": {
+            "type": "string",
+            "description": "Speech language for MeloTTS (e.g., 'en', 'fr', 'es')",
+            "example": "en"
           },
           "response_format": {
             "type": "string",
@@ -2206,7 +2229,7 @@
             "minimum": 0.25,
             "maximum": 4.0,
             "default": 1.0,
-            "description": "The speed of the generated audio (0.25 to 4.0)"
+            "description": "The speed of the generated audio"
           },
           "temperature": {
             "type": "number",
@@ -2222,7 +2245,42 @@
           },
           "instructions": {
             "type": "string",
-            "description": "Additional instructions to control the voice generation"
+            "description": "Additional instructions to control voice generation (GPT-4o Mini TTS)"
+          },
+          "speaker_transcript": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Speaker transcript for Dia model"
+          },
+          "cfg_filter_top_k": {
+            "type": "integer",
+            "minimum": 15,
+            "maximum": 50,
+            "description": "CFG filter top k value (Dia model)"
+          },
+          "cfg_scale": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "CFG scale value (Dia model)"
+          },
+          "speech_rate": {
+            "type": "integer",
+            "minimum": -100,
+            "maximum": 100,
+            "default": 0,
+            "description": "Speech rate adjustment for Microsoft TTS (-100 to 100)"
+          },
+          "pitch_adjustment": {
+            "type": "integer",
+            "minimum": -100,
+            "maximum": 100,
+            "default": 0,
+            "description": "Pitch adjustment for Microsoft TTS (-100 to 100)"
+          },
+          "emotional_style": {
+            "type": "string",
+            "description": "Emotional style for Microsoft TTS (e.g., 'cheerful', 'sad', 'angry')"
           }
         }
       }

@@ -18,28 +18,76 @@ Convert text to natural-sounding speech audio.
   The TTS model to use for speech generation (e.g., "tts-1", "tts-1-hd", "elevenlabs")
 </ParamField>
 
-<ParamField body="input" type="string" required>
-  The text to convert to speech (1-4096 characters depending on model)
+#### Text Input Parameters (use only one)
+
+<ParamField body="input" type="string">
+  **OpenAI models**: The text to convert to speech (1-4096 characters)
 </ParamField>
 
-<ParamField body="voice" type="string">
-  The voice to use for speech generation. Available voices depend on the selected model
+<ParamField body="text" type="string">
+  **Kokoro, CSM, ElevenLabs models**: Text to convert to speech (1-5000 characters)
 </ParamField>
+
+<ParamField body="prompt" type="string">
+  **MeloTTS model**: Text description for audio generation
+</ParamField>
+
+#### Voice Parameters (use appropriate one for your model)
+
+<ParamField body="voice" type="string">
+  **OpenAI, Orpheus, PlayAI, ElevenLabs models**: Voice name or ID for speech generation
+</ParamField>
+
+<ParamField body="preset_voice" type="string">
+  **Kokoro, CSM models**: Voice preset identifier (e.g., "af_alloy", "am_echo")
+</ParamField>
+
+<ParamField body="lang" type="string">
+  **MeloTTS model**: Speech language code (e.g., "en", "fr", "es", "de", "zh")
+</ParamField>
+
+#### Common Parameters
 
 <ParamField body="response_format" type="string">
   The audio format for the generated speech ("mp3", "opus", "aac", "flac", "wav", "pcm")
 </ParamField>
 
 <ParamField body="speed" type="number">
-  The speed of the generated audio (0.25 to 4.0, default: 1.0)
+  The speed of the generated audio (0.25 to 4.0 for most models, default: 1.0)
 </ParamField>
 
 <ParamField body="temperature" type="number">
   Temperature for randomness in speech generation (0.0 to 2.0)
 </ParamField>
 
+#### Advanced Parameters
+
 <ParamField body="instructions" type="string">
-  Additional instructions to control voice generation (model-specific)
+  **GPT-4o Mini TTS**: Additional instructions to control voice characteristics
+</ParamField>
+
+<ParamField body="speaker_transcript" type="string">
+  **Dia model**: Speaker transcript for enhanced voice control (max 1000 chars)
+</ParamField>
+
+<ParamField body="cfg_filter_top_k" type="integer">
+  **Dia model**: CFG filter top k value (15-50)
+</ParamField>
+
+<ParamField body="cfg_scale" type="integer">
+  **Dia model**: CFG scale value for generation control (1-5)
+</ParamField>
+
+<ParamField body="speech_rate" type="integer">
+  **Microsoft TTS**: Speech rate adjustment (-100 to 100, default: 0)
+</ParamField>
+
+<ParamField body="pitch_adjustment" type="integer">
+  **Microsoft TTS**: Pitch adjustment (-100 to 100, default: 0)
+</ParamField>
+
+<ParamField body="emotional_style" type="string">
+  **Microsoft TTS**: Emotional style (e.g., "cheerful", "sad", "angry")
 </ParamField>
 
 ### Response
@@ -102,6 +150,216 @@ curl https://api.electronhub.ai/v1/audio/speech \
     "response_format": "mp3"
   }' \
   --output speech.mp3
+```
+
+</CodeGroup>
+
+## Provider-Specific Examples
+
+### OpenAI Models (TTS-1, TTS-1 HD, GPT-4o Mini TTS)
+
+<CodeGroup>
+
+```javascript OpenAI Standard
+{
+  "model": "tts-1",
+  "input": "Hello, world!",
+  "voice": "alloy",
+  "speed": 1.0
+}
+```
+
+```javascript GPT-4o Mini TTS with Instructions
+{
+  "model": "gpt-4o-mini-tts",
+  "input": "Welcome to our store!",
+  "voice": "nova",
+  "instructions": "Speak with enthusiasm and excitement, like a friendly shopkeeper"
+}
+```
+
+</CodeGroup>
+
+### ElevenLabs Models
+
+<CodeGroup>
+
+```javascript ElevenLabs
+{
+  "model": "elevenlabs",
+  "text": "Hello, this is ElevenLabs TTS.",
+  "voice": "Will (US male)"
+}
+```
+
+```python Python - ElevenLabs
+requests.post(
+    'https://api.electronhub.ai/v1/audio/speech',
+    json={
+        'model': 'elevenlabs',
+        'text': 'Bonjour, je parle français!',
+        'voice': 'Guillaume (French male)'
+    }
+)
+```
+
+</CodeGroup>
+
+### Kokoro 82M Model
+
+<CodeGroup>
+
+```javascript Kokoro
+{
+  "model": "kokoro-82m",
+  "text": "Hello from Kokoro TTS!",
+  "preset_voice": "af_alloy",
+  "speed": 1.2
+}
+```
+
+```python Python - Kokoro
+requests.post(
+    'https://api.electronhub.ai/v1/audio/speech',
+    json={
+        'model': 'kokoro-82m',
+        'text': 'こんにちは、世界！',
+        'preset_voice': 'jf_alpha'
+    }
+)
+```
+
+</CodeGroup>
+
+### NariLabs Dia Model (Advanced)
+
+<CodeGroup>
+
+```javascript Dia Advanced
+{
+  "model": "dia-1.6b",
+  "input": "Hello, this is a conversational speech example.",
+  "speaker_transcript": "Speaking in a calm, professional tone",
+  "cfg_scale": 3,
+  "cfg_filter_top_k": 25,
+  "temperature": 1.2,
+  "speed": 0.9
+}
+```
+
+```python Python - Dia
+requests.post(
+    'https://api.electronhub.ai/v1/audio/speech',
+    json={
+        'model': 'dia-1.6b',
+        'input': 'Let me tell you a story...',
+        'speaker_transcript': 'Narrator voice with dramatic pauses',
+        'cfg_scale': 4,
+        'temperature': 1.3
+    }
+)
+```
+
+</CodeGroup>
+
+### MeloTTS Multilingual
+
+<CodeGroup>
+
+```javascript MeloTTS
+{
+  "model": "melotts",
+  "prompt": "Bonjour, comment allez-vous?",
+  "lang": "fr"
+}
+```
+
+```python Python - MeloTTS Languages
+# English
+requests.post('/audio/speech', json={'model': 'melotts', 'prompt': 'Hello world', 'lang': 'en'})
+
+# Spanish  
+requests.post('/audio/speech', json={'model': 'melotts', 'prompt': 'Hola mundo', 'lang': 'es'})
+
+# Chinese
+requests.post('/audio/speech', json={'model': 'melotts', 'prompt': '你好世界', 'lang': 'zh'})
+```
+
+</CodeGroup>
+
+### PlayAI Dialog Models
+
+<CodeGroup>
+
+```javascript PlayAI
+{
+  "model": "playai-tts",
+  "input": "This is a conversational AI speaking.",
+  "voice": "Celeste-PlayAI",
+  "temperature": 0.8
+}
+```
+
+```python Python - PlayAI Arabic
+requests.post(
+    'https://api.electronhub.ai/v1/audio/speech',
+    json={
+        'model': 'playai-tts-arabic',
+        'input': 'مرحبا بكم في الذكاء الاصطناعي',
+        'voice': 'Nasser-PlayAI'
+    }
+)
+```
+
+</CodeGroup>
+
+### Microsoft TTS
+
+<CodeGroup>
+
+```javascript Microsoft Basic
+{
+  "model": "microsoft-tts",
+  "text": "Hello, this is Microsoft Azure Text-to-Speech.",
+  "voice": "en-US-JennyNeural"
+}
+```
+
+```javascript Microsoft Advanced
+{
+  "model": "microsoft-tts",
+  "text": "Welcome to our exciting new product launch!",
+  "voice": "en-US-AriaNeural",
+  "speech_rate": 10,
+  "pitch_adjustment": 5,
+  "emotional_style": "cheerful"
+}
+```
+
+```python Python - Microsoft Multilingual
+requests.post(
+    'https://api.electronhub.ai/v1/audio/speech',
+    json={
+        'model': 'microsoft-tts',
+        'text': '你好，欢迎使用微软语音合成服务！',
+        'voice': 'zh-CN-XiaoxiaoNeural',
+        'speech_rate': -10,
+        'emotional_style': 'gentle'
+    }
+)
+```
+
+```python Python - Microsoft Emotional
+requests.post(
+    'https://api.electronhub.ai/v1/audio/speech',
+    json={
+        'model': 'microsoft-tts',
+        'text': 'I am so sorry to hear about that.',
+        'voice': 'en-US-SaraNeural',
+        'emotional_style': 'sad',
+        'speech_rate': -20
+    }
+)
 ```
 
 </CodeGroup>
@@ -175,7 +433,76 @@ const elevenlabsVoices = {
   french: ['Guillaume (French male)', 'Darine (French female)'],
   german: ['Kurt (German male)', 'Leonie (German female)']
 };
+
+// Use with voice parameter and text input
+{
+  "model": "elevenlabs",
+  "text": "Hello world",
+  "voice": "Will (US male)"
+}
 ```
+
+### Microsoft TTS Voices
+
+```javascript
+// Sample of Microsoft Azure Neural voices
+const microsoftVoices = {
+  english: [
+    'en-US-JennyNeural',    // Friendly female
+    'en-US-GuyNeural',      // Casual male
+    'en-US-AriaNeural',     // News anchor style
+    'en-US-DavisNeural',    // Professional male
+    'en-GB-SoniaNeural',    // British female
+    'en-AU-NatashaNeural'   // Australian female
+  ],
+  chinese: [
+    'zh-CN-XiaoxiaoNeural',  // Standard female
+    'zh-CN-YunyangNeural',   // Professional male
+    'zh-HK-HiuMaanNeural',   // Hong Kong Cantonese
+    'zh-TW-HsiaoChenNeural'  // Taiwan Mandarin
+  ],
+  multilingual: [
+    'es-ES-ElviraNeural',    // Spanish
+    'fr-FR-DeniseNeural',    // French
+    'de-DE-KatjaNeural',     // German
+    'ja-JP-NanamiNeural',    // Japanese
+    'ko-KR-SunHiNeural'      // Korean
+  ]
+};
+
+// Use with text input and advanced controls
+{
+  "model": "microsoft-tts",
+  "text": "Hello world",
+  "voice": "en-US-AriaNeural",
+  "emotional_style": "cheerful",
+  "speech_rate": 10
+}
+```
+
+## Parameter Mapping by Provider
+
+Different TTS providers use different parameter names for similar functionality. Here's a mapping guide:
+
+### Text Input Parameter
+- **OpenAI models**: `input`
+- **Kokoro, CSM, ElevenLabs, Microsoft TTS**: `text`  
+- **MeloTTS**: `prompt`
+
+### Voice Selection Parameter
+- **OpenAI, Orpheus, PlayAI, ElevenLabs, Microsoft TTS**: `voice`
+- **Kokoro, CSM**: `preset_voice`
+- **MeloTTS**: `lang` (language code)
+
+### Model-Specific Parameters
+
+| Provider | Special Parameters | Usage |
+|----------|-------------------|--------|
+| **GPT-4o Mini TTS** | `instructions` | Natural language voice control |
+| **Dia 1.6B** | `speaker_transcript`, `cfg_scale`, `cfg_filter_top_k` | Advanced voice conditioning |
+| **Microsoft TTS** | `speech_rate`, `pitch_adjustment`, `emotional_style` | Voice modulation and emotions |
+| **MeloTTS** | `lang` | Language selection (en, fr, es, etc.) |
+| **All Models** | `speed`, `temperature`, `top_p` | Common generation controls |
 
 ## Advanced Features
 
@@ -214,6 +541,53 @@ Control voice characteristics with natural language:
   "instructions": "Speak with enthusiasm and excitement, like a friendly shopkeeper"
 }
 ```
+
+### Microsoft TTS Advanced Controls
+
+Microsoft TTS offers fine-grained control over speech characteristics:
+
+#### Speech Rate Control
+```json
+{
+  "model": "microsoft-tts",
+  "text": "This text will be spoken faster.",
+  "voice": "en-US-JennyNeural",
+  "speech_rate": 50
+}
+```
+
+#### Pitch Adjustment
+```json
+{
+  "model": "microsoft-tts",
+  "text": "This text has a higher pitch.",
+  "voice": "en-US-AriaNeural",
+  "pitch_adjustment": 25
+}
+```
+
+#### Emotional Styles
+Different voices support different emotional styles:
+
+```json
+{
+  "model": "microsoft-tts",
+  "text": "I'm so excited about this news!",
+  "voice": "en-US-AriaNeural",
+  "emotional_style": "cheerful",
+  "speech_rate": 10
+}
+```
+
+**Available Emotional Styles** (voice-dependent):
+- `cheerful` - Happy and upbeat
+- `sad` - Melancholic tone
+- `angry` - Frustrated or upset
+- `fearful` - Nervous or scared
+- `calm` - Relaxed and peaceful
+- `gentle` - Soft and caring
+- `newscast` - Professional news anchor
+- `customerservice` - Helpful and polite
 
 ## Best Practices
 
