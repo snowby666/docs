@@ -1674,7 +1674,7 @@
           },
           "model": {
             "type": "string",
-            "example": "dall-e-2"
+            "example": "flux-1-kontext-pro"
           },
           "n": {
             "type": "integer",
