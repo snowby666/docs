@@ -22,7 +22,7 @@
     },
     {
       "name": "Discord",
-      "url": "https://discord.com/invite/apUUqbxCBQ"
+      "url": "https://discord.com/invite/electronhub"
     }
   ],
   "topbarCtaButton": {
@@ -138,7 +138,7 @@
     }
   ],
   "footerSocials": {
-    "discord": "https://discord.com/invite/apUUqbxCBQ",
+    "discord": "https://discord.com/invite/electronhub",
     "website": "https://electronhub.ai"
   },
   "feedback": {
