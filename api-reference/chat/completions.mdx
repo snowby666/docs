@@ -15,7 +15,7 @@ Generate responses for conversational AI applications.
 ### Request Body
 
 <ParamField body="model" type="string" required>
-  Model to use for completion (e.g., "gpt-4", "gpt-3.5-turbo", "claude-3-sonnet-20240229")
+  Model to use for completion (e.g., "gpt-4o", "gpt-3.5-turbo", "claude-sonnet-4-20250514")
 </ParamField>
 
 <ParamField body="messages" type="array" required>
@@ -83,6 +83,104 @@ curl https://api.electronhub.ai/v1/chat/completions \
     ]
   }'
 ```
+
+## In-chat Image Generation
+
+Generate images directly within chat responses by suffixing your base chat model with an image model.
+
+### Model suffix format
+
+- **Format**: `<base-model>@<image-model>`
+- **Example suffix**: `claude-sonnet-4-20250514@flux-pro`
+- **Base model**: `claude-sonnet-4-20250514`
+- **Image model**: `flux-pro`
+- **Behavior**: The base model handles conversation; the image model generates images based on the current chat context. Works with streaming.
+- **Tip**: For advanced controls (size, quality, count), use the dedicated [Image Generations](/api-reference/images/generations) endpoint.
+
+### Example
+
+<CodeGroup>
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'claude-sonnet-4-20250514@flux-pro',
+    messages: [
+      { role: 'user', content: 'Create a cozy fantasy tavern scene poster and include an image.' }
+    ]
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/chat/completions',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'model': 'claude-sonnet-4-20250514@flux-pro',
+        'messages': [
+            {
+                'role': 'user',
+                'content': 'Create a cozy fantasy tavern scene poster and include an image.'
+            }
+        ]
+    }
+)
+
+print(response.json())
+```
+
+```bash cURL
+curl https://api.electronhub.ai/v1/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-20250514@flux-pro",
+    "messages": [
+      {"role": "user", "content": "Create a cozy fantasy tavern scene poster and include an image."}
+    ]
+  }'
+```
+
+</CodeGroup>
+
+The assistant message may include a Markdown image link that most chat UIs render inline. Example response snippet:
+
+```json
+{
+  "id": "chatcmpl_...",
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Here is your poster!\n\n![Cozy tavern](https://cdn.electronhub.ai/i/abc123.png)"
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}
+```
+
+### SillyTavern
+
+- **Model**: Set `claude-sonnet-4-20250514@flux-pro`.
+- **Endpoint**: Use your Electron Hub OpenAI-compatible base URL and API key.
+- **Prompt**: Ask for an image naturally; the reply will include an inline image.
 
 </CodeGroup>
 
