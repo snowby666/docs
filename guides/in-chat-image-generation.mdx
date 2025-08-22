@@ -1,0 +1,51 @@
+---
+title: 'In-chat Image Generation'
+description: 'Generate images inline during chat using model suffix syntax'
+icon: 'image'
+---
+
+Bring images into your ongoing conversations without switching endpoints. In-chat Image Generation lets you request images directly from the `chat/completions` endpoint by selecting a base chat model and an image generation model using a simple suffix syntax.
+
+## How it works
+
+- **Base model**: Your chat model (e.g., `claude-sonnet-4-20250514`)
+- **Image model**: Your image generator (e.g., `flux-pro`)
+- **Suffix syntax**: `baseModel@imageModel`
+
+**Example suffix**: `claude-sonnet-4-20250514@flux-pro`
+
+When you use a suffixed model with `chat/completions`, the assistant can respond with content that includes generated image(s) inline with its text, keeping the flow immersive for roleplay and storytelling scenarios.
+
+## Example request
+
+```bash
+curl https://api.electronhub.ai/v1/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-20250514@flux-pro",
+    "messages": [
+      {"role": "system", "content": "You are a narrative game master. Embed images when helpful."},
+      {"role": "user", "content": "Generate a vivid, cinematic portrait of a cyberpunk detective at night in neon rain."}
+    ]
+  }'
+```
+
+Notes:
+- The base chat model drives conversation quality and reasoning.
+- The image model controls visual style and fidelity.
+- The response may include image URLs or Markdown image formatting inside the assistant message content.
+
+## SillyTavern example
+
+Here’s how this looks in SillyTavern when using a suffixed model:
+
+![SillyTavern in‑chat image generation](/images/st-example.png)
+
+## Tips
+
+- **Be descriptive**: Specify subject, style, lighting, composition, and mood.
+- **Stay consistent**: Reuse key style terms across turns for continuity.
+- **Guide placement**: Ask the assistant where to insert images within the story.
+
+

@@ -124,7 +124,8 @@
       "pages": [
         "guides/best-practices",
         "guides/openai-sdks",
-        "guides/anthropic-sdks"
+        "guides/anthropic-sdks",
+        "guides/in-chat-image-generation"
       ]
     },
     {
