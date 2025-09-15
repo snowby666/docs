@@ -225,6 +225,35 @@
         }
       }
     },
+    "/videos/generations": {
+      "post": {
+        "summary": "Generate Videos",
+        "description": "Generate videos from text prompts (SSE streaming)",
+        "operationId": "generateVideos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoGenerationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSE stream of video generation events",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/embeddings": {
       "post": {
         "summary": "Create Embeddings",
@@ -1721,6 +1750,25 @@
           },
           "revised_prompt": {
             "type": "string"
+          }
+        }
+      },
+      "VideoGenerationRequest": {
+        "type": "object",
+        "required": ["model", "prompt"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "midjourney-video"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Text description of the desired video"
+          },
+          "size": {
+            "type": "string",
+            "description": "Output aspect ratio (e.g., '16:9', '9:16', '1:1')",
+            "enum": ["16:9", "9:16", "1:1", "4:3", "3:4"]
           }
         }
       },

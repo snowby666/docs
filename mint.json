@@ -86,6 +86,13 @@
           ]
         },
         {
+          "group": "Videos",
+          "icon": "video",
+          "pages": [
+            "api-reference/videos/generations"
+          ]
+        },
+        {
           "group": "Audio",
           "icon": "volume-high",
           "pages": [

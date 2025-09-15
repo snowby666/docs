@@ -1,0 +1,76 @@
+---
+title: 'Video Generations'
+openapi: 'POST /videos/generations'
+description: 'Generate videos from text prompts via Server-Sent Events (SSE)'
+---
+
+Create original short videos from text prompts. This endpoint streams results over SSE. Send `Accept: text/event-stream` to receive incremental updates until completion.
+
+## Generate Videos
+
+`POST /videos/generations`
+
+### Request Body
+
+<ParamField body="model" type="string" required>
+  The video model to use (e.g., "midjourney-video")
+</ParamField>
+
+<ParamField body="prompt" type="string" required>
+  A text description of the desired video
+</ParamField>
+
+<ParamField body="size" type="string">
+  Output aspect ratio (e.g., "16:9", "9:16", "1:1")
+</ParamField>
+
+### Response
+
+SSE stream with JSON lines. Heartbeat events include `{ "heartbeat": true }`.
+
+### Examples
+
+<CodeGroup>
+
+```python Python
+import httpx, orjson
+
+url = "https://api.electronhub.ai/v1/videos/generations"
+
+payload = {
+    "model": "midjourney-video",
+    "prompt": "a playful cat",
+    # "size": "16:9",  # optional
+}
+headers = {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json",
+}
+
+with httpx.stream("POST", url, json=payload, headers=headers, timeout=600) as response:
+    for line in response.iter_lines():
+        if line:
+            data = orjson.loads(line)
+            if data:
+                if data.get("heartbeat"):
+                    print("Pending...")
+                else:
+                    print(line)
+```
+
+```bash cURL
+curl -N -X POST "https://api.electronhub.ai/v1/videos/generations" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: text/event-stream" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "midjourney-video",
+    "prompt": "a playful cat",
+    "size": "16:9"
+  }'
+```
+
+</CodeGroup>
+
+
