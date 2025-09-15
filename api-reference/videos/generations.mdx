@@ -6,28 +6,6 @@ description: 'Generate videos from text prompts via Server-Sent Events (SSE)'
 
 Create original short videos from text prompts. This endpoint streams results over SSE. Send `Accept: text/event-stream` to receive incremental updates until completion.
 
-## Generate Videos
-
-`POST /videos/generations`
-
-### Request Body
-
-<ParamField body="model" type="string" required>
-  The video model to use (e.g., "midjourney-video")
-</ParamField>
-
-<ParamField body="prompt" type="string" required>
-  A text description of the desired video
-</ParamField>
-
-<ParamField body="size" type="string">
-  Output aspect ratio (e.g., "16:9", "9:16", "1:1")
-</ParamField>
-
-### Response
-
-SSE stream with JSON lines. Heartbeat events include `{ "heartbeat": true }`.
-
 ### Examples
 
 <CodeGroup>
