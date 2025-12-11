@@ -8,11 +8,28 @@ Prompt caching allows you to cache parts of your prompts that don't change betwe
 
 ## Pricing
 
-- **Cache writes**: 1.25x the original input pricing
-- **Cache reads**: 0.1x the original input pricing
+Prompt caching uses a tiered pricing structure based on cache duration and usage type:
+
+| Model | Base Input Tokens | 5m Cache Writes | 1h Cache Writes | Cache Hits & Refreshes | Output Tokens |
+|-------|-------------------|------------------|------------------|------------------------|---------------|
+| Claude Opus 4.5 | $5 / MTok | $6.25 / MTok | $10 / MTok | $0.50 / MTok | $25 / MTok |
+| Claude Opus 4.1 | $15 / MTok | $18.75 / MTok | $30 / MTok | $1.50 / MTok | $75 / MTok |
+| Claude Opus 4 | $15 / MTok | $18.75 / MTok | $30 / MTok | $1.50 / MTok | $75 / MTok |
+| Claude Sonnet 4.5 | $3 / MTok | $3.75 / MTok | $6 / MTok | $0.30 / MTok | $15 / MTok |
+| Claude Sonnet 4 | $3 / MTok | $3.75 / MTok | $6 / MTok | $0.30 / MTok | $15 / MTok |
+| Claude Sonnet 3.7 | $3 / MTok | $3.75 / MTok | $6 / MTok | $0.30 / MTok | $15 / MTok |
+| Claude Haiku 4.5 | $1 / MTok | $1.25 / MTok | $2 / MTok | $0.10 / MTok | $5 / MTok |
+| Claude Haiku 3.5 | $0.80 / MTok | $1 / MTok | $1.6 / MTok | $0.08 / MTok | $4 / MTok |
+| Claude Opus 3 | $15 / MTok | $18.75 / MTok | $30 / MTok | $1.50 / MTok | $75 / MTok |
+| Claude Haiku 3 | $0.25 / MTok | $0.30 / MTok | $0.50 / MTok | $0.03 / MTok | $1.25 / MTok |
+
+The pricing multipliers are:
+- **5-minute cache writes**: 1.25x the base input tokens price
+- **1-hour cache writes**: 2x the base input tokens price
+- **Cache reads**: 0.1x the base input tokens price
 
 <Info>
-Cache writes occur when content is first cached. Subsequent requests using the cached content are charged at the cache read rate (10% of original input price).
+Cache writes occur when content is first cached. Subsequent requests using the cached content are charged at the cache read rate (10% of base input price). The cache lifetime is refreshed each time the cached content is used.
 </Info>
 
 ## Limitations
