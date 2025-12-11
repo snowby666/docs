@@ -132,6 +132,7 @@
         "guides/best-practices",
         "guides/openai-sdks",
         "guides/anthropic-sdks",
+        "guides/prompt-caching",
         "guides/in-chat-image-generation"
       ]
     },

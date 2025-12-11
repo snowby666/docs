@@ -26,7 +26,7 @@ const anthropic = new Anthropic({
 
 // Create a message using Claude
 const message = await anthropic.messages.create({
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-sonnet-4-5-20250929',
   max_tokens: 1000,
   temperature: 0,
   system: "You are a helpful assistant.",
@@ -48,7 +48,7 @@ Switch between different Claude models:
 ```javascript
 // Latest Claude 3.5 Sonnet
 const sonnetResponse = await anthropic.messages.create({
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-sonnet-4-5-20250929',
   max_tokens: 1000,
   messages: [
     { role: 'user', content: 'Explain machine learning briefly' }
@@ -80,7 +80,7 @@ Use Claude's vision capabilities with images:
 
 ```javascript
 const message = await anthropic.messages.create({
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-sonnet-4-5-20250929',
   max_tokens: 1000,
   messages: [
     {
@@ -112,7 +112,7 @@ Stream responses for real-time output:
 
 ```javascript
 const stream = await anthropic.messages.create({
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-sonnet-4-5-20250929',
   max_tokens: 1000,
   messages: [
     { role: 'user', content: 'Tell me a long story about space exploration' }
@@ -147,7 +147,7 @@ client = anthropic.Anthropic(
 
 # Create a message
 message = client.messages.create(
-    model="claude-3-5-sonnet-20241022",
+    model="claude-sonnet-4-5-20250929",
     max_tokens=1000,
     temperature=0,
     system="You are a helpful assistant.",
@@ -188,7 +188,7 @@ tools = [
 ]
 
 message = client.messages.create(
-    model="claude-3-5-sonnet-20241022",
+    model="claude-sonnet-4-5-20250929",
     max_tokens=1000,
     tools=tools,
     messages=[
@@ -212,7 +212,7 @@ for content in message.content:
 
 ```python
 stream = client.messages.create(
-    model="claude-3-5-sonnet-20241022",
+    model="claude-sonnet-4-5-20250929",
     max_tokens=1000,
     messages=[
         {"role": "user", "content": "Write a poem about AI"}
@@ -228,13 +228,23 @@ for event in stream:
 
 ## Advanced Features
 
+### Prompt Caching
+
+Reduce costs and improve performance by caching parts of your prompts that don't change between requests. Prompt caching allows you to mark sections of your prompt for caching, with cache writes charged at 1.25x and cache reads at 0.1x the original input price.
+
+<CardGroup cols={1}>
+  <Card title="Prompt Caching Guide" icon="zap" href="/guides/prompt-caching">
+    Learn how to use prompt caching with Anthropic Claude models, including examples for system and user message caching.
+  </Card>
+</CardGroup>
+
 ### System Messages
 
 Use system messages to set Claude's behavior:
 
 ```javascript
 const message = await anthropic.messages.create({
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-sonnet-4-5-20250929',
   max_tokens: 1000,
   system: `You are a helpful AI assistant that specializes in explaining complex technical concepts in simple terms. Always:
   1. Use analogies and examples
@@ -262,7 +272,7 @@ const conversation = [
 ];
 
 const message = await anthropic.messages.create({
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-sonnet-4-5-20250929',
   max_tokens: 1000,
   messages: conversation
 });
@@ -274,7 +284,7 @@ Use Claude for structured data generation:
 
 ```javascript
 const message = await anthropic.messages.create({
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-sonnet-4-5-20250929',
   max_tokens: 1000,
   system: 'You are a JSON generator. Always respond with valid JSON.',
   messages: [
@@ -296,7 +306,7 @@ Handle errors gracefully:
 ```javascript
 try {
   const message = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-5-20250929',
     max_tokens: 1000,
     messages: [
       { role: 'user', content: 'Hello!' }
@@ -345,7 +355,7 @@ async function createMessageWithRetry(params, maxRetries = 3) {
 ```javascript
 // Be specific and concise in prompts
 const message = await anthropic.messages.create({
-  model: 'claude-3-5-sonnet-20241022',
+  model: 'claude-sonnet-4-5-20250929',
   max_tokens: 500, // Set appropriate limits
   messages: [
     {
@@ -379,7 +389,7 @@ const complexAnalysis = await anthropic.messages.create({
 ```javascript
 const cache = new Map();
 
-async function getCachedResponse(prompt, model = 'claude-3-5-sonnet-20241022') {
+async function getCachedResponse(prompt, model = 'claude-sonnet-4-5-20250929') {
   const cacheKey = `${model}:${prompt}`;
   
   if (cache.has(cacheKey)) {
@@ -415,7 +425,7 @@ class ClaudeChatbot {
     this.conversation.push({ role: 'user', content: userMessage });
     
     const message = await this.anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-sonnet-4-5-20250929',
       max_tokens: 1000,
       system: 'You are a helpful assistant.',
       messages: this.conversation
@@ -443,7 +453,7 @@ console.log(response);
 ```javascript
 async function analyzeDocument(documentText) {
   const message = await anthropic.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-5-20250929',
     max_tokens: 2000,
     system: 'You are a document analyst. Provide structured analysis of documents.',
     messages: [

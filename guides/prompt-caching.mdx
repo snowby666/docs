@@ -1,0 +1,280 @@
+---
+title: 'Prompt Caching'
+description: 'Use prompt caching with Anthropic Claude models to reduce costs and improve performance'
+icon: 'zap'
+---
+
+Prompt caching allows you to cache parts of your prompts that don't change between requests, reducing costs and improving response times.
+
+## Pricing
+
+- **Cache writes**: 1.25x the original input pricing
+- **Cache reads**: 0.1x the original input pricing
+
+<Info>
+Cache writes occur when content is first cached. Subsequent requests using the cached content are charged at the cache read rate (10% of original input price).
+</Info>
+
+## Limitations
+
+- Maximum **4 cache breakpoints** per request
+- Caches expire after **5 minutes** by default
+- `cache_control` can only be inserted into **text content blocks**
+
+<Warning>
+Reserve cache breakpoints for large, static content like character cards, CSV data, RAG knowledge bases, book chapters, or extensive reference documentation.
+</Warning>
+
+## Examples
+
+### System Message Caching
+
+<CodeGroup>
+
+```javascript JavaScript
+const message = await anthropic.messages.create({
+  model: 'claude-sonnet-4-5-20250929',
+  max_tokens: 1000,
+  messages: [
+    {
+      role: 'system',
+      content: [
+        {
+          type: 'text',
+          text: 'You are a historian. You know the following book:'
+        },
+        {
+          type: 'text',
+          text: 'HUGE TEXT BODY',
+          cache_control: {
+            type: 'ephemeral'
+          }
+        }
+      ]
+    },
+    {
+      role: 'user',
+      content: 'What triggered the collapse?'
+    }
+  ]
+});
+```
+
+```python Python
+message = client.messages.create(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=1000,
+    messages=[
+        {
+            "role": "system",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "You are a historian. You know the following book:"
+                },
+                {
+                    "type": "text",
+                    "text": "HUGE TEXT BODY",
+                    "cache_control": {
+                        "type": "ephemeral"
+                    }
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "content": "What triggered the collapse?"
+        }
+    ]
+)
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/messages" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-5-20250929",
+    "max_tokens": 1000,
+    "messages": [
+      {
+        "role": "system",
+        "content": [
+          {"type": "text", "text": "You are a historian. You know the following book:"},
+          {"type": "text", "text": "HUGE TEXT BODY", "cache_control": {"type": "ephemeral"}}
+        ]
+      },
+      {"role": "user", "content": "What triggered the collapse?"}
+    ]
+  }'
+```
+
+</CodeGroup>
+
+### User Message Caching
+
+<CodeGroup>
+
+```javascript JavaScript
+const message = await anthropic.messages.create({
+  model: 'claude-sonnet-4-5-20250929',
+  max_tokens: 1000,
+  messages: [
+    {
+      role: 'user',
+      content: [
+        {type: 'text', text: 'Given the book below:'},
+        {type: 'text', text: 'HUGE TEXT BODY', cache_control: {type: 'ephemeral'}},
+        {type: 'text', text: 'Name all the characters'}
+      ]
+    }
+  ]
+});
+```
+
+```python Python
+message = client.messages.create(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=1000,
+    messages=[{
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "Given the book below:"},
+            {"type": "text", "text": "HUGE TEXT BODY", "cache_control": {"type": "ephemeral"}},
+            {"type": "text", "text": "Name all the characters"}
+        ]
+    }]
+)
+```
+
+</CodeGroup>
+
+## Cache Control Options
+
+<ParamField body="cache_control.type" type="string" required>
+  Cache type. Currently only `"ephemeral"` is supported.
+</ParamField>
+
+<ParamField body="cache_control.ttl" type="string">
+  Time-to-live. Optional, defaults to 5 minutes. Format: `"5m"` or `"1h"`.
+  
+  <Note>
+  Some models like `claude-3-7-sonnet-20250219` do not support TTL in system messages. TTL is automatically stripped for these models.
+  </Note>
+</ParamField>
+
+### Using TTL
+
+Specify cache duration with the `ttl` parameter:
+
+<CodeGroup>
+
+```javascript JavaScript
+const message = await anthropic.messages.create({
+  model: 'claude-sonnet-4-5-20250929',
+  max_tokens: 1000,
+  messages: [
+    {
+      role: 'system',
+      content: [
+        {
+          type: 'text',
+          text: 'You are a helpful assistant. Use this knowledge base:'
+        },
+        {
+          type: 'text',
+          text: 'LARGE KNOWLEDGE BASE TEXT',
+          cache_control: {
+            type: 'ephemeral',
+            ttl: '1h'  // Cache for 1 hour instead of default 5 minutes
+          }
+        }
+      ]
+    },
+    {
+      role: 'user',
+      content: 'What is machine learning?'
+    }
+  ]
+});
+```
+
+```python Python
+message = client.messages.create(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=1000,
+    messages=[
+        {
+            "role": "system",
+            "content": [
+                {"type": "text", "text": "You are a helpful assistant. Use this knowledge base:"},
+                {
+                    "type": "text",
+                    "text": "LARGE KNOWLEDGE BASE TEXT",
+                    "cache_control": {
+                        "type": "ephemeral",
+                        "ttl": "1h"  # Cache for 1 hour instead of default 5 minutes
+                    }
+                }
+            ]
+        },
+        {"role": "user", "content": "What is machine learning?"}
+    ]
+)
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/messages" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-5-20250929",
+    "max_tokens": 1000,
+    "messages": [
+      {
+        "role": "system",
+        "content": [
+          {"type": "text", "text": "You are a helpful assistant. Use this knowledge base:"},
+          {
+            "type": "text",
+            "text": "LARGE KNOWLEDGE BASE TEXT",
+            "cache_control": {"type": "ephemeral", "ttl": "1h"}
+          }
+        ]
+      },
+      {"role": "user", "content": "What is machine learning?"}
+    ]
+  }'
+```
+
+</CodeGroup>
+
+## Usage Tracking
+
+The API response includes cache usage in the `usage` object:
+
+```json
+{
+  "usage": {
+    "input_tokens": 150,
+    "output_tokens": 50,
+    "cache_creation_input_tokens": 2000,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 2000,
+      "ephemeral_1h_input_tokens": 0
+    }
+  }
+}
+```
+
+For cached requests, `cache_read_input_tokens` will be non-zero instead of `cache_creation_input_tokens`.
+
+## Best Practices
+
+1. **Cache large, static content** that doesn't change frequently
+2. **Monitor `cache_read_input_tokens`** to verify cache hits
+3. **Respect the 4 breakpoint limit** - prioritize largest, most reused content
+4. **Remember cache expiration** - caches expire after 5 minutes (or your TTL)
+
+For more details, see the [Anthropic documentation](https://platform.claude.com/docs/en/build-with-claude/prompt-caching).
