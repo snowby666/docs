@@ -6,6 +6,24 @@ icon: 'zap'
 
 Prompt caching allows you to cache parts of your prompts that don't change between requests, reducing costs and improving response times.
 
+## API Format
+
+<CodeGroup>
+
+```anthropic Anthropic Format
+Use the `/v1/messages` endpoint with `cache_control` markers in message content blocks.
+```
+
+```openai OpenAI Format
+Use the `/v1/chat/completions` endpoint with the `prompt_caching` helper or `cache_control` markers.
+```
+
+</CodeGroup>
+
+<Info>
+Both formats support the same caching functionality. The `prompt_caching` helper in the OpenAI format automatically converts to `cache_control` markers internally. Examples below are organized by format for clarity.
+</Info>
+
 ## Pricing
 
 Prompt caching uses a tiered pricing structure based on cache duration and usage type:
@@ -45,6 +63,8 @@ Reserve cache breakpoints for large, static content like character cards, CSV da
 ## Examples
 
 ### System Message Caching
+
+#### Anthropic Format (`/v1/messages`)
 
 <CodeGroup>
 
@@ -128,7 +148,96 @@ curl -X POST "https://api.electronhub.ai/v1/messages" \
 
 </CodeGroup>
 
+#### OpenAI Format (`/v1/chat/completions`)
+
+<CodeGroup>
+```javascript JavaScript
+const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'claude-sonnet-4-5-20250929',
+    messages: [
+      {
+        role: 'user',
+        content: 'You are a historian. You know the following book: HUGE TEXT BODY. What triggered the collapse?'
+      }
+    ],
+    max_tokens: 1000,
+    prompt_caching: {
+      enabled: true,
+      ttl: '5m',
+      cut_after_message_index: 0
+    },
+    stream_options: {
+      include_usage: true
+    }
+  })
+});
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/chat/completions',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'model': 'claude-sonnet-4-5-20250929',
+        'messages': [
+            {
+                'role': 'user',
+                'content': 'You are a historian. You know the following book: HUGE TEXT BODY. What triggered the collapse?'
+            }
+        ],
+        'max_tokens': 1000,
+        'prompt_caching': {
+            'enabled': True,
+            'ttl': '5m',
+            'cut_after_message_index': 0
+        },
+        'stream_options': {
+            'include_usage': True
+        }
+    }
+)
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-5-20250929",
+    "messages": [
+      {
+        "role": "user",
+        "content": "You are a historian. You know the following book: HUGE TEXT BODY. What triggered the collapse?"
+      }
+    ],
+    "max_tokens": 1000,
+    "prompt_caching": {
+      "enabled": true,
+      "ttl": "5m",
+      "cut_after_message_index": 0
+    },
+    "stream_options": {
+      "include_usage": true
+    }
+  }'
+```
+
+</CodeGroup>
+
 ### User Message Caching
+
+#### Anthropic Format (`/v1/messages`)
 
 <CodeGroup>
 
@@ -166,7 +275,71 @@ message = client.messages.create(
 
 </CodeGroup>
 
+#### OpenAI Format (`/v1/chat/completions`)
+
+<CodeGroup>
+
+```javascript JavaScript
+const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'claude-sonnet-4-5-20250929',
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {type: 'text', text: 'Given the book below:'},
+          {type: 'text', text: 'HUGE TEXT BODY', cache_control: {type: 'ephemeral'}},
+          {type: 'text', text: 'Name all the characters'}
+        ]
+      }
+    ],
+    max_tokens: 1000,
+    stream_options: {
+      include_usage: true
+    }
+  })
+});
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/chat/completions',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'model': 'claude-sonnet-4-5-20250929',
+        'messages': [
+            {
+                'role': 'user',
+                'content': [
+                    {'type': 'text', 'text': 'Given the book below:'},
+                    {'type': 'text', 'text': 'HUGE TEXT BODY', 'cache_control': {'type': 'ephemeral'}},
+                    {'type': 'text', 'text': 'Name all the characters'}
+                ]
+            }
+        ],
+        'max_tokens': 1000,
+        'stream_options': {
+            'include_usage': True
+        }
+    }
+)
+```
+
+</CodeGroup>
+
 ## Cache Control Options
+
+### Anthropic Format (`/v1/messages`)
 
 <ParamField body="cache_control.type" type="string" required>
   Cache type. Currently only `"ephemeral"` is supported.
@@ -180,9 +353,29 @@ message = client.messages.create(
   </Note>
 </ParamField>
 
+### OpenAI Format (`/v1/chat/completions`)
+
+<ParamField body="prompt_caching.enabled" type="boolean" required>
+  Enable prompt caching. Set to `true` to enable caching.
+</ParamField>
+
+<ParamField body="prompt_caching.ttl" type="string">
+  Time-to-live. Optional, defaults to `"5m"`. Format: `"5m"` or `"1h"`.
+</ParamField>
+
+<ParamField body="prompt_caching.cut_after_message_index" type="integer" required>
+  Zero-based index of the last message to cache. All messages up to and including this index will be cached.
+</ParamField>
+
+<Info>
+The `prompt_caching` helper automatically converts to `cache_control` markers in message content. You can also use `cache_control` markers directly in message content blocks (same as Anthropic format).
+</Info>
+
 ### Using TTL
 
 Specify cache duration with the `ttl` parameter:
+
+#### Anthropic Format (`/v1/messages`)
 
 <CodeGroup>
 
@@ -266,9 +459,98 @@ curl -X POST "https://api.electronhub.ai/v1/messages" \
 
 </CodeGroup>
 
+#### OpenAI Format (`/v1/chat/completions`)
+
+<CodeGroup>
+```javascript JavaScript
+const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'claude-sonnet-4-5-20250929',
+    messages: [
+      {
+        role: 'user',
+        content: 'You are a helpful assistant. Use this knowledge base: LARGE KNOWLEDGE BASE TEXT. What is machine learning?'
+      }
+    ],
+    max_tokens: 1000,
+    prompt_caching: {
+      enabled: true,
+      ttl: '1h',  // Cache for 1 hour instead of default 5 minutes
+      cut_after_message_index: 0
+    },
+    stream_options: {
+      include_usage: true
+    }
+  })
+});
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/chat/completions',
+    headers={
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'model': 'claude-sonnet-4-5-20250929',
+        'messages': [
+            {
+                'role': 'user',
+                'content': 'You are a helpful assistant. Use this knowledge base: LARGE KNOWLEDGE BASE TEXT. What is machine learning?'
+            }
+        ],
+        'max_tokens': 1000,
+        'prompt_caching': {
+            'enabled': True,
+            'ttl': '1h',  # Cache for 1 hour instead of default 5 minutes
+            'cut_after_message_index': 0
+        },
+        'stream_options': {
+            'include_usage': True
+        }
+    }
+)
+```
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-5-20250929",
+    "messages": [
+      {
+        "role": "user",
+        "content": "You are a helpful assistant. Use this knowledge base: LARGE KNOWLEDGE BASE TEXT. What is machine learning?"
+      }
+    ],
+    "max_tokens": 1000,
+    "prompt_caching": {
+      "enabled": true,
+      "ttl": "1h",
+      "cut_after_message_index": 0
+    },
+    "stream_options": {
+      "include_usage": true
+    }
+  }'
+```
+
+</CodeGroup>
+
 ## Usage Tracking
 
-The API response includes cache usage in the `usage` object:
+The API response includes cache usage in the `usage` object. Both endpoints return cache usage information:
+
+#### Anthropic Format (`/v1/messages`)
 
 ```json
 {
@@ -285,7 +567,29 @@ The API response includes cache usage in the `usage` object:
 }
 ```
 
+#### OpenAI Format (`/v1/chat/completions`)
+
+```json
+{
+  "usage": {
+    "prompt_tokens": 150,
+    "completion_tokens": 50,
+    "total_tokens": 200,
+    "cache_creation_input_tokens": 2000,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 2000,
+      "ephemeral_1h_input_tokens": 0
+    }
+  }
+}
+```
+
 For cached requests, `cache_read_input_tokens` will be non-zero instead of `cache_creation_input_tokens`.
+
+<Note>
+The OpenAI format uses `prompt_tokens` and `completion_tokens` instead of `input_tokens` and `output_tokens`, but the cache-related fields are identical across both formats.
+</Note>
 
 ## Best Practices
 
