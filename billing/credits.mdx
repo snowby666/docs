@@ -1,0 +1,109 @@
+# Understanding Credits
+
+Credits are the currency used in Electron Hub to pay for AI model usage. This guide explains all the different types of credits and how they work.
+
+## Types of Credits
+
+### Daily Credits
+
+**Daily Credits** are credits that are automatically added to your account every day at **21:00 UTC** (9:00 PM UTC). The amount you receive depends on your subscription tier:
+
+| Tier | Daily Credits |
+|------|---------------|
+| Free | 0.25 credits |
+| Starter | 2 credits |
+| Plus | 5 credits |
+| Core | 10 credits |
+| Pro | 15 credits |
+| Business | 30 credits |
+| Enterprise | 69+ credits (scales with custom payment) |
+
+**Important Notes:**
+- Daily credits reset at **21:00 UTC** every day
+- Unused daily credits do **not** carry over to the next day
+- Your balance is automatically set to your daily credits amount at reset time
+- Daily credits are separate from permanent credits
+
+### Permanent Credits
+
+**Permanent Credits** are credits you purchase with real money. See [Pay-as-You-Go](/billing/pay-as-you-go) for details.
+
+### Flex Credits
+
+**Flex Credits** (also called "Flex Wallet") are a savings feature that lets you save unused daily credits for later use.
+
+**How it works:**
+- You can save up to **20% of your daily credits** per day to your flex wallet
+- The total cap is **100% of your daily credits** (e.g., if you get 15 credits/day, your flex wallet can hold up to 15 credits)
+- You can only save once every 24 hours
+- Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
+
+**Example:**
+- You have a Pro subscription (15 credits/day)
+- Daily save limit: 3 credits (20% of 15)
+- Maximum flex wallet: 15 credits (100% of daily credits)
+- If you save 3 credits every day for 5 days, you'll have 15 credits saved (the maximum)
+
+**When to use Flex Credits:**
+- Enable flex credits if you want to build up a buffer for heavy usage days
+- Useful if you don't use all your daily credits every day
+- Helps prevent losing unused credits at daily reset
+
+### Neutrinos
+
+**Neutrinos** are special free usage requests for **free models** (models that end with `:free` suffix). 
+
+**Key Points:**
+- All users get **10 Neutrinos per day** (resets at 21:00 UTC)
+- Neutrinos are used instead of credits for free models
+- You can earn more Neutrinos by watching ads (if available)
+- **Important**: Neutrinos are charged for **all requests** (failed, cancelled, and successful) - unlike regular credits which are only charged for successful/cancelled requests
+
+## How Credits are Deducted
+
+Credits are deducted in this priority order:
+1. **Permanent credits** (if enabled and within monthly limit)
+2. **Regular balance** (daily credits)
+3. **Flex credits** (if enabled)
+
+**Important Charging Rules:**
+- **Regular Credits**: Only charged for **successful** and **cancelled** requests. **Failed requests are NOT charged.**
+- **Neutrinos**: Charged for **all requests** (failed, cancelled, and successful) - this is different from regular credits.
+
+**Example:**
+- You have 5 permanent credits, 10 regular credits, and 3 flex credits
+- You make a request costing 15 credits
+- System uses: 5 permanent + 10 regular + 3 flex = 18 credits total (you have enough!)
+
+**Failed Request Example:**
+- You make a request that fails (e.g., model unavailable, timeout)
+- **Regular credits**: NOT charged (you keep your credits)
+- **Neutrinos**: Still charged (if using a `:free` model)
+
+## Credit Reset Times
+
+- **Daily credits**: Reset every day at **21:00 UTC** (9:00 PM UTC)
+- **Neutrinos**: Reset every day at **21:00 UTC**
+- **Permanent credits**: Never reset (they're permanent!)
+- **Flex credits**: Never reset (but you can only save once per 24 hours)
+- **Monthly spending limits**: Reset on the 1st of each month (for permanent credits monthly limits)
+
+## Checking Your Balance
+
+You can check your balance:
+- In the [Electron Hub Dashboard](https://playground.electronhub.ai/console)
+- Through the API by checking your user information
+- Balance includes: regular credits, flex credits (if enabled), and permanent credits (if enabled)
+
+## Managing Credit Settings
+
+You can manage these settings in the [Electron Hub Dashboard](https://playground.electronhub.ai/console):
+- Navigate to account settings
+- Toggle flex credits on/off
+- Toggle permanent credits on/off
+- Set permanent credits monthly limits
+
+## Credit Transfers
+
+No, credits cannot be transferred between accounts. Each account's credits are tied to that specific account.
+

@@ -144,6 +144,20 @@
         "examples/image-examples",
         "examples/embedding-examples"
       ]
+    },
+    {
+      "group": "Billing",
+      "icon": "credit-card",
+      "pages": [
+        "billing/overview",
+        "billing/subscriptions",
+        "billing/pay-as-you-go",
+        "billing/credits",
+        "billing/model-access",
+        "billing/advanced",
+        "billing/troubleshooting",
+        "billing/privacy-security"
+      ]
     }
   ],
   "footerSocials": {

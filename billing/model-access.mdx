@@ -1,0 +1,59 @@
+# Model Types & Access
+
+Understanding which models you can access and how they're billed.
+
+## Model Categories
+
+Electron Hub has three main model categories:
+
+### 1. Free Models (`:free` suffix)
+
+- Models that end with `:free` (e.g., `gpt-3.5-turbo:free`)
+- Use **Neutrinos** instead of credits
+- No subscription required
+- **Uptime**: We don't guarantee 100% uptime at peak times (we host these ourselves and need to ensure fair usage)
+- Best for: Testing, light usage, learning
+
+### 2. Freemium Models
+
+- Models that don't require a subscription
+- **Do deduct credits** from your balance
+- Available to all users (Free tier and above)
+- Better uptime than free models
+- Best for: Regular usage without subscription commitment
+
+### 3. Premium/Ultimate Models
+
+- Models that **require a subscription** (Pro tier or higher)
+- Examples: `gpt-4.5-preview`, `o1`, `o3-pro`, `gpt-4`
+- **Best uptime** - routed to multiple providers for reliability
+- Also deduct credits from your balance
+- Best for: Production applications, critical workloads
+
+## Premium Model Examples
+
+- `gpt-4.5-preview`
+- `gpt-4.5-preview-2025-02-27`
+- `gpt-4`
+- `o1`, `o1-low`, `o1-high`
+- `o3-pro`, `o3-pro-low`, `o3-pro-high`
+- `o3-deep-research`
+
+## Model Access by Tier
+
+- **Free tier**: Free models (with Neutrinos) and freemium models (with credits)
+- **Starter/Plus/Core tiers**: All freemium models + some premium models
+- **Pro/Business/Enterprise tiers**: All models including premium/ultimate models
+
+Check the model list in the dashboard or API documentation to see which models require which tier.
+
+## Why don't free models guarantee 100% uptime?
+
+Free models are hosted by Electron Hub directly, and during peak usage times, we need to ensure fair distribution of resources among all users. For guaranteed uptime and better performance, we recommend:
+- Using freemium models (deduct credits but better uptime)
+- Subscribing to a premium tier to access premium models (routed to multiple providers)
+
+## Model Status
+
+Check the [Status Page](https://status.electronhub.ai) for real-time uptime status of popular models.
+
