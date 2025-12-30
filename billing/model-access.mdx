@@ -24,9 +24,14 @@ Electron Hub has three main model categories:
 
 ### 3. Premium/Ultimate Models
 
-- Models that **require a subscription** (Pro tier or higher)
-- Examples: `gpt-4.5-preview`, `o1`, `o3-pro`, `gpt-4`
-- **Best uptime** - routed to multiple providers for reliability
+**Premium Models:**
+- Models that **require a subscription** (Starter plan or higher) **OR permanent credits**
+- Free tier users with permanent credits can access premium models
+- Also deduct credits from your balance
+- Better uptime than free/freemium models
+
+**Ultimate Models:**
+- Models that **require a Pro tier or higher** subscription
 - Also deduct credits from your balance
 - Best for: Production applications, critical workloads
 
@@ -42,8 +47,11 @@ Electron Hub has three main model categories:
 ## Model Access by Tier
 
 - **Free tier**: Free models (with Neutrinos) and freemium models (with credits)
-- **Starter/Plus/Core tiers**: All freemium models + some premium models
-- **Pro/Business/Enterprise tiers**: All models including premium/ultimate models
+- **Free tier with permanent credits**: Free models, freemium models, and **premium models** (credits required)
+- **Starter/Plus/Core tiers**: All freemium models + premium models
+- **Pro/Business/Enterprise tiers**: All models including premium and ultimate models
+
+**Note**: Free tier users who have purchased permanent credits can access premium models (but not ultimate models). Ultimate models still require a Pro tier or higher subscription.
 
 Check the model list in the dashboard or API documentation to see which models require which tier.
 
