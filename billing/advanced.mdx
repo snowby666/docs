@@ -1,21 +1,22 @@
 ---
 title: 'Advanced Billing Topics'
 description: 'Rate limits, caching, token pricing, and cost optimizations'
-icon: 'settings'
+icon: 'sliders'
 ---
 
 This section covers advanced billing features and optimizations.
 
 
-## <Icon icon="database" /> Prompt Caching & Token Pricing
+## Prompt Caching & Token Pricing
 
 Some models support **prompt caching**, which can reduce costs when you reuse the same content.
 
-<Card title="How it works" icon="info" color="#8B5CF6">
+<Info>
+  **How it works:**
   - You can mark parts of your prompt to be cached
   - Cached content is stored for 5 minutes (or 1 hour with paid option)
   - When you reuse cached content, you pay less (cache reads are cheaper than regular input)
-</Card>
+</Info>
 
 <Card title="Token Pricing Structure" icon="calculator" color="#10B981">
   - **Base input tokens**: Regular price per million tokens
@@ -25,33 +26,34 @@ Some models support **prompt caching**, which can reduce costs when you reuse th
   - **Output tokens**: Usually more expensive than input tokens
 </Card>
 
-<Callout type="tip">
+<Tip>
   <strong>When to use caching:</strong>
   - When you have large, repeated context (like a long document)
   - When you're asking multiple questions about the same content
   - When you want to reduce costs for repeated prompts
-</Callout>
+</Tip>
 
-## <Icon icon="gauge" /> Rate Limit Scaling
+## Rate Limit Scaling
 
 Your rate limits can scale based on your **total purchased credits** (permanent credits spending). The scaling applies a multiplier to your base tier rate limit:
 
-<Card title="Scaling Tiers" icon="trending-up" color="#8B5CF6">
-  | Total Spent | Scale Tier | Multiplier | Example (Pro Tier) |
-  |-------------|------------|------------|-------------------|
-  | `$0`-`$99` | Base | 1x (no scaling) | 30 requests/min |
-  | `$100+` | Tier 1 | 2x | 60 requests/min (30 × 2) |
-  | `$250+` | Tier 2 | 3x | 90 requests/min (30 × 3) |
-  | `$500+` | Tier 3 | 5x | 150 requests/min (30 × 5) |
-  | `$1,000+` | Tier 4 | 7x | 210 requests/min (30 × 7) |
-  | `$2,500+` | Tier 5 | 10x | 300 requests/min (30 × 10) |
-</Card>
+### Scaling Tiers
 
-<Card title="How it works" icon="info" color="#10B981">
+| Total Spent | Scale Tier | Multiplier | Example (Pro Tier) |
+|-------------|------------|------------|-------------------|
+| `$0`-`$99` | Base | 1x (no scaling) | 30 requests/min |
+| `$100+` | Tier 1 | 2x | 60 requests/min (30 × 2) |
+| `$250+` | Tier 2 | 3x | 90 requests/min (30 × 3) |
+| `$500+` | Tier 3 | 5x | 150 requests/min (30 × 5) |
+| `$1,000+` | Tier 4 | 7x | 210 requests/min (30 × 7) |
+| `$2,500+` | Tier 5 | 10x | 300 requests/min (30 × 10) |
+
+<Info>
+  **How it works:**
   - Your base rate limit depends on your subscription tier (e.g., Pro tier = 30 requests/min)
   - The multiplier is applied to your base limit based on your total permanent credits spending
   - **Example**: If you're on Pro tier (30 req/min) and have spent `$500+` on permanent credits, your rate limit becomes 150 requests/min (30 × 5)
-</Card>
+</Info>
 
 <Card title="Base Rate Limits by Tier" icon="list" color="#F59E0B">
   - Free: 5 requests/min
@@ -63,11 +65,11 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
   - Enterprise: 100 requests/min
 </Card>
 
-<Callout type="info">
+<Info>
   <strong>Note:</strong> Rate limit scaling applies to all tiers based on your total permanent credits spending. The multiplier is cumulative - you get the highest multiplier you qualify for.
-</Callout>
+</Info>
 
-## <Icon icon="calculator" /> Calculating Credit Costs
+## Calculating Credit Costs
 
 <Card title="Cost Calculation" icon="dollar-sign" color="#8B5CF6">
   Credits are calculated based on:
@@ -75,9 +77,9 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
   - **Fixed-price models**: Fixed cost per request (like image generation)
 </Card>
 
-<Callout type="tip">
+<Tip>
   Check the model pricing in the dashboard or API documentation for specific costs.
-</Callout>
+</Tip>
 
 <Card title="Example Calculation" icon="calculator" color="#10B981">
   - Model costs `$3` per million input tokens and `$15` per million output tokens
@@ -85,17 +87,19 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
   - Cost = (1,000 / 1,000,000 × `$3`) + (500 / 1,000,000 × `$15`) = `$0.003` + `$0.0075` = `$0.0105` credits
 </Card>
 
-## <Icon icon="book" /> Understanding Tokens
+## Understanding Tokens
 
-<Card title="What are Tokens?" icon="info" color="#8B5CF6">
+<Info>
+  **What are Tokens?**
+  
   **Tokens** are the units that AI models use to process text. When you send a message to an AI model:
   - **Input tokens** = the text you send (your prompt/question)
   - **Output tokens** = the text the AI generates (the response)
-</Card>
+</Info>
 
-<Callout type="info">
+<Info>
   For example, if you ask "What is the weather?" and the AI responds "The weather is sunny today", both your question and the response are counted as tokens. The cost of using a model depends on how many tokens you use.
-</Callout>
+</Info>
 
 <Card title="Key Points" icon="lightbulb" color="#F59E0B">
   - Tokens are priced per million tokens (MTok)

@@ -4,28 +4,29 @@ description: 'Data protection, moderation, and privacy policies'
 icon: 'shield-check'
 ---
 
-## <Icon icon="eye-off" /> No-Log Policy for Prompts
+## No-Log Policy for Prompts
 
-<Card title="We do not log your prompt content" icon="shield" color="#10B981">
-  Your prompts and AI responses are not stored in our logs. We only log:
+<Info>
+  **We do not log your prompt content.** Your prompts and AI responses are not stored in our logs. We only log:
   - Request metadata (model used, tokens, credits, timestamp, status)
   - Technical information (IP address, API key used, route accessed)
   - Usage statistics (for billing and analytics)
-</Card>
+</Info>
 
-<Card title="What this means" icon="check-circle" color="#8B5CF6">
+<Note>
+  **What this means:**
   - Your conversations and prompts remain private
   - We cannot see what you're asking the AI
   - We cannot reconstruct your conversations from our logs
   - Your data privacy is protected
-</Card>
+</Note>
 
-## <Icon icon="filter" /> Content Moderation
+## Content Moderation
 
 To comply with our AI provider content policies and legal requirements, we apply moderation to detect and flag requests involving:
 
 <Columns cols={3}>
-  <Card title="CSAM Detection" icon="alert-triangle" color="#EF4444">
+  <Card title="CSAM Detection" icon="ban" color="#EF4444">
     **CSAM (Child Sexual Abuse Material)**: Any content related to child exploitation
   </Card>
   
@@ -33,21 +34,23 @@ To comply with our AI provider content policies and legal requirements, we apply
     Content about making drugs, bombs, weapons, or other illegal activities
   </Card>
   
-  <Card title="Harmful Content" icon="shield-off" color="#EF4444">
+  <Card title="Harmful Content" icon="stop-circle" color="#EF4444">
     Content that could cause real-world harm
   </Card>
 </Columns>
 
-<Card title="How it works" icon="settings" color="#8B5CF6">
+<Info>
+  **How it works:**
   - Requests are automatically scanned before being sent to AI providers
   - Flagged requests are blocked and not processed
   - No credits are charged for blocked requests
   - This helps us maintain compliance with provider policies and legal requirements
-</Card>
+</Info>
 
-<Card title="Your privacy is still protected" icon="shield-check" color="#10B981">
+<Note>
+  **Your privacy is still protected:**
   - Moderation checks are automated and do not involve human review of your content
   - We do not store the content of blocked requests
   - This is a necessary measure to ensure service availability and legal compliance
-</Card>
+</Note>
 

@@ -7,7 +7,7 @@ icon: 'brain'
 Understanding which models you can access and how they're billed.
 
 
-## <Icon icon="layers" /> Model Categories
+## Model Categories
 
 Electron Hub has three main model categories:
 
@@ -19,9 +19,9 @@ Electron Hub has three main model categories:
     - Best for: Testing, light usage, learning
   </Card>
   
-  <Callout type="warning">
+  <Warning>
     <strong>Uptime:</strong> We don't guarantee 100% uptime at peak times (we host these ourselves and need to ensure fair usage)
-  </Callout>
+  </Warning>
 </Accordion>
 
 <Accordion title="Freemium Models" icon="star">
@@ -49,9 +49,9 @@ Electron Hub has three main model categories:
   </Card>
 </Accordion>
 
-## <Icon icon="list" /> Premium Model Examples
+## Premium Model Examples
 
-<Card title="Popular Premium Models" icon="wand-2" color="#8B5CF6">
+<Card title="Popular Premium Models" icon="star" color="#8B5CF6">
   - `gpt-4`
   - `o1`, `o1-low`, `o1-high`
   - `o3-pro`, `o3-pro-low`, `o3-pro-high`
@@ -60,7 +60,7 @@ Electron Hub has three main model categories:
   - `gemini-3-pro-preview`
 </Card>
 
-## <Icon icon="key" /> Model Access by Tier
+## Model Access by Tier
 
 <Columns cols={2}>
   <Card title="Free Tier" icon="gift" color="#10B981">
@@ -86,25 +86,25 @@ Electron Hub has three main model categories:
   </Card>
 </Columns>
 
-<Callout type="info">
+<Info>
   <strong>Note:</strong> Free tier users who have purchased permanent credits can access premium models (but not ultimate models). Ultimate models still require a Pro tier or higher subscription. Check the model list in the dashboard or API documentation to see which models require which tier.
-</Callout>
+</Info>
 
-## <Icon icon="help-circle" /> Why don't free models guarantee 100% uptime?
+## Why don't free models guarantee 100% uptime?
 
-<Card title="Uptime Explanation" icon="info" color="#F59E0B">
-  Free models are hosted by Electron Hub directly, and during peak usage times, we need to ensure fair distribution of resources among all users.
-</Card>
+  <Info>
+    Free models are hosted by Electron Hub directly, and during peak usage times, we need to ensure fair distribution of resources among all users.
+  </Info>
 
-<Callout type="tip">
+<Tip>
   For guaranteed uptime and better performance, we recommend:
   - Using freemium models (deduct credits but better uptime)
   - Subscribing to a premium tier to access premium models (routed to multiple providers)
-</Callout>
+</Tip>
 
-## <Icon icon="activity" /> Model Status
+## Model Status
 
-<Card title="Check Status" icon="activity" href="https://status.electronhub.ai" color="#10B981">
+<Card title="Check Status" icon="globe" href="https://status.electronhub.ai" color="#10B981">
   Check the [Status Page](https://status.electronhub.ai) for real-time uptime status of popular models.
 </Card>
 
