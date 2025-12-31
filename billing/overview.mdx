@@ -1,81 +1,113 @@
-# Billing & Credits Overview
+# <Icon icon="credit-card" /> Billing & Credits Overview
 
 Welcome to the Electron Hub Billing documentation! This section covers everything you need to know about billing, credits, subscriptions, and payments.
 
-## Quick Navigation
+## <Icon icon="compass" /> Quick Navigation
 
-- [Subscriptions](/billing/subscriptions) - Subscription tiers and benefits
-- [Pay-as-You-Go](/billing/pay-as-you-go) - Permanent credits and purchasing
-- [Credits](/billing/credits) - Understanding all credit types
-- [Model Access](/billing/model-access) - Which models you can access
-- [Advanced Topics](/billing/advanced) - Rate limits, caching, and optimizations
-- [Troubleshooting](/billing/troubleshooting) - Common issues and solutions
-- [Privacy & Security](/billing/privacy-security) - Data protection and moderation
+<Columns cols={2}>
+  <Card title="Subscriptions" icon="repeat" href="/billing/subscriptions">
+    Subscription tiers and benefits
+  </Card>
+  <Card title="Pay-as-You-Go" icon="wallet" href="/billing/pay-as-you-go">
+    Permanent credits and purchasing
+  </Card>
+  <Card title="Credits" icon="coins" href="/billing/credits">
+    Understanding all credit types
+  </Card>
+  <Card title="Model Access" icon="brain" href="/billing/model-access">
+    Which models you can access
+  </Card>
+  <Card title="Advanced Topics" icon="settings" href="/billing/advanced">
+    Rate limits, caching, and optimizations
+  </Card>
+  <Card title="Troubleshooting" icon="help-circle" href="/billing/troubleshooting">
+    Common issues and solutions
+  </Card>
+  <Card title="Privacy & Security" icon="shield-check" href="/billing/privacy-security">
+    Data protection and moderation
+  </Card>
+</Columns>
 
 ---
 
 Electron Hub offers two flexible billing models to suit different usage patterns and needs:
 
-## Billing Models
+## <Icon icon="layers" /> Billing Models
 
-### 1. Subscriptions (Recurring)
+<Columns cols={2}>
+  <Card title="Subscriptions" icon="repeat" color="#8B5CF6">
+    **Daily credits** that reset every day at <Icon icon="clock" /> **21:00 UTC**
+    
+    **Ideal for:**
+    - <Icon icon="check" /> Regular, consistent usage
+    - <Icon icon="check" /> Predictable monthly costs
+    - <Icon icon="check" /> Access to premium/ultimate models
+    - <Icon icon="check" /> Higher rate limits and more features
+    
+    <Callout type="info">
+      <strong>Annual Savings:</strong> Annual subscriptions save you <strong>20%</strong> compared to monthly billing!
+    </Callout>
+  </Card>
+  
+  <Card title="Pay-as-You-Go" icon="wallet" color="#10B981">
+    **Permanent credits** that never expire
+    
+    **Ideal for:**
+    - <Icon icon="check" /> Irregular or unpredictable usage
+    - <Icon icon="check" /> One-time projects
+    - <Icon icon="check" /> Testing and experimentation
+    - <Icon icon="check" /> Supplementing subscription credits
+    
+    <Callout type="info">
+      <strong>Volume Discounts:</strong> Get up to <strong>30% bonus</strong> credits on larger purchases!
+    </Callout>
+  </Card>
+</Columns>
 
-**Subscriptions** provide you with daily credits that reset every day at 21:00 UTC. This model is ideal for:
-- Regular, consistent usage
-- Predictable monthly costs
-- Access to premium/ultimate models
-- Higher rate limits and more features
+## <Icon icon="help-circle" /> Which Model Should I Choose?
 
-**Benefits:**
-- Daily credits automatically added to your account
-- Access to premium models (Starter tier and above)
-- Higher rate limits
-- More bot creation slots
-- More studio credits
+<Accordion title="Choose Subscriptions if...">
+  - You use the service regularly
+  - You want predictable monthly costs
+  - You need access to premium models
+  - You prefer automatic daily credits
+</Accordion>
 
-**Annual Savings:**
-- **Annual subscriptions save you 20%** compared to monthly billing
-- Perfect for long-term users who want to maximize value
+<Accordion title="Choose Pay-as-You-Go if...">
+  - Your usage is irregular or unpredictable
+  - You're testing the service
+  - You want to supplement your subscription credits
+  - You prefer one-time purchases
+</Accordion>
 
-### 2. Pay-as-You-Go (Permanent Credits)
+<Callout type="tip">
+  <strong>Pro Tip:</strong> You can use both! Many users combine subscriptions with permanent credits for maximum flexibility.
+</Callout>
 
-**Pay-as-You-Go** allows you to purchase permanent credits that never expire. This model is ideal for:
-- Irregular or unpredictable usage
-- One-time projects
-- Testing and experimentation
-- Supplementing subscription credits
+## <Icon icon="rocket" /> Getting Started
 
-**Benefits:**
-- Credits never expire
-- Volume discounts available (up to 30% bonus)
-- No recurring commitment
-- Can be used alongside subscription credits
-- Rate limit scaling based on total purchases
+<Columns cols={2}>
+  <Card title="Subscriptions" icon="repeat" href="/billing/subscriptions">
+    Learn about subscription tiers and benefits
+  </Card>
+  <Card title="Permanent Credits" icon="wallet" href="/billing/pay-as-you-go">
+    Purchase credits that never expire
+  </Card>
+</Columns>
 
-## Which Model Should I Choose?
+## <Icon icon="link" /> Helpful Links
 
-**Choose Subscriptions if:**
-- You use the service regularly
-- You want predictable monthly costs
-- You need access to premium models
-- You prefer automatic daily credits
-
-**Choose Pay-as-You-Go if:**
-- Your usage is irregular or unpredictable
-- You're testing the service
-- You want to supplement your subscription credits
-- You prefer one-time purchases
-
-**You can use both!** Many users combine subscriptions with permanent credits for maximum flexibility.
-
-## Getting Started
-
-- **For Subscriptions**: See [Subscription Tiers](/billing/subscriptions)
-- **For Pay-as-You-Go**: See [Permanent Credits](/billing/pay-as-you-go)
-
-## Helpful Links
-
-- **Dashboard**: [https://playground.electronhub.ai/console](https://playground.electronhub.ai/console)
-- **Status Page**: [https://status.electronhub.ai](https://status.electronhub.ai)
-- **Terms of Service**: [https://tos.electronhub.ai](https://tos.electronhub.ai)
-- **Privacy Policy**: [https://privacy.electronhub.ai](https://privacy.electronhub.ai)
+<Columns cols={2}>
+  <Card title="Dashboard" icon="layout-dashboard" href="https://playground.electronhub.ai/console">
+    Manage your account and billing
+  </Card>
+  <Card title="Status Page" icon="activity" href="https://status.electronhub.ai">
+    Check service uptime and status
+  </Card>
+  <Card title="Terms of Service" icon="file-text" href="https://tos.electronhub.ai">
+    Review our terms and conditions
+  </Card>
+  <Card title="Privacy Policy" icon="shield" href="https://privacy.electronhub.ai">
+    Learn about our privacy practices
+  </Card>
+</Columns>

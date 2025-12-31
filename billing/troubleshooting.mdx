@@ -1,70 +1,140 @@
-# Billing Troubleshooting
+# <Icon icon="help-circle" /> Billing Troubleshooting
 
 Common billing issues and how to resolve them.
 
-## I ran out of credits. What can I do?
+<Callout type="info">
+  <Icon icon="info" /> If you can't find a solution here, contact support through the dashboard or email.
+</Callout>
 
-1. **Wait for daily reset** (21:00 UTC) to get your daily credits
-2. **Enable flex credits** if you have any saved
-3. **Enable permanent credits** if you have purchased credits
-4. **Purchase more permanent credits** through PayPal
-5. **Upgrade your subscription** for more daily credits
+## <Icon icon="alert-circle" /> I ran out of credits. What can I do?
 
-## My credits didn't reset at 21:00 UTC
+<Steps>
+  <Step title="Wait for Daily Reset">
+    Wait for daily reset (<Icon icon="clock" /> 21:00 UTC) to get your daily credits
+  </Step>
+  <Step title="Enable Flex Credits">
+    Enable flex credits if you have any saved
+  </Step>
+  <Step title="Enable Permanent Credits">
+    Enable permanent credits if you have purchased credits
+  </Step>
+  <Step title="Purchase More Credits">
+    Purchase more permanent credits through PayPal
+  </Step>
+  <Step title="Upgrade Subscription">
+    Upgrade your subscription for more daily credits
+  </Step>
+</Steps>
 
-Credits reset automatically at 21:00 UTC. If you don't see your credits:
-1. Refresh your dashboard
-2. Check that it's actually past 21:00 UTC
-3. Contact support if the issue persists
+<Accordion title="My credits didn't reset at 21:00 UTC" icon="refresh-cw">
+  <Card title="Troubleshooting Steps" icon="list" color="#8B5CF6">
+    Credits reset automatically at 21:00 UTC. If you don't see your credits:
+    1. Refresh your dashboard
+    2. Check that it's actually past 21:00 UTC
+    3. Contact support if the issue persists
+  </Card>
+</Accordion>
 
-## I purchased credits but they're not showing up
+<Accordion title="I purchased credits but they're not showing up" icon="wallet">
+  <Steps>
+    <Step title="Check PayPal">
+      Check your PayPal payment status
+    </Step>
+    <Step title="Refresh Dashboard">
+      Refresh your dashboard
+    </Step>
+    <Step title="Check Permanent Credits">
+      Check your permanent credits balance (separate from regular balance)
+    </Step>
+    <Step title="Enable Permanent Credits">
+      Make sure permanent credits are enabled in your settings
+    </Step>
+    <Step title="Contact Support">
+      Contact support with your order ID if still not showing
+    </Step>
+  </Steps>
+</Accordion>
 
-1. Check your PayPal payment status
-2. Refresh your dashboard
-3. Check your permanent credits balance (separate from regular balance)
-4. Make sure permanent credits are enabled in your settings
-5. Contact support with your order ID if still not showing
+<Accordion title="Why can't I use a premium or ultimate model?" icon="brain">
+  <Card title="Premium Models" icon="crown" color="#F59E0B">
+    **Premium models** can be accessed if you have:
+    - A **Starter plan or higher** subscription, OR
+    - **Permanent credits** (free tier users with permanent credits can access premium models)
+  </Card>
+  
+  <Card title="Ultimate Models" icon="infinity" color="#EF4444">
+    **Ultimate models** require a **Pro tier or higher** subscription.
+  </Card>
+  
+  <Callout type="tip">
+    Check your subscription tier in the dashboard. If you're on free tier without permanent credits, you can either:
+    - Purchase permanent credits to access premium models, or
+    - Upgrade through Patreon to access premium/ultimate models
+  </Callout>
+</Accordion>
 
-## Why can't I use a premium or ultimate model?
+<Accordion title="How do I enable/disable flex credits or permanent credits?" icon="settings">
+  <Steps>
+    <Step title="Access Dashboard">
+      Go to the [Electron Hub Dashboard](https://playground.electronhub.ai/console)
+    </Step>
+    <Step title="Navigate to Settings">
+      Navigate to account settings
+    </Step>
+    <Step title="Configure Credits">
+      - Toggle flex credits on/off
+      - Toggle permanent credits on/off
+      - Set permanent credits monthly limits
+    </Step>
+  </Steps>
+</Accordion>
 
-**Premium models** can be accessed if you have:
-- A **Starter plan or higher** subscription, OR
-- **Permanent credits** (free tier users with permanent credits can access premium models)
+<Accordion title="Why are free models sometimes unavailable?" icon="alert-triangle">
+  <Card title="Uptime Explanation" icon="info" color="#F59E0B">
+    Free models are hosted by Electron Hub and may experience downtime during peak usage to ensure fair resource distribution.
+  </Card>
+  
+  <Callout type="tip">
+    For better reliability:
+    - Use freemium models (they deduct credits but have better uptime)
+    - Subscribe to access premium models (routed to multiple providers for maximum uptime)
+  </Callout>
+</Accordion>
 
-**Ultimate models** require a **Pro tier or higher** subscription.
+## <Icon icon="undo" /> Refund Requests
 
-Check your subscription tier in the dashboard. If you're on free tier without permanent credits, you can either:
-- Purchase permanent credits to access premium models, or
-- Upgrade through Patreon to access premium/ultimate models
+<Accordion title="Permanent Credits Purchases" icon="wallet">
+  <Callout type="info">
+    Refunds are available within 30 days of purchase if you haven't used the credits. Once credits have been used, refunds are not available except in cases of technical errors or service issues.
+  </Callout>
+</Accordion>
 
-## How do I enable/disable flex credits or permanent credits?
+<Accordion title="Subscription Refunds" icon="repeat">
+  <Callout type="info">
+    Subscriptions are managed through Patreon. Refund requests for subscriptions should be made through Patreon's refund system.
+  </Callout>
+</Accordion>
 
-You can manage these settings in the [Electron Hub Dashboard](https://playground.electronhub.ai/console):
-- Navigate to account settings
-- Toggle flex credits on/off
-- Toggle permanent credits on/off
-- Set permanent credits monthly limits
+<Accordion title="Failed Requests" icon="x-circle">
+  <Callout type="info">
+    Credits are <strong>not charged</strong> for failed requests (only successful and cancelled requests are charged). If you believe you were incorrectly charged for a failed request, contact support with your request ID.
+  </Callout>
+</Accordion>
 
-## Why are free models sometimes unavailable?
+<Accordion title="Technical Issues" icon="wrench">
+  <Callout type="info">
+    If you experience technical issues that prevent you from using the service, contact support for assistance. Refunds may be provided on a case-by-case basis.
+  </Callout>
+</Accordion>
 
-Free models are hosted by Electron Hub and may experience downtime during peak usage to ensure fair resource distribution. For better reliability:
-- Use freemium models (they deduct credits but have better uptime)
-- Subscribe to access premium models (routed to multiple providers for maximum uptime)
+<Card title="How to Request a Refund" icon="mail" color="#8B5CF6">
+  To request a refund, contact support through the dashboard or email with:
+  - Your order ID or transaction ID
+  - Reason for refund request
+  - Date of purchase
+</Card>
 
-## Refund Requests
-
-**Permanent Credits Purchases**: Refunds are available within 30 days of purchase if you haven't used the credits. Once credits have been used, refunds are not available except in cases of technical errors or service issues.
-
-**Subscription Refunds**: Subscriptions are managed through Patreon. Refund requests for subscriptions should be made through Patreon's refund system.
-
-**Failed Requests**: Credits are **not charged** for failed requests (only successful and cancelled requests are charged). If you believe you were incorrectly charged for a failed request, contact support with your request ID.
-
-**Technical Issues**: If you experience technical issues that prevent you from using the service, contact support for assistance. Refunds may be provided on a case-by-case basis.
-
-To request a refund, contact support through the dashboard or email with:
-- Your order ID or transaction ID
-- Reason for refund request
-- Date of purchase
-
-For complete refund terms, please review our [Terms of Service](https://tos.electronhub.ai).
+<Callout type="tip">
+  For complete refund terms, please review our [Terms of Service](https://tos.electronhub.ai).
+</Callout>
 

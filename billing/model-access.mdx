@@ -1,67 +1,113 @@
-# Model Types & Access
+# <Icon icon="brain" /> Model Types & Access
 
 Understanding which models you can access and how they're billed.
 
-## Model Categories
+<Callout type="info">
+  <Icon icon="info" /> Model access depends on your subscription tier and credit balance. Some models require specific tiers, while others are available to all users.
+</Callout>
+
+## <Icon icon="layers" /> Model Categories
 
 Electron Hub has three main model categories:
 
-### 1. Free Models (`:free` suffix)
+<Accordion title="Free Models (:free suffix)" icon="gift">
+  <Card title="Free Models" icon="gift" color="#10B981">
+    - Models that end with `:free` (e.g., `gpt-3.5-turbo:free`)
+    - Use <Icon icon="zap" /> **Neutrinos** instead of credits
+    - No subscription required
+    - Best for: Testing, light usage, learning
+  </Card>
+  
+  <Callout type="warning">
+    <strong>Uptime:</strong> We don't guarantee 100% uptime at peak times (we host these ourselves and need to ensure fair usage)
+  </Callout>
+</Accordion>
 
-- Models that end with `:free` (e.g., `gpt-3.5-turbo:free`)
-- Use **Neutrinos** instead of credits
-- No subscription required
-- **Uptime**: We don't guarantee 100% uptime at peak times (we host these ourselves and need to ensure fair usage)
-- Best for: Testing, light usage, learning
+<Accordion title="Freemium Models" icon="star">
+  <Card title="Freemium Models" icon="star" color="#8B5CF6">
+    - Models that don't require a subscription
+    - <Icon icon="coins" /> **Do deduct credits** from your balance
+    - Available to all users (Free tier and above)
+    - Better uptime than free models
+    - Best for: Regular usage without subscription commitment
+  </Card>
+</Accordion>
 
-### 2. Freemium Models
+<Accordion title="Premium/Ultimate Models" icon="crown">
+  <Card title="Premium Models" icon="crown" color="#F59E0B">
+    - Models that **require a subscription** (Starter plan or higher) **OR permanent credits**
+    - Free tier users with permanent credits can access premium models
+    - <Icon icon="coins" /> Also deduct credits from your balance
+    - Better uptime than free/freemium models
+  </Card>
+  
+  <Card title="Ultimate Models" icon="infinity" color="#EF4444">
+    - Models that **require a Pro tier or higher** subscription
+    - <Icon icon="coins" /> Also deduct credits from your balance
+    - Best for: Production applications, critical workloads
+  </Card>
+</Accordion>
 
-- Models that don't require a subscription
-- **Do deduct credits** from your balance
-- Available to all users (Free tier and above)
-- Better uptime than free models
-- Best for: Regular usage without subscription commitment
+## <Icon icon="list" /> Premium Model Examples
 
-### 3. Premium/Ultimate Models
+<Card title="Popular Premium Models" icon="sparkles" color="#8B5CF6">
+  - `gpt-4`
+  - `o1`, `o1-low`, `o1-high`
+  - `o3-pro`, `o3-pro-low`, `o3-pro-high`
+  - `o3-deep-research`
+  - `claude-sonnet-4-5-20250929`
+  - `gemini-3-pro-preview`
+</Card>
 
-**Premium Models:**
-- Models that **require a subscription** (Starter plan or higher) **OR permanent credits**
-- Free tier users with permanent credits can access premium models
-- Also deduct credits from your balance
-- Better uptime than free/freemium models
+## <Icon icon="key" /> Model Access by Tier
 
-**Ultimate Models:**
-- Models that **require a Pro tier or higher** subscription
-- Also deduct credits from your balance
-- Best for: Production applications, critical workloads
+<Columns cols={2}>
+  <Card title="Free Tier" icon="gift" color="#10B981">
+    - Free models (with Neutrinos)
+    - Freemium models (with credits)
+  </Card>
+  
+  <Card title="Free + Permanent Credits" icon="wallet" color="#8B5CF6">
+    - Free models
+    - Freemium models
+    - <Icon icon="crown" /> **Premium models** (credits required)
+  </Card>
+  
+  <Card title="Starter/Plus/Core" icon="star" color="#F59E0B">
+    - All freemium models
+    - <Icon icon="crown" /> Premium models
+  </Card>
+  
+  <Card title="Pro/Business/Enterprise" icon="infinity" color="#EF4444">
+    - All models including
+    - <Icon icon="crown" /> Premium models
+    - <Icon icon="infinity" /> Ultimate models
+  </Card>
+</Columns>
 
-## Premium Model Examples
+<Callout type="info">
+  <strong>Note:</strong> Free tier users who have purchased permanent credits can access premium models (but not ultimate models). Ultimate models still require a Pro tier or higher subscription.
+</Callout>
 
-- `gpt-4`
-- `o1`, `o1-low`, `o1-high`
-- `o3-pro`, `o3-pro-low`, `o3-pro-high`
-- `o3-deep-research`
-- `claude-sonnet-4-5-20250929`
-- `gemini-3-pro-preview`
+<Callout type="tip">
+  Check the model list in the dashboard or API documentation to see which models require which tier.
+</Callout>
 
-## Model Access by Tier
+## <Icon icon="help-circle" /> Why don't free models guarantee 100% uptime?
 
-- **Free tier**: Free models (with Neutrinos) and freemium models (with credits)
-- **Free tier with permanent credits**: Free models, freemium models, and **premium models** (credits required)
-- **Starter/Plus/Core tiers**: All freemium models + premium models
-- **Pro/Business/Enterprise tiers**: All models including premium and ultimate models
+<Card title="Uptime Explanation" icon="info" color="#F59E0B">
+  Free models are hosted by Electron Hub directly, and during peak usage times, we need to ensure fair distribution of resources among all users.
+</Card>
 
-**Note**: Free tier users who have purchased permanent credits can access premium models (but not ultimate models). Ultimate models still require a Pro tier or higher subscription.
+<Callout type="tip">
+  For guaranteed uptime and better performance, we recommend:
+  - Using freemium models (deduct credits but better uptime)
+  - Subscribing to a premium tier to access premium models (routed to multiple providers)
+</Callout>
 
-Check the model list in the dashboard or API documentation to see which models require which tier.
+## <Icon icon="activity" /> Model Status
 
-## Why don't free models guarantee 100% uptime?
-
-Free models are hosted by Electron Hub directly, and during peak usage times, we need to ensure fair distribution of resources among all users. For guaranteed uptime and better performance, we recommend:
-- Using freemium models (deduct credits but better uptime)
-- Subscribing to a premium tier to access premium models (routed to multiple providers)
-
-## Model Status
-
-Check the [Status Page](https://status.electronhub.ai) for real-time uptime status of popular models.
+<Card title="Check Status" icon="activity" href="https://status.electronhub.ai" color="#10B981">
+  Check the [Status Page](https://status.electronhub.ai) for real-time uptime status of popular models.
+</Card>
 

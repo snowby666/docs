@@ -1,109 +1,163 @@
-# Understanding Credits
+# <Icon icon="coins" /> Understanding Credits
 
 Credits are the currency used in Electron Hub to pay for AI model usage. This guide explains all the different types of credits and how they work.
 
-## Types of Credits
+<Callout type="info">
+  <Icon icon="info" /> Credits are deducted based on the model you use and the number of tokens processed.
+</Callout>
 
-### Daily Credits
+## <Icon icon="layers" /> Types of Credits
 
-**Daily Credits** are credits that are automatically added to your account every day at **21:00 UTC** (9:00 PM UTC). The amount you receive depends on your subscription tier:
+<Accordion title="Daily Credits" icon="repeat">
+  **Daily Credits** are credits that are automatically added to your account every day at <Icon icon="clock" /> **21:00 UTC** (9:00 PM UTC). The amount you receive depends on your subscription tier:
 
-| Tier | Daily Credits |
-|------|---------------|
-| Free | 0.25 credits |
-| Starter | 2 credits |
-| Plus | 5 credits |
-| Core | 10 credits |
-| Pro | 15 credits |
-| Business | 30 credits |
-| Enterprise | 69+ credits (scales with custom payment) |
+  | Tier | Daily Credits |
+  |------|---------------|
+  | <Icon icon="gift" /> Free | 0.25 credits |
+  | <Icon icon="star" /> Starter | 2 credits |
+  | <Icon icon="zap" /> Plus | 5 credits |
+  | <Icon icon="rocket" /> Core | 10 credits |
+  | <Icon icon="crown" /> Pro | 15 credits |
+  | <Icon icon="building" /> Business | 30 credits |
+  | <Icon icon="infinity" /> Enterprise | 69+ credits (scales with custom payment) |
 
-**Important Notes:**
-- Daily credits reset at **21:00 UTC** every day
-- Unused daily credits do **not** carry over to the next day
-- Your balance is automatically set to your daily credits amount at reset time
-- Daily credits are separate from permanent credits
+  <Callout type="warning">
+    <strong>Important Notes:</strong>
+    - Daily credits reset at <Icon icon="clock" /> **21:00 UTC** every day
+    - Unused daily credits do <strong>not</strong> carry over to the next day
+    - Your balance is automatically set to your daily credits amount at reset time
+    - Daily credits are separate from permanent credits
+  </Callout>
+</Accordion>
 
-### Permanent Credits
+<Accordion title="Permanent Credits" icon="wallet">
+  **Permanent Credits** are credits you purchase with real money. 
+  
+  <Card title="Key Features" icon="infinity" color="#10B981">
+    - <Icon icon="infinity" /> Never expire
+    - <Icon icon="trending-up" /> Volume discounts available
+    - <Icon icon="layers" /> Can be used alongside daily credits
+  </Card>
+  
+  See [Pay-as-You-Go](/billing/pay-as-you-go) for details.
+</Accordion>
 
-**Permanent Credits** are credits you purchase with real money. See [Pay-as-You-Go](/billing/pay-as-you-go) for details.
+<Accordion title="Flex Credits" icon="piggy-bank">
+  **Flex Credits** (also called "Flex Wallet") are a savings feature that lets you save unused daily credits for later use.
 
-### Flex Credits
+  <Card title="How it works" icon="settings" color="#8B5CF6">
+    - You can save up to **20% of your daily credits** per day to your flex wallet
+    - The total cap is **100% of your daily credits** (e.g., if you get 15 credits/day, your flex wallet can hold up to 15 credits)
+    - You can only save once every 24 hours
+    - Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
+  </Card>
 
-**Flex Credits** (also called "Flex Wallet") are a savings feature that lets you save unused daily credits for later use.
+  <Card title="Example" icon="calculator" color="#F59E0B">
+    - You have a Pro subscription (15 credits/day)
+    - Daily save limit: 3 credits (20% of 15)
+    - Maximum flex wallet: 15 credits (100% of daily credits)
+    - If you save 3 credits every day for 5 days, you'll have 15 credits saved (the maximum)
+  </Card>
 
-**How it works:**
-- You can save up to **20% of your daily credits** per day to your flex wallet
-- The total cap is **100% of your daily credits** (e.g., if you get 15 credits/day, your flex wallet can hold up to 15 credits)
-- You can only save once every 24 hours
-- Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
+  <Callout type="tip">
+    <strong>When to use Flex Credits:</strong>
+    - Enable flex credits if you want to build up a buffer for heavy usage days
+    - Useful if you don't use all your daily credits every day
+    - Helps prevent losing unused credits at daily reset
+  </Callout>
+</Accordion>
 
-**Example:**
-- You have a Pro subscription (15 credits/day)
-- Daily save limit: 3 credits (20% of 15)
-- Maximum flex wallet: 15 credits (100% of daily credits)
-- If you save 3 credits every day for 5 days, you'll have 15 credits saved (the maximum)
+<Accordion title="Neutrinos" icon="zap">
+  **Neutrinos** are special free usage requests for **free models** (models that end with `:free` suffix). 
 
-**When to use Flex Credits:**
-- Enable flex credits if you want to build up a buffer for heavy usage days
-- Useful if you don't use all your daily credits every day
-- Helps prevent losing unused credits at daily reset
+  <Card title="Key Points" icon="info" color="#10B981">
+    - All users get **10 Neutrinos per day** (resets at 21:00 UTC)
+    - Neutrinos are used instead of credits for free models
+    - You can earn more Neutrinos by watching ads (if available)
+  </Card>
 
-### Neutrinos
+  <Callout type="warning">
+    <strong>Important:</strong> Neutrinos are charged for <strong>all requests</strong> (failed, cancelled, and successful) - unlike regular credits which are only charged for successful/cancelled requests.
+  </Callout>
+</Accordion>
 
-**Neutrinos** are special free usage requests for **free models** (models that end with `:free` suffix). 
+## <Icon icon="arrow-down" /> How Credits are Deducted
 
-**Key Points:**
-- All users get **10 Neutrinos per day** (resets at 21:00 UTC)
-- Neutrinos are used instead of credits for free models
-- You can earn more Neutrinos by watching ads (if available)
-- **Important**: Neutrinos are charged for **all requests** (failed, cancelled, and successful) - unlike regular credits which are only charged for successful/cancelled requests
+<Card title="Deduction Priority" icon="list-ordered" color="#8B5CF6">
+  Credits are deducted in this priority order:
+  1. <Icon icon="wallet" /> **Permanent credits** (if enabled and within monthly limit)
+  2. <Icon icon="coins" /> **Regular balance** (daily credits)
+  3. <Icon icon="piggy-bank" /> **Flex credits** (if enabled)
+</Card>
 
-## How Credits are Deducted
+<Card title="Charging Rules" icon="info" color="#EF4444">
+  <Callout type="info">
+    <strong>Regular Credits:</strong> Only charged for <strong>successful</strong> and <strong>cancelled</strong> requests. <strong>Failed requests are NOT charged.</strong>
+  </Callout>
+  
+  <Callout type="warning">
+    <strong>Neutrinos:</strong> Charged for <strong>all requests</strong> (failed, cancelled, and successful) - this is different from regular credits.
+  </Callout>
+</Card>
 
-Credits are deducted in this priority order:
-1. **Permanent credits** (if enabled and within monthly limit)
-2. **Regular balance** (daily credits)
-3. **Flex credits** (if enabled)
+<Card title="Example: Successful Request" icon="check-circle" color="#10B981">
+  - You have 5 permanent credits, 10 regular credits, and 3 flex credits
+  - You make a request costing 15 credits
+  - System uses: 5 permanent + 10 regular + 3 flex = 18 credits total (you have enough!)
+</Card>
 
-**Important Charging Rules:**
-- **Regular Credits**: Only charged for **successful** and **cancelled** requests. **Failed requests are NOT charged.**
-- **Neutrinos**: Charged for **all requests** (failed, cancelled, and successful) - this is different from regular credits.
+<Card title="Example: Failed Request" icon="x-circle" color="#F59E0B">
+  - You make a request that fails (e.g., model unavailable, timeout)
+  - <Icon icon="check" /> **Regular credits**: NOT charged (you keep your credits)
+  - <Icon icon="alert-circle" /> **Neutrinos**: Still charged (if using a `:free` model)
+</Card>
 
-**Example:**
-- You have 5 permanent credits, 10 regular credits, and 3 flex credits
-- You make a request costing 15 credits
-- System uses: 5 permanent + 10 regular + 3 flex = 18 credits total (you have enough!)
+## <Icon icon="clock" /> Credit Reset Times
 
-**Failed Request Example:**
-- You make a request that fails (e.g., model unavailable, timeout)
-- **Regular credits**: NOT charged (you keep your credits)
-- **Neutrinos**: Still charged (if using a `:free` model)
+<Columns cols={2}>
+  <Card title="Daily Reset" icon="repeat" color="#8B5CF6">
+    - <Icon icon="coins" /> **Daily credits**: Reset every day at **21:00 UTC**
+    - <Icon icon="zap" /> **Neutrinos**: Reset every day at **21:00 UTC**
+  </Card>
+  
+  <Card title="Never Reset" icon="infinity" color="#10B981">
+    - <Icon icon="wallet" /> **Permanent credits**: Never reset (they're permanent!)
+    - <Icon icon="piggy-bank" /> **Flex credits**: Never reset (but you can only save once per 24 hours)
+  </Card>
+</Columns>
 
-## Credit Reset Times
+<Callout type="info">
+  <strong>Monthly spending limits:</strong> Reset on the 1st of each month (for permanent credits monthly limits)
+</Callout>
 
-- **Daily credits**: Reset every day at **21:00 UTC** (9:00 PM UTC)
-- **Neutrinos**: Reset every day at **21:00 UTC**
-- **Permanent credits**: Never reset (they're permanent!)
-- **Flex credits**: Never reset (but you can only save once per 24 hours)
-- **Monthly spending limits**: Reset on the 1st of each month (for permanent credits monthly limits)
+## <Icon icon="eye" /> Checking Your Balance
 
-## Checking Your Balance
+<Card title="Where to Check" icon="layout-dashboard" color="#8B5CF6">
+  You can check your balance:
+  - In the [Electron Hub Dashboard](https://playground.electronhub.ai/console)
+  - Through the API by checking your user information
+  - Balance includes: regular credits, flex credits (if enabled), and permanent credits (if enabled)
+</Card>
 
-You can check your balance:
-- In the [Electron Hub Dashboard](https://playground.electronhub.ai/console)
-- Through the API by checking your user information
-- Balance includes: regular credits, flex credits (if enabled), and permanent credits (if enabled)
+## <Icon icon="settings" /> Managing Credit Settings
 
-## Managing Credit Settings
+<Steps>
+  <Step title="Access Dashboard">
+    Go to the [Electron Hub Dashboard](https://playground.electronhub.ai/console)
+  </Step>
+  <Step title="Navigate to Settings">
+    Navigate to account settings
+  </Step>
+  <Step title="Configure Credits">
+    - Toggle flex credits on/off
+    - Toggle permanent credits on/off
+    - Set permanent credits monthly limits
+  </Step>
+</Steps>
 
-You can manage these settings in the [Electron Hub Dashboard](https://playground.electronhub.ai/console):
-- Navigate to account settings
-- Toggle flex credits on/off
-- Toggle permanent credits on/off
-- Set permanent credits monthly limits
+## <Icon icon="users" /> Credit Transfers
 
-## Credit Transfers
-
-No, credits cannot be transferred between accounts. Each account's credits are tied to that specific account.
+<Callout type="warning">
+  <strong>No transfers:</strong> Credits cannot be transferred between accounts. Each account's credits are tied to that specific account.
+</Callout>
 
