@@ -1,10 +1,11 @@
-# <Icon icon="settings" /> Advanced Billing Topics
+---
+title: 'Advanced Billing Topics'
+description: 'Rate limits, caching, token pricing, and cost optimizations'
+icon: 'settings'
+---
 
 This section covers advanced billing features and optimizations.
 
-<Callout type="info">
-  <Icon icon="lightbulb" /> These advanced features can help you optimize costs and improve performance.
-</Callout>
 
 ## <Icon icon="database" /> Prompt Caching & Token Pricing
 
@@ -17,11 +18,11 @@ Some models support **prompt caching**, which can reduce costs when you reuse th
 </Card>
 
 <Card title="Token Pricing Structure" icon="calculator" color="#10B981">
-  - <Icon icon="dollar-sign" /> **Base input tokens**: Regular price per million tokens
-  - <Icon icon="arrow-up" /> **Cache write (5 min)**: 1.25x base input price (25% more expensive)
-  - <Icon icon="arrow-up" /> **Cache write (1 hour)**: 2x base input price (100% more expensive)
-  - <Icon icon="arrow-down" /> **Cache read**: 0.1x base input price (90% cheaper!)
-  - <Icon icon="dollar-sign" /> **Output tokens**: Usually more expensive than input tokens
+  - **Base input tokens**: Regular price per million tokens
+  - **Cache write (5 min)**: 1.25x base input price (25% more expensive)
+  - **Cache write (1 hour)**: 2x base input price (100% more expensive)
+  - **Cache read**: 0.1x base input price (90% cheaper!)
+  - **Output tokens**: Usually more expensive than input tokens
 </Card>
 
 <Callout type="tip">
@@ -53,13 +54,13 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
 </Card>
 
 <Card title="Base Rate Limits by Tier" icon="list" color="#F59E0B">
-  - <Icon icon="gift" /> Free: 5 requests/min
-  - <Icon icon="star" /> Starter: 10 requests/min
-  - <Icon icon="zap" /> Plus: 15 requests/min
-  - <Icon icon="rocket" /> Core: 20 requests/min
-  - <Icon icon="crown" /> Pro: 30 requests/min
-  - <Icon icon="building" /> Business: 60 requests/min
-  - <Icon icon="infinity" /> Enterprise: 100 requests/min
+  - Free: 5 requests/min
+  - Starter: 10 requests/min
+  - Plus: 15 requests/min
+  - Core: 20 requests/min
+  - Pro: 30 requests/min
+  - Business: 60 requests/min
+  - Enterprise: 100 requests/min
 </Card>
 
 <Callout type="info">
@@ -70,8 +71,8 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
 
 <Card title="Cost Calculation" icon="dollar-sign" color="#8B5CF6">
   Credits are calculated based on:
-  - <Icon icon="code" /> **Token-based models**: Price per million tokens × tokens used
-  - <Icon icon="image" /> **Fixed-price models**: Fixed cost per request (like image generation)
+  - **Token-based models**: Price per million tokens × tokens used
+  - **Fixed-price models**: Fixed cost per request (like image generation)
 </Card>
 
 <Callout type="tip">
@@ -88,8 +89,8 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
 
 <Card title="What are Tokens?" icon="info" color="#8B5CF6">
   **Tokens** are the units that AI models use to process text. When you send a message to an AI model:
-  - <Icon icon="arrow-right" /> **Input tokens** = the text you send (your prompt/question)
-  - <Icon icon="arrow-left" /> **Output tokens** = the text the AI generates (the response)
+  - **Input tokens** = the text you send (your prompt/question)
+  - **Output tokens** = the text the AI generates (the response)
 </Card>
 
 <Callout type="info">

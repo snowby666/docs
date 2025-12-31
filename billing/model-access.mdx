@@ -1,10 +1,11 @@
-# <Icon icon="brain" /> Model Types & Access
+---
+title: 'Model Types & Access'
+description: 'Understanding which models you can access and how they are billed'
+icon: 'brain'
+---
 
 Understanding which models you can access and how they're billed.
 
-<Callout type="info">
-  <Icon icon="info" /> Model access depends on your subscription tier and credit balance. Some models require specific tiers, while others are available to all users.
-</Callout>
 
 ## <Icon icon="layers" /> Model Categories
 
@@ -13,7 +14,7 @@ Electron Hub has three main model categories:
 <Accordion title="Free Models (:free suffix)" icon="gift">
   <Card title="Free Models" icon="gift" color="#10B981">
     - Models that end with `:free` (e.g., `gpt-3.5-turbo:free`)
-    - Use <Icon icon="zap" /> **Neutrinos** instead of credits
+    - Use **Neutrinos** instead of credits
     - No subscription required
     - Best for: Testing, light usage, learning
   </Card>
@@ -26,7 +27,7 @@ Electron Hub has three main model categories:
 <Accordion title="Freemium Models" icon="star">
   <Card title="Freemium Models" icon="star" color="#8B5CF6">
     - Models that don't require a subscription
-    - <Icon icon="coins" /> **Do deduct credits** from your balance
+    - **Do deduct credits** from your balance
     - Available to all users (Free tier and above)
     - Better uptime than free models
     - Best for: Regular usage without subscription commitment
@@ -37,20 +38,20 @@ Electron Hub has three main model categories:
   <Card title="Premium Models" icon="crown" color="#F59E0B">
     - Models that **require a subscription** (Starter plan or higher) **OR permanent credits**
     - Free tier users with permanent credits can access premium models
-    - <Icon icon="coins" /> Also deduct credits from your balance
+    - Also deduct credits from your balance
     - Better uptime than free/freemium models
   </Card>
   
   <Card title="Ultimate Models" icon="infinity" color="#EF4444">
     - Models that **require a Pro tier or higher** subscription
-    - <Icon icon="coins" /> Also deduct credits from your balance
+    - Also deduct credits from your balance
     - Best for: Production applications, critical workloads
   </Card>
 </Accordion>
 
 ## <Icon icon="list" /> Premium Model Examples
 
-<Card title="Popular Premium Models" icon="sparkles" color="#8B5CF6">
+<Card title="Popular Premium Models" icon="wand-2" color="#8B5CF6">
   - `gpt-4`
   - `o1`, `o1-low`, `o1-high`
   - `o3-pro`, `o3-pro-low`, `o3-pro-high`
@@ -70,27 +71,23 @@ Electron Hub has three main model categories:
   <Card title="Free + Permanent Credits" icon="wallet" color="#8B5CF6">
     - Free models
     - Freemium models
-    - <Icon icon="crown" /> **Premium models** (credits required)
+    - **Premium models** (credits required)
   </Card>
   
   <Card title="Starter/Plus/Core" icon="star" color="#F59E0B">
     - All freemium models
-    - <Icon icon="crown" /> Premium models
+    - Premium models
   </Card>
   
   <Card title="Pro/Business/Enterprise" icon="infinity" color="#EF4444">
     - All models including
-    - <Icon icon="crown" /> Premium models
-    - <Icon icon="infinity" /> Ultimate models
+    - Premium models
+    - Ultimate models
   </Card>
 </Columns>
 
 <Callout type="info">
-  <strong>Note:</strong> Free tier users who have purchased permanent credits can access premium models (but not ultimate models). Ultimate models still require a Pro tier or higher subscription.
-</Callout>
-
-<Callout type="tip">
-  Check the model list in the dashboard or API documentation to see which models require which tier.
+  <strong>Note:</strong> Free tier users who have purchased permanent credits can access premium models (but not ultimate models). Ultimate models still require a Pro tier or higher subscription. Check the model list in the dashboard or API documentation to see which models require which tier.
 </Callout>
 
 ## <Icon icon="help-circle" /> Why don't free models guarantee 100% uptime?

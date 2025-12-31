@@ -1,29 +1,30 @@
-# <Icon icon="coins" /> Understanding Credits
+---
+title: 'Understanding Credits'
+description: 'Learn about all credit types and how they work'
+icon: 'coins'
+---
 
 Credits are the currency used in Electron Hub to pay for AI model usage. This guide explains all the different types of credits and how they work.
 
-<Callout type="info">
-  <Icon icon="info" /> Credits are deducted based on the model you use and the number of tokens processed.
-</Callout>
 
 ## <Icon icon="layers" /> Types of Credits
 
 <Accordion title="Daily Credits" icon="repeat">
-  **Daily Credits** are credits that are automatically added to your account every day at <Icon icon="clock" /> **21:00 UTC** (9:00 PM UTC). The amount you receive depends on your subscription tier:
+  **Daily Credits** are credits that are automatically added to your account every day at **21:00 UTC** (9:00 PM UTC). The amount you receive depends on your subscription tier:
 
   | Tier | Daily Credits |
   |------|---------------|
-  | <Icon icon="gift" /> Free | 0.25 credits |
-  | <Icon icon="star" /> Starter | 2 credits |
-  | <Icon icon="zap" /> Plus | 5 credits |
-  | <Icon icon="rocket" /> Core | 10 credits |
-  | <Icon icon="crown" /> Pro | 15 credits |
-  | <Icon icon="building" /> Business | 30 credits |
-  | <Icon icon="infinity" /> Enterprise | 69+ credits (scales with custom payment) |
+  | Free | 0.25 credits |
+  | Starter | 2 credits |
+  | Plus | 5 credits |
+  | Core | 10 credits |
+  | Pro | 15 credits |
+  | Business | 30 credits |
+  | Enterprise | 69+ credits (scales with custom payment) |
 
   <Callout type="warning">
     <strong>Important Notes:</strong>
-    - Daily credits reset at <Icon icon="clock" /> **21:00 UTC** every day
+    - Daily credits reset at **21:00 UTC** every day
     - Unused daily credits do <strong>not</strong> carry over to the next day
     - Your balance is automatically set to your daily credits amount at reset time
     - Daily credits are separate from permanent credits
@@ -34,15 +35,15 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   **Permanent Credits** are credits you purchase with real money. 
   
   <Card title="Key Features" icon="infinity" color="#10B981">
-    - <Icon icon="infinity" /> Never expire
-    - <Icon icon="trending-up" /> Volume discounts available
-    - <Icon icon="layers" /> Can be used alongside daily credits
+    - Never expire
+    - Volume discounts available
+    - Can be used alongside daily credits
   </Card>
   
   See [Pay-as-You-Go](/billing/pay-as-you-go) for details.
 </Accordion>
 
-<Accordion title="Flex Credits" icon="piggy-bank">
+<Accordion title="Flex Credits" icon="wallet">
   **Flex Credits** (also called "Flex Wallet") are a savings feature that lets you save unused daily credits for later use.
 
   <Card title="How it works" icon="settings" color="#8B5CF6">
@@ -83,11 +84,11 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
 
 ## <Icon icon="arrow-down" /> How Credits are Deducted
 
-<Card title="Deduction Priority" icon="list-ordered" color="#8B5CF6">
+<Card title="Deduction Priority" icon="list" color="#8B5CF6">
   Credits are deducted in this priority order:
-  1. <Icon icon="wallet" /> **Permanent credits** (if enabled and within monthly limit)
-  2. <Icon icon="coins" /> **Regular balance** (daily credits)
-  3. <Icon icon="piggy-bank" /> **Flex credits** (if enabled)
+  1. **Permanent credits** (if enabled and within monthly limit)
+  2. **Regular balance** (daily credits)
+  3. **Flex credits** (if enabled)
 </Card>
 
 <Card title="Charging Rules" icon="info" color="#EF4444">
@@ -108,21 +109,21 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
 
 <Card title="Example: Failed Request" icon="x-circle" color="#F59E0B">
   - You make a request that fails (e.g., model unavailable, timeout)
-  - <Icon icon="check" /> **Regular credits**: NOT charged (you keep your credits)
-  - <Icon icon="alert-circle" /> **Neutrinos**: Still charged (if using a `:free` model)
+  - **Regular credits**: NOT charged (you keep your credits)
+  - **Neutrinos**: Still charged (if using a `:free` model)
 </Card>
 
 ## <Icon icon="clock" /> Credit Reset Times
 
 <Columns cols={2}>
   <Card title="Daily Reset" icon="repeat" color="#8B5CF6">
-    - <Icon icon="coins" /> **Daily credits**: Reset every day at **21:00 UTC**
-    - <Icon icon="zap" /> **Neutrinos**: Reset every day at **21:00 UTC**
+    - **Daily credits**: Reset every day at **21:00 UTC**
+    - **Neutrinos**: Reset every day at **21:00 UTC**
   </Card>
   
   <Card title="Never Reset" icon="infinity" color="#10B981">
-    - <Icon icon="wallet" /> **Permanent credits**: Never reset (they're permanent!)
-    - <Icon icon="piggy-bank" /> **Flex credits**: Never reset (but you can only save once per 24 hours)
+    - **Permanent credits**: Never reset (they're permanent!)
+    - **Flex credits**: Never reset (but you can only save once per 24 hours)
   </Card>
 </Columns>
 
@@ -132,7 +133,7 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
 
 ## <Icon icon="eye" /> Checking Your Balance
 
-<Card title="Where to Check" icon="layout-dashboard" color="#8B5CF6">
+<Card title="Where to Check" icon="layout" color="#8B5CF6">
   You can check your balance:
   - In the [Electron Hub Dashboard](https://playground.electronhub.ai/console)
   - Through the API by checking your user information
@@ -155,7 +156,7 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   </Step>
 </Steps>
 
-## <Icon icon="users" /> Credit Transfers
+## <Icon icon="user-minus" /> Credit Transfers
 
 <Callout type="warning">
   <strong>No transfers:</strong> Credits cannot be transferred between accounts. Each account's credits are tied to that specific account.
