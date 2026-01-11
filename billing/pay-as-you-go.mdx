@@ -40,13 +40,10 @@ Pay-as-You-Go allows you to purchase permanent credits that never expire. This g
 
 <Columns cols={2}>
   <Card title="PayPal" icon="credit-card" color="#0070BA">
-    **Instant payment processing**
-    
-    - No additional fees
-    - Credits added immediately after payment
-    - Minimum: `$5` USD
-    - Maximum: `$5,000` USD per transaction
-    - Secure and widely accepted
+    - **Range:** `$5` - `$5,000` USD
+    - **Fees:** No fees
+    - **Processing:** Instant
+    - **Credits:** Added immediately
     
     <Info>
       <strong>Best for:</strong> Quick purchases, users who prefer traditional payment methods
@@ -54,30 +51,17 @@ Pay-as-You-Go allows you to purchase permanent credits that never expire. This g
   </Card>
   
   <Card title="Cryptocurrency" icon="bitcoin" color="#F7931A">
-    **Pay with crypto**
-    
-    - Supports **300+ cryptocurrencies** (BTC, ETH, USDT, LTC, DOGE, SOL, and more)
-    - **5% processing fee** applies
-    - Confirmations take **10 minutes to 24 hours**
-    - Minimum: `$25` USD
-    - Maximum: `$1,000` USD per transaction
+    - **Range:** `$25` - `$1,000` USD
+    - **Fees:** 5% processing fee
+    - **Processing:** 10 minutes to 24 hours
+    - **Credits:** Added after confirmation
+    - **Supported:** 300+ cryptocurrencies (BTC, ETH, USDT, LTC, DOGE, SOL, and more)
     
     <Warning>
-      <strong>Important:</strong> Crypto payments have a 5% fee and transaction confirmations may take 10 minutes to 24 hours. Orders expire after 24 hours if not confirmed.
+      Orders expire after 24 hours if payment is not confirmed.
     </Warning>
   </Card>
 </Columns>
-
-<Card title="Payment Method Comparison" icon="compare" color="#8B5CF6">
-  | Feature | PayPal | Cryptocurrency |
-  |---------|--------|----------------|
-  | **Minimum** | `$5` USD | `$25` USD |
-  | **Maximum** | `$5,000` USD | `$1,000` USD |
-  | **Fees** | No fees | 5% processing fee |
-  | **Processing Time** | Instant | 10 minutes to 24 hours |
-  | **Credit Addition** | Immediate | After confirmation |
-  | **Supported Currencies** | USD only | 300+ cryptocurrencies |
-</Card>
 
 ## How to Purchase
 
@@ -92,33 +76,23 @@ Pay-as-You-Go allows you to purchase permanent credits that never expire. This g
     Choose between **PayPal** or **Cryptocurrency**
   </Step>
   <Step title="Select Amount">
-    Select the amount you want to purchase
-    - **PayPal**: Between `$5` and `$5,000` USD
-    - **Crypto**: Between `$25` and `$1,000` USD
+    Select the amount you want to purchase (see Payment Methods above for limits)
   </Step>
   <Step title="Complete Payment">
-    - **PayPal**: Complete payment through PayPal (instant)
-    - **Crypto**: Send payment using your chosen cryptocurrency (confirmations may take 10 minutes to 24 hours)
+    Complete payment through your chosen method
   </Step>
   <Step title="Credits Added">
-    - **PayPal**: Credits added immediately after payment
-    - **Crypto**: Credits added after payment confirmation (typically 10 minutes to 24 hours)
+    Credits are added to your account (PayPal: instant, Crypto: after confirmation)
   </Step>
 </Steps>
 
 ## Payment Limits
 
 <Card title="Purchase Limits" icon="lock" color="#EF4444">
-  To prevent abuse, there are limits on purchases:
-  - **Daily limit**: 20 orders per day (applies to both PayPal and Crypto)
-  - **Monthly limit**: `$5,000` USD per month (applies to both PayPal and Crypto)
-  - **PayPal-specific limits**:
-    - Minimum: `$5` USD per transaction
-    - Maximum: `$5,000` USD per transaction
-  - **Crypto-specific limits**:
-    - Minimum: `$25` USD per transaction
-    - Maximum: `$1,000` USD per transaction
-  - These limits reset automatically
+  - **Daily limit**: 20 orders per day
+  - **Monthly limit**: `$5,000` USD per month
+  - **Transaction limits**: See Payment Methods section above
+  - Limits reset automatically
 </Card>
 
 ## Monthly Spending Limits
