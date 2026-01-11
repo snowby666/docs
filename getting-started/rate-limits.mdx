@@ -113,25 +113,27 @@ Some models have additional daily limits beyond the standard rate limits:
 
 ### Google Models (Daily Limits)
 
-Google experimental and preview models have daily usage limits that reset at 21:00 UTC:
+Google experimental/preview/image models have daily usage limits that reset at 21:00 UTC:
 
 | Subscription Plan | Daily Requests | Models Affected |
 | ----------------- | -------------- | --------------- |
-| **Free**          | 50             | Experimental/Preview models only |
-| **Starter**       | 100            | Experimental/Preview models only |
-| **Plus**          | 200            | Experimental/Preview models only |
-| **Core**          | 300            | Experimental/Preview models only |
-| **Pro**           | 500            | Experimental/Preview models only |
-| **Business**      | 1000           | Experimental/Preview models only |
-| **Enterprise**    | 2000           | Experimental/Preview models only |
+| **Free**          | 50             | Experimental/Preview/Image models only |
+| **Starter**       | 100            | Experimental/Preview/Image models only |
+| **Plus**          | 200            | Experimental/Preview/Image models only |
+| **Core**          | 300            | Experimental/Preview/Image models only |
+| **Pro**           | 500            | Experimental/Preview/Image models only |
+| **Business**      | 1000           | Experimental/Preview/Image models only |
+| **Enterprise**    | 2000           | Experimental/Preview/Image models only |
 
 <Info>
-**Experimental/Preview models** include models with `-exp` or `-preview` in their names, such as:
+**Experimental/Preview/Image models** include models with `-exp`, `-preview`, or `-image` in their names, such as:
 - `gemini-1.5-flash-exp`
 - `gemini-2.0-flash-exp` 
 - `gemini-2.0-flash-thinking-exp-1219`
 - `gemini-2.5-flash-preview-05-20`
 - `gemini-2.5-pro-preview-05-06`
+- `gemini-2.5-flash-image`
+- `gemini-3-pro-image-preview`
 
 Regular Google models (like `gemini-1.5-flash`, `gemini-1.5-pro`, `gemma-3-27b-it`) are **not** subject to these daily limits.
 </Info>
