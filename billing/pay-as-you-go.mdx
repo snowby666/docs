@@ -12,7 +12,7 @@ Pay-as-You-Go allows you to purchase permanent credits that never expire. This g
 <Card icon="wallet" color="#10B981">
   **Permanent Credits** are credits you purchase with real money. Unlike daily credits, these credits:
   - **Never expire** - they stay in your account forever
-  - Can be purchased through PayPal
+  - Can be purchased through **PayPal** or **Cryptocurrency**
   - Can be used alongside daily credits
   - Have volume discounts (the more you spend, the more bonus credits you get)
 </Card>
@@ -36,6 +36,37 @@ Pay-as-You-Go allows you to purchase permanent credits that never expire. This g
   - After `$1,500` total: `$100` purchase = 390 credits (30% bonus, maximum)
 </Card>
 
+## Payment Methods
+
+<Columns cols={2}>
+  <Card title="PayPal" icon="credit-card" color="#0070BA">
+    **Instant payment processing**
+    
+    - No additional fees
+    - Credits added immediately after payment
+    - Supports all purchase amounts
+    - Secure and widely accepted
+    
+    <Info>
+      <strong>Best for:</strong> Quick purchases, users who prefer traditional payment methods
+    </Info>
+  </Card>
+  
+  <Card title="Cryptocurrency" icon="bitcoin" color="#F7931A">
+    **Pay with crypto**
+    
+    - Supports **300+ cryptocurrencies** (BTC, ETH, USDT, LTC, DOGE, SOL, and more)
+    - **5% processing fee** applies
+    - Confirmations take **10 minutes to 24 hours**
+    - Minimum: `$25` USD
+    - Maximum: `$1,000` USD per transaction
+    
+    <Warning>
+      <strong>Important:</strong> Crypto payments have a 5% fee and transaction confirmations may take 10 minutes to 24 hours. Orders expire after 24 hours if not confirmed.
+    </Warning>
+  </Card>
+</Columns>
+
 ## How to Purchase
 
 <Steps>
@@ -45,14 +76,21 @@ Pay-as-You-Go allows you to purchase permanent credits that never expire. This g
   <Step title="Navigate to Payment">
     Navigate to the credits/payment section
   </Step>
+  <Step title="Select Payment Method">
+    Choose between **PayPal** or **Cryptocurrency**
+  </Step>
   <Step title="Select Amount">
     Select the amount you want to purchase
+    - **PayPal**: Any amount
+    - **Crypto**: Between `$25` and `$1,000` USD
   </Step>
   <Step title="Complete Payment">
-    Complete the payment through PayPal
+    - **PayPal**: Complete payment through PayPal (instant)
+    - **Crypto**: Send payment using your chosen cryptocurrency (confirmations may take 10 minutes to 24 hours)
   </Step>
   <Step title="Credits Added">
-    Credits are added to your account immediately after payment
+    - **PayPal**: Credits added immediately after payment
+    - **Crypto**: Credits added after payment confirmation (typically 10 minutes to 24 hours)
   </Step>
 </Steps>
 
@@ -60,10 +98,59 @@ Pay-as-You-Go allows you to purchase permanent credits that never expire. This g
 
 <Card title="Purchase Limits" icon="lock" color="#EF4444">
   To prevent abuse, there are limits on purchases:
-  - **Daily limit**: 20 orders per day
-  - **Monthly limit**: `$5,000` USD per month
+  - **Daily limit**: 20 orders per day (applies to both PayPal and Crypto)
+  - **Monthly limit**: `$5,000` USD per month (applies to both PayPal and Crypto)
+  - **Crypto-specific limits**:
+    - Minimum: `$25` USD per transaction
+    - Maximum: `$1,000` USD per transaction
   - These limits reset automatically
 </Card>
+
+## Crypto Payment Details
+
+<Accordion title="Supported Cryptocurrencies" icon="coins">
+  We support **300+ cryptocurrencies** including:
+  
+  - **Bitcoin (BTC)**
+  - **Ethereum (ETH)**
+  - **Tether (USDT)**
+  - **Litecoin (LTC)**
+  - **Dogecoin (DOGE)**
+  - **Solana (SOL)**
+  - And many more!
+  
+  <Info>
+    The payment widget will show all available cryptocurrencies when you select crypto as your payment method.
+  </Info>
+</Accordion>
+
+<Accordion title="Crypto Fees and Processing" icon="calculator">
+  **Fee Structure:**
+  - **5% processing fee** applies to all crypto payments
+  - Example: `$100` purchase = `$105` total charge (includes `$5` fee)
+  
+  **Processing Time:**
+  - Confirmations typically take **10 minutes to 24 hours**
+  - Time depends on the cryptocurrency network and current congestion
+  - Credits are added automatically once payment is confirmed
+  
+  **Order Expiration:**
+  - Orders expire after **24 hours** if payment is not confirmed
+  - Expired orders are automatically cancelled
+  - You can create a new order if your payment didn't confirm in time
+</Accordion>
+
+<Accordion title="Crypto Payment Security" icon="shield-check">
+  **Security Features:**
+  - All payments are processed through **NOWPayments** (secure payment gateway)
+  - Webhook verification ensures payment authenticity
+  - HMAC-SHA512 signature verification for all webhook events
+  - Automatic reconciliation checks every 5 minutes
+  
+  <Warning>
+    <strong>Important:</strong> Never share your payment addresses or transaction details publicly. Always verify payment addresses through the official Electron Hub dashboard.
+  </Warning>
+</Accordion>
 
 ## Monthly Spending Limits
 
