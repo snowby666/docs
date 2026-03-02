@@ -45,32 +45,32 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 
 ## Understanding Credits
 
-### What are Daily Credits?
+### What are Weekly Credits?
 
-**Daily Credits** are credits that are automatically added to your account every day at **21:00 UTC** (9:00 PM UTC). The amount you receive depends on your subscription tier:
+**Weekly Credits** are credits that are automatically added to your account every **Sunday at 21:00 UTC** (9:00 PM UTC). The amount you receive depends on your subscription tier:
 
-| Tier | Daily Credits |
-|------|---------------|
-| Free | 0.25 credits |
-| Starter | 2 credits |
-| Plus | 5 credits |
-| Core | 10 credits |
-| Pro | 15 credits |
-| Business | 30 credits |
-| Enterprise | 69+ credits (scales with custom payment) |
+| Tier | Weekly Credits |
+|------|----------------|
+| Free | $0.25 |
+| Starter | $8 |
+| Plus | $15 |
+| Core | $30 |
+| Pro | $50 |
+| Business | $100 |
+| Enterprise | $200+ (scales with custom payment) |
 
 **Important Notes:**
-- Daily credits reset at **21:00 UTC** every day
-- Unused daily credits do **not** carry over to the next day
-- Your balance is automatically set to your daily credits amount at reset time
-- Daily credits are separate from permanent credits (see below)
+- Weekly credits refill every **Sunday at 21:00 UTC**
+- Unused weekly credits do **not** carry over to the next week
+- Your balance is automatically set to your weekly credits amount at refill time
+- Weekly credits are separate from permanent credits (see below)
 
 ### What are Permanent Credits?
 
-**Permanent Credits** are credits you purchase with real money. Unlike daily credits, these credits:
+**Permanent Credits** are credits you purchase with real money. Unlike weekly credits, these credits:
 - **Never expire** - they stay in your account forever
 - Can be purchased through PayPal
-- Can be used alongside daily credits
+- Can be used alongside weekly credits
 - Have volume discounts (the more you spend, the more bonus credits you get)
 
 **Pricing:**
@@ -85,24 +85,25 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 
 ### What are Flex Credits?
 
-**Flex Credits** (also called "Flex Wallet") are a savings feature that lets you save unused daily credits for later use.
+**Flex Credits** (also called "Flex Wallet") are a savings feature that lets you save unused weekly credits for later use.
 
 **How it works:**
-- You can save up to **20% of your daily credits** per day to your flex wallet
-- The total cap is **100% of your daily credits** (e.g., if you get 15 credits/day, your flex wallet can hold up to 15 credits)
-- You can only save once every 24 hours
+- You can save up to **20% of your weekly credits** per week to your flex wallet
+- The total cap is **50% of your weekly credits** (e.g., if you get $50/week, your flex wallet can hold up to $25)
+- You can save at any time (no cooldown) — the weekly save limit resets every Sunday at 21:00 UTC
 - Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
+- Flex balance rolls over until you use it
 
 **Example:**
-- You have a Pro subscription (15 credits/day)
-- Daily save limit: 3 credits (20% of 15)
-- Maximum flex wallet: 15 credits (100% of daily credits)
-- If you save 3 credits every day for 5 days, you'll have 15 credits saved (the maximum)
+- You have a Pro subscription ($50/week)
+- Weekly save limit: $10 (20% of $50)
+- Maximum flex wallet: $25 (50% of $50)
+- If you save $10 every week for 2.5 weeks, you'll have $25 saved (the maximum)
 
 **When to use Flex Credits:**
-- Enable flex credits if you want to build up a buffer for heavy usage days
-- Useful if you don't use all your daily credits every day
-- Helps prevent losing unused credits at daily reset
+- Enable flex credits if you want to build up a buffer for heavy usage weeks
+- Useful if you don't use all your weekly credits every week
+- Flex balance rolls over — save up over a few weeks and use it when you need extra credits
 
 ### What are Neutrinos?
 
@@ -167,18 +168,18 @@ For complete refund terms, please review our [Terms of Service](https://tos.elec
 
 Electron Hub offers several subscription tiers through Patreon:
 
-| Tier | Name | Daily Credits | Max Bots | Studio Credits |
-|------|------|---------------|----------|----------------|
-| 0 | Free | 0.25 | 5 | 5 |
-| 1 | Starter | 2 | 20 | 20 |
-| 5 | Plus | 5 | 30 | 50 |
-| 6 | Core | 10 | 50 | 75 |
-| 2 | Pro | 15 | 100 | 150 |
-| 3 | Business | 30 | 150 | 300 |
-| 4 | Enterprise | 69+ (custom) | 200 | 500 |
+| Tier | Name | Weekly Credits | Max Bots | Studio Credits |
+|------|------|----------------|----------|----------------|
+| 0 | Free | $0.25 | 5 | 5 |
+| 1 | Starter | $8 | 20 | 20 |
+| 5 | Plus | $15 | 30 | 50 |
+| 6 | Core | $30 | 50 | 75 |
+| 2 | Pro | $50 | 100 | 150 |
+| 3 | Business | $100 | 150 | 300 |
+| 4 | Enterprise | $200+ (custom) | 200 | 500 |
 
 **Benefits of Higher Tiers:**
-- More daily credits
+- More weekly credits
 - Access to premium/ultimate models
 - Higher rate limits
 - More bot creation slots
@@ -189,24 +190,24 @@ Electron Hub offers several subscription tiers through Patreon:
 The **Enterprise tier (Tier 4)** is a custom plan that scales with your Patreon payment amount:
 
 **Base Benefits:**
-- Base daily credits: **69 credits**
-- Base monthly cost: $79.20 (old plan) or $199.20 (new plan, 80% of $249)
+- Base weekly credits: **$200**
+- Base monthly cost: $249
 - 200 max bots
 - 500 studio credits
 
 **Custom Scaling:**
-If you pay more than the base cost on Patreon, your daily credits scale automatically:
-- **Extra credits formula**: For every dollar above the base cost, you get **0.5 additional credits**
+If you pay more than the base cost on Patreon, your weekly credits scale automatically:
+- **Extra credits formula**: For every dollar above the base cost, you get **1 additional credit per week**
 - **Example**: If you pay $300/month instead of $249:
   - Extra paid: $300 - $249 = $51
-  - Extra credits: $51 × 0.5 = 25.5 credits
-  - **Total daily credits**: 69 + 25.5 = **94.5 credits/day**
+  - Extra credits: $51 × 1 = $51 credits
+  - **Total weekly credits**: $200 + $51 = **$251/week**
 
 **How it works:**
 - Your Patreon payment amount is automatically detected
-- Daily credits are calculated based on your actual payment
+- Weekly credits are calculated based on your actual payment
 - Credits update automatically when your payment changes
-- Works for both monthly and yearly subscriptions (yearly payments are divided by 12 for monthly calculation)
+- Works for both monthly and yearly subscriptions (yearly payments are divided by 12 for monthly calculation, with a 20% annual discount)
 
 This allows Enterprise users to customize their plan based on their needs and budget.
 
@@ -228,7 +229,7 @@ Subscriptions renew based on your Patreon subscription cycle (usually monthly). 
 
 If your subscription expires:
 - You'll be downgraded to the Free tier
-- You'll receive 0.25 daily credits
+- You'll receive $0.25 weekly credits
 - You'll lose access to premium/ultimate models
 - Your permanent credits remain (they never expire)
 - Your flex credits remain (if you have any)
@@ -292,7 +293,7 @@ Check the model list in the dashboard or API documentation to see which models r
 
 Credits are deducted in this priority order:
 1. **Permanent credits** (if enabled and within monthly limit)
-2. **Regular balance** (daily credits)
+2. **Regular balance** (weekly credits)
 3. **Flex credits** (if enabled)
 
 **Important Charging Rules:**
@@ -311,15 +312,15 @@ Credits are deducted in this priority order:
 
 ### When do credits reset?
 
-- **Daily credits**: Reset every day at **21:00 UTC** (9:00 PM UTC)
+- **Weekly credits**: Refill every **Sunday at 21:00 UTC** (9:00 PM UTC)
 - **Neutrinos**: Reset every day at **21:00 UTC**
 - **Permanent credits**: Never reset (they're permanent!)
-- **Flex credits**: Never reset (but you can only save once per 24 hours)
+- **Flex credits balance**: Rolls over until used (weekly save limit resets every Sunday at 21:00 UTC)
 - **Monthly spending limits**: Reset on the 1st of each month (for permanent credits monthly limits)
 
-### What happens to unused daily credits?
+### What happens to unused weekly credits?
 
-Unused daily credits are **lost** at the daily reset (21:00 UTC). This is why Flex Credits are useful - you can save up to 20% of your daily credits to your flex wallet to use later.
+Unused weekly credits are **lost** at the weekly refill (Sunday 21:00 UTC). This is why Flex Credits are useful - you can save up to 20% of your weekly credits to your flex wallet each week, and your flex balance rolls over.
 
 ### Can I transfer credits to another account?
 
@@ -412,21 +413,21 @@ You can enable **low balance alerts** for permanent credits:
 
 ### I ran out of credits. What can I do?
 
-1. **Wait for daily reset** (21:00 UTC) to get your daily credits
+1. **Wait for the weekly refill** (Sunday 21:00 UTC) to get your weekly credits
 2. **Enable flex credits** if you have any saved
 3. **Enable permanent credits** if you have purchased credits
 4. **Purchase more permanent credits** through PayPal
-5. **Upgrade your subscription** for more daily credits
+5. **Upgrade your subscription** for more weekly credits
 
 ### Why can't I use a premium model?
 
 Premium models require a **Pro tier or higher** subscription. Check your subscription tier in the dashboard. If you're on a lower tier, you'll need to upgrade through Patreon.
 
-### My credits didn't reset at 21:00 UTC
+### My credits didn't refill on Sunday at 21:00 UTC
 
-Credits reset automatically at 21:00 UTC. If you don't see your credits:
+Credits refill automatically every Sunday at 21:00 UTC. If you don't see your credits:
 1. Refresh your dashboard
-2. Check that it's actually past 21:00 UTC
+2. Check that it's actually past Sunday 21:00 UTC
 3. Contact support if the issue persists
 
 ### I purchased credits but they're not showing up
@@ -511,13 +512,13 @@ To comply with our AI provider content policies and legal requirements, we apply
 
 ## Quick Reference
 
-### Daily Reset Time
-- **21:00 UTC** (9:00 PM UTC) every day
+### Weekly Refill Time
+- **Sunday at 21:00 UTC** (9:00 PM UTC) every week
 
 ### Credit Types
-- **Daily Credits**: Reset daily, amount depends on tier
+- **Weekly Credits**: Refill every Sunday, amount depends on tier
 - **Permanent Credits**: Never expire, purchased with money
-- **Flex Credits**: Saved daily credits, up to 100% of daily amount
+- **Flex Credits**: Saved weekly credits, up to 50% of weekly amount (rolls over)
 - **Neutrinos**: Free requests for `:free` models (charged for all requests: failed/cancelled/successful)
 
 ### Credit Charging
@@ -539,5 +540,4 @@ For additional help, contact support through the dashboard or visit the document
 
 ---
 
-*Last updated: 2025*
-
+*Last updated: 2026*
