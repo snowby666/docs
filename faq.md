@@ -74,14 +74,14 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 - Have volume discounts (the more you spend, the more bonus credits you get)
 
 **Pricing:**
-- Base rate: **$1 USD = 3 credits**
-- Volume discount: Every $500 spent gives you a 10% bonus
-- Maximum discount: 30% bonus (reached at $1,500+ total spending)
+- Base rate: **\$1 USD = 3 credits**
+- Volume discount: Every \$500 spent gives you a 10% bonus
+- Maximum discount: 30% bonus (reached at \$1,500+ total spending)
 
 **Example:**
-- First purchase: $100 = 300 credits (no bonus yet)
-- After $500 total: $100 purchase = 330 credits (10% bonus)
-- After $1,500 total: $100 purchase = 390 credits (30% bonus, maximum)
+- First purchase: \$100 = 300 credits (no bonus yet)
+- After \$500 total: \$100 purchase = 330 credits (10% bonus)
+- After \$1,500 total: \$100 purchase = 390 credits (30% bonus, maximum)
 
 ### What are Flex Credits?
 
@@ -89,16 +89,16 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 
 **How it works:**
 - You can save up to **20% of your weekly credits** per week to your flex wallet
-- The total cap is **50% of your weekly credits** (e.g., if you get $50/week, your flex wallet can hold up to $25)
+- The total cap is **50% of your weekly credits** (e.g., if you get \$50/week, your flex wallet can hold up to \$25)
 - You can save at any time (no cooldown) — the weekly save limit resets every Sunday at 21:00 UTC
 - Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
 - Flex balance rolls over until you use it
 
 **Example:**
-- You have a Pro subscription ($50/week)
-- Weekly save limit: $10 (20% of $50)
-- Maximum flex wallet: $25 (50% of $50)
-- If you save $10 every week for 2.5 weeks, you'll have $25 saved (the maximum)
+- You have a Pro subscription (\$50/week)
+- Weekly save limit: \$10 (20% of \$50)
+- Maximum flex wallet: \$25 (50% of \$50)
+- If you save \$10 every week for 2.5 weeks, you'll have \$25 saved (the maximum)
 
 **When to use Flex Credits:**
 - Enable flex credits if you want to build up a buffer for heavy usage weeks
@@ -126,7 +126,7 @@ Currently, Electron Hub accepts:
 
 **Payment Limits:**
 - Maximum 20 orders per day
-- Maximum $5,000 USD per month in purchases
+- Maximum \$5,000 USD per month in purchases
 - Minimum purchase amount may apply (check the dashboard)
 
 ### How do I purchase permanent credits?
@@ -141,7 +141,7 @@ Currently, Electron Hub accepts:
 
 Yes, there are limits to prevent abuse:
 - **Daily limit**: 20 orders per day
-- **Monthly limit**: $5,000 USD per month
+- **Monthly limit**: \$5,000 USD per month
 - These limits reset automatically
 
 ### Can I get a refund?
@@ -190,18 +190,18 @@ Electron Hub offers several subscription tiers through Patreon:
 The **Enterprise tier (Tier 4)** is a custom plan that scales with your Patreon payment amount:
 
 **Base Benefits:**
-- Base weekly credits: **$200**
-- Base monthly cost: $249
+- Base weekly credits: **\$200**
+- Base monthly cost: \$249
 - 200 max bots
 - 500 studio credits
 
 **Custom Scaling:**
 If you pay more than the base cost on Patreon, your weekly credits scale automatically:
 - **Extra credits formula**: For every dollar above the base cost, you get **1 additional credit per week**
-- **Example**: If you pay $300/month instead of $249:
-  - Extra paid: $300 - $249 = $51
-  - Extra credits: $51 × 1 = $51 credits
-  - **Total weekly credits**: $200 + $51 = **$251/week**
+- **Example**: If you pay \$300/month instead of \$249:
+  - Extra paid: \$300 - \$249 = \$51
+  - Extra credits: \$51 × 1 = \$51 credits
+  - **Total weekly credits**: \$200 + \$51 = **\$251/week**
 
 **How it works:**
 - Your Patreon payment amount is automatically detected
@@ -229,7 +229,7 @@ Subscriptions renew based on your Patreon subscription cycle (usually monthly). 
 
 If your subscription expires:
 - You'll be downgraded to the Free tier
-- You'll receive $0.25 weekly credits
+- You'll receive \$0.25 weekly credits
 - You'll lose access to premium/ultimate models
 - Your permanent credits remain (they never expire)
 - Your flex credits remain (if you have any)
@@ -363,7 +363,7 @@ Some models support **prompt caching**, which can reduce costs when you reuse th
 You can set a **monthly spending limit** for permanent credits to control costs:
 - **0 = Unlimited** (no limit)
 - **Any positive number** = Maximum amount you can spend per month
-- **Maximum limit**: $100,000 USD per month
+- **Maximum limit**: \$100,000 USD per month
 - Limits reset on the 1st of each month
 
 **Use cases:**
@@ -377,17 +377,17 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
 
 | Total Spent | Scale Tier | Multiplier | Example (Pro Tier) |
 |-------------|------------|------------|-------------------|
-| $0-$99 | Base | 1x (no scaling) | 30 requests/min |
-| $100+ | Tier 1 | 2x | 60 requests/min (30 × 2) |
-| $250+ | Tier 2 | 3x | 90 requests/min (30 × 3) |
-| $500+ | Tier 3 | 5x | 150 requests/min (30 × 5) |
-| $1,000+ | Tier 4 | 7x | 210 requests/min (30 × 7) |
-| $2,500+ | Tier 5 | 10x | 300 requests/min (30 × 10) |
+| \$0-\$99 | Base | 1x (no scaling) | 30 requests/min |
+| \$100+ | Tier 1 | 2x | 60 requests/min (30 × 2) |
+| \$250+ | Tier 2 | 3x | 90 requests/min (30 × 3) |
+| \$500+ | Tier 3 | 5x | 150 requests/min (30 × 5) |
+| \$1,000+ | Tier 4 | 7x | 210 requests/min (30 × 7) |
+| \$2,500+ | Tier 5 | 10x | 300 requests/min (30 × 10) |
 
 **How it works:**
 - Your base rate limit depends on your subscription tier (e.g., Pro tier = 30 requests/min)
 - The multiplier is applied to your base limit based on your total permanent credits spending
-- **Example**: If you're on Pro tier (30 req/min) and have spent $500+ on permanent credits, your rate limit becomes 150 requests/min (30 × 5)
+- **Example**: If you're on Pro tier (30 req/min) and have spent \$500+ on permanent credits, your rate limit becomes 150 requests/min (30 × 5)
 
 **Base Rate Limits by Tier:**
 - Free: 5 requests/min
@@ -461,9 +461,9 @@ Credits are calculated based on:
 Check the model pricing in the dashboard or API documentation for specific costs.
 
 **Example:**
-- Model costs $3 per million input tokens and $15 per million output tokens
+- Model costs \$3 per million input tokens and \$15 per million output tokens
 - You use 1,000 input tokens and 500 output tokens
-- Cost = (1,000 / 1,000,000 × $3) + (500 / 1,000,000 × $15) = $0.003 + $0.0075 = $0.0105 credits
+- Cost = (1,000 / 1,000,000 × \$3) + (500 / 1,000,000 × \$15) = \$0.003 + \$0.0075 = \$0.0105 credits
 
 ---
 
@@ -532,8 +532,8 @@ To comply with our AI provider content policies and legal requirements, we apply
 
 ### Payment
 - **Method**: PayPal
-- **Base Rate**: $1 = 3 credits
-- **Volume Discount**: 10% per $500, max 30% at $1,500+
+- **Base Rate**: \$1 = 3 credits
+- **Volume Discount**: 10% per \$500, max 30% at \$1,500+
 
 ### Support
 For additional help, contact support through the dashboard or visit the documentation.
