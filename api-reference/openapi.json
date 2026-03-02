@@ -332,6 +332,26 @@
         }
       }
     },
+    "/user/models": {
+      "get": {
+        "summary": "Get Model Breakdown",
+        "description": "Retrieve a per-model cost and usage breakdown for the authenticated user, including request counts, token usage, total cost, and provider information for every model used.",
+        "operationId": "getUserModelBreakdown",
+        "tags": ["User"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelBreakdownResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/logs": {
       "get": {
         "summary": "Get User Logs",
@@ -1955,6 +1975,77 @@
                 "type": "string"
               }
             }
+          }
+        }
+      },
+      "ModelBreakdownResponse": {
+        "type": "object",
+        "required": ["total_consumption", "models"],
+        "properties": {
+          "total_consumption": {
+            "type": "number",
+            "description": "Total API spend across all models (in credits/USD)",
+            "example": 12.847
+          },
+          "models": {
+            "type": "object",
+            "description": "Map of model IDs to their usage statistics",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ModelUsageStats"
+            },
+            "example": {
+              "gpt-4o": {
+                "requests": 342,
+                "input_tokens": 128450,
+                "output_tokens": 67230,
+                "total_cost": 4.215,
+                "owned_by": "openai"
+              },
+              "claude-sonnet-4-20250514": {
+                "requests": 156,
+                "input_tokens": 89200,
+                "output_tokens": 45100,
+                "total_cost": 3.628,
+                "owned_by": "anthropic"
+              }
+            }
+          },
+          "last_updated": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of the last usage update",
+            "nullable": true,
+            "example": "2026-03-02T15:30:00Z"
+          }
+        }
+      },
+      "ModelUsageStats": {
+        "type": "object",
+        "properties": {
+          "requests": {
+            "type": "integer",
+            "description": "Total number of requests made to this model",
+            "example": 342
+          },
+          "input_tokens": {
+            "type": "integer",
+            "description": "Total input tokens consumed",
+            "example": 128450
+          },
+          "output_tokens": {
+            "type": "integer",
+            "description": "Total output tokens generated",
+            "example": 67230
+          },
+          "total_cost": {
+            "type": "number",
+            "description": "Total cost in credits for this model",
+            "example": 4.215
+          },
+          "owned_by": {
+            "type": "string",
+            "description": "Provider/owner of the model",
+            "example": "openai"
           }
         }
       },

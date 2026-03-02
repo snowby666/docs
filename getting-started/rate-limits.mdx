@@ -138,6 +138,46 @@ Google experimental/preview/image models have daily usage limits that reset at 2
 Regular Google models (like `gemini-1.5-flash`, `gemini-1.5-pro`, `gemma-3-27b-it`) are **not** subject to these daily limits.
 </Info>
 
+### Anthropic Models (Daily + Monthly Limits)
+
+Anthropic (Claude) models have **two layers** of rate limiting:
+
+#### Daily Request Limits
+
+| Subscription Plan | Daily Requests |
+| ----------------- | -------------- |
+| **Free**          | 50             |
+| **Starter**       | 100            |
+| **Plus**          | 150            |
+| **Core**          | 300            |
+| **Pro**           | 500            |
+| **Business**      | 1,000          |
+| **Enterprise**    | 2,000          |
+
+- **Reset Time**: 21:00 UTC daily
+- **Applies to**: All Claude model requests (via `/chat/completions`, `/messages`, or `/responses`)
+
+#### Monthly Token Limits
+
+In addition to daily request limits, Anthropic models have a **monthly token budget** that caps total input + output tokens:
+
+| Subscription Plan | Monthly Token Limit |
+| ----------------- | ------------------- |
+| **Free**          | 100K tokens         |
+| **Starter**       | 5M tokens           |
+| **Plus**          | 10M tokens          |
+| **Core**          | 20M tokens          |
+| **Pro**           | 40M tokens          |
+| **Business**      | 80M tokens          |
+| **Enterprise**    | 150M tokens         |
+
+- **Reset Time**: 21:00 UTC on the 1st of each month
+- **Applies to**: Combined input + output tokens across all Claude models
+
+<Warning>
+Even if you haven't hit your daily request limit, you can still be blocked if your monthly token budget is exhausted. Monitor both limits in your [dashboard](https://playground.electronhub.ai/console).
+</Warning>
+
 ### Midjourney Models (Daily Limits)
 
 Midjourney image generation has a separate daily limit:

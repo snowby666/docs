@@ -106,6 +106,7 @@
           "icon": "user",
           "pages": [
             "api-reference/usage",
+            "api-reference/user-models",
             "api-reference/user-logs"
           ]
         },
