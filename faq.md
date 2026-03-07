@@ -74,14 +74,14 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 - Have volume discounts (the more you spend, the more bonus credits you get)
 
 **Pricing:**
-- Base rate: **\$1 USD = 3 credits**
-- Volume discount: Every \$500 spent gives you a 10% bonus
-- Maximum discount: 30% bonus (reached at \$1,500+ total spending)
+- Base rate: **\$1 USD = 2 credits**
+- Volume discount: Every \$500 spent gives you a 5% bonus
+- Maximum discount: 20% bonus (reached at \$2,000+ total spending)
 
 **Example:**
-- First purchase: \$100 = 300 credits (no bonus yet)
-- After \$500 total: \$100 purchase = 330 credits (10% bonus)
-- After \$1,500 total: \$100 purchase = 390 credits (30% bonus, maximum)
+- First purchase: \$100 = 200 credits (no bonus yet)
+- After \$500 total: \$100 purchase = 210 credits (5% bonus)
+- After \$2,000 total: \$100 purchase = 240 credits (20% bonus, maximum)
 
 ### What are Flex Credits?
 
@@ -532,8 +532,8 @@ To comply with our AI provider content policies and legal requirements, we apply
 
 ### Payment
 - **Method**: PayPal
-- **Base Rate**: \$1 = 3 credits
-- **Volume Discount**: 10% per \$500, max 30% at \$1,500+
+- **Base Rate**: \$1 = 2 credits
+- **Volume Discount**: 5% per \$500, max 20% at \$2,000+
 
 ### Support
 For additional help, contact support through the dashboard or visit the documentation.
