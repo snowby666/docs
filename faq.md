@@ -112,8 +112,14 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 **Key Points:**
 - All users get **10 Neutrinos per day** (resets at 21:00 UTC)
 - Neutrinos are used instead of credits for free models
-- You can earn more Neutrinos by watching ads (if available)
+- You can earn more Neutrinos by watching ads (up to **200 daily**)
 - **Important**: Neutrinos are charged for **all requests** (failed, cancelled, and successful) - unlike regular credits which are only charged for successful/cancelled requests
+
+**Ad Rewards (up to 3 ads per day):**
+- Base: **10** Neutrinos
+- 1st ad: **+30** Neutrinos (total: 40)
+- 2nd ad: **+60** Neutrinos (total: 100)
+- 3rd ad: **+100** Neutrinos (total: 200)
 
 ---
 
