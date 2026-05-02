@@ -52,12 +52,12 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 | Tier | Weekly Credits |
 |------|----------------|
 | Free | $0.25 |
-| Starter | $8 |
-| Plus | $15 |
-| Core | $30 |
-| Pro | $50 |
-| Business | $100 |
-| Enterprise | $200+ (scales with custom payment) |
+| Starter | $10 |
+| Plus | $20 |
+| Core | $40 |
+| Pro | $60 |
+| Business | $120 |
+| Enterprise | $250+ (scales with custom payment) |
 
 **Important Notes:**
 - Weekly credits refill every **Sunday at 21:00 UTC**
@@ -89,16 +89,16 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 
 **How it works:**
 - You can save up to **20% of your weekly credits** per week to your flex wallet
-- The total cap is **50% of your weekly credits** (e.g., if you get \$50/week, your flex wallet can hold up to \$25)
+- The total cap is **50% of your weekly credits** (e.g., if you get \$60/week, your flex wallet can hold up to \$30)
 - You can save at any time (no cooldown) — the weekly save limit resets every Sunday at 21:00 UTC
 - Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
 - Flex balance rolls over until you use it
 
 **Example:**
-- You have a Pro subscription (\$50/week)
-- Weekly save limit: \$10 (20% of \$50)
-- Maximum flex wallet: \$25 (50% of \$50)
-- If you save \$10 every week for 2.5 weeks, you'll have \$25 saved (the maximum)
+- You have a Pro subscription (\$60/week)
+- Weekly save limit: \$12 (20% of \$60)
+- Maximum flex wallet: \$30 (50% of \$60)
+- If you save \$12 every week for 2.5 weeks, you'll have \$30 saved (the maximum)
 
 **When to use Flex Credits:**
 - Enable flex credits if you want to build up a buffer for heavy usage weeks
@@ -177,12 +177,12 @@ Electron Hub offers several subscription tiers through Patreon:
 | Tier | Name | Weekly Credits | Max Bots | Studio Credits |
 |------|------|----------------|----------|----------------|
 | 0 | Free | $0.25 | 5 | 5 |
-| 1 | Starter | $8 | 20 | 20 |
-| 5 | Plus | $15 | 30 | 50 |
-| 6 | Core | $30 | 50 | 75 |
-| 2 | Pro | $50 | 100 | 150 |
-| 3 | Business | $100 | 150 | 300 |
-| 4 | Enterprise | $200+ (custom) | 200 | 500 |
+| 1 | Starter | $10 | 20 | 20 |
+| 5 | Plus | $20 | 30 | 50 |
+| 6 | Core | $40 | 50 | 75 |
+| 2 | Pro | $60 | 100 | 150 |
+| 3 | Business | $120 | 150 | 300 |
+| 4 | Enterprise | $250+ (custom) | 200 | 500 |
 
 **Benefits of Higher Tiers:**
 - More weekly credits
@@ -196,7 +196,7 @@ Electron Hub offers several subscription tiers through Patreon:
 The **Enterprise tier (Tier 4)** is a custom plan that scales with your Patreon payment amount:
 
 **Base Benefits:**
-- Base weekly credits: **\$200**
+- Base weekly credits: **\$250**
 - Base monthly cost: \$249
 - 200 max bots
 - 500 studio credits
@@ -207,7 +207,7 @@ If you pay more than the base cost on Patreon, your weekly credits scale automat
 - **Example**: If you pay \$300/month instead of \$249:
   - Extra paid: \$300 - \$249 = \$51
   - Extra credits: \$51 × 1 = \$51 credits
-  - **Total weekly credits**: \$200 + \$51 = **\$251/week**
+  - **Total weekly credits**: \$250 + \$51 = **\$301/week**
 
 **How it works:**
 - Your Patreon payment amount is automatically detected
