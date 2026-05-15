@@ -1,7 +1,7 @@
 ---
 title: 'Chat Completions'
 openapi: 'POST /chat/completions'
-description: 'Create chat completions using OpenAI-compatible format'
+description: 'Create chat completions using OpenAI-compatible format with optional separate reasoning streams.'
 ---
 
 Create conversational AI responses using our chat completions endpoint.
@@ -15,24 +15,106 @@ Generate responses for conversational AI applications.
 ### Request Body
 
 <ParamField body="model" type="string" required>
-  Model to use for completion (e.g., "gpt-4o", "gpt-3.5-turbo", "claude-sonnet-4-20250514")
+  Model to use for completion (e.g., `gpt-4o`, `gpt-5.1`, `claude-sonnet-4-6`, `deepseek-r1`). Append `:reasoning-exclude` to disable reasoning output for a single request.
 </ParamField>
 
 <ParamField body="messages" type="array" required>
-  Array of message objects forming the conversation
+  Array of message objects forming the conversation.
 </ParamField>
 
 <ParamField body="max_tokens" type="integer">
-  Maximum number of tokens to generate
+  Maximum number of tokens to generate. Reasoning tokens are billed as output tokens and counted against this limit.
 </ParamField>
 
 <ParamField body="temperature" type="number">
-  Sampling temperature between 0 and 2
+  Sampling temperature between 0 and 2.
 </ParamField>
 
 <ParamField body="stream" type="boolean">
-  Enable streaming responses
+  Enable streaming responses (SSE).
 </ParamField>
+
+<ParamField body="reasoning_effort" type="string">
+  Controls reasoning depth on supported models. One of `none`, `minimal`, `low`, `medium`, `high`, `xhigh`. Silently ignored for models that don't support reasoning_effort.
+</ParamField>
+
+<ParamField body="reasoning" type="object">
+  NanoGPT-style reasoning configuration. Supports:
+  - `reasoning.effort` &mdash; same enum as `reasoning_effort`.
+  - `reasoning.exclude` (boolean) &mdash; strip reasoning from the response entirely.
+  - `reasoning.delta_field` &mdash; `"reasoning"` or `"reasoning_content"`; overrides the streaming/non-streaming field name regardless of which endpoint variant was hit.
+</ParamField>
+
+<ParamField body="reasoning_delta_field" type="string">
+  Shorthand for `reasoning.delta_field`. Accepts `"reasoning"` or `"reasoning_content"`.
+</ParamField>
+
+<ParamField body="reasoning_content_compat" type="boolean">
+  Shorthand: set to `true` to force the legacy `reasoning_content` field, equivalent to `reasoning.delta_field = "reasoning_content"`.
+</ParamField>
+
+## Endpoint Variants (Reasoning Output)
+
+Some models emit a separate reasoning / thinking stream in addition to the final answer. Three base paths control how that stream is surfaced &mdash; **all of them accept the same request shape and model names**.
+
+| Base path | Behavior | Use when |
+| --- | --- | --- |
+| `POST /v1/chat/completions` | Reasoning and answer are returned as **separate fields** (`reasoning` + `content`). Default. | Most OpenAI-compatible clients. |
+| `POST /v1legacy/chat/completions` | Same as `/v1/`, but reasoning uses the legacy field name **`reasoning_content`**. | Clients that only parse `reasoning_content` (e.g. older DeepSeek SDKs). |
+| `POST /v1thinking/chat/completions` | Reasoning and answer are **merged into the normal `content` stream**, wrapped in `<think>...</think>` tags. | Clients that ignore reasoning fields but should still display thoughts inline. |
+
+Per-request overrides (`reasoning.delta_field`, `reasoning_delta_field`, `reasoning_content_compat`) take precedence over the endpoint default. If a model does not emit reasoning, these fields are simply absent from the response.
+
+### Streaming output shape
+
+When reasoning is delivered as a separate field, deltas are interleaved &mdash; reasoning chunks come first, followed by content chunks:
+
+```text
+data: {"id":"chatcmpl-...","choices":[{"index":0,"delta":{"reasoning":"Let me think..."},"finish_reason":null}], ...}
+
+data: {"id":"chatcmpl-...","choices":[{"index":0,"delta":{"content":"The answer is 4."},"finish_reason":null}], ...}
+
+data: [DONE]
+```
+
+Against `/v1legacy/chat/completions` the same deltas use `delta.reasoning_content` instead of `delta.reasoning`.
+
+Against `/v1thinking/chat/completions` everything appears in `delta.content`:
+
+```text
+data: {"choices":[{"delta":{"content":"<think>Let me think...</think>The answer is 4."}}]}
+```
+
+### Non-streaming output shape
+
+```json
+{
+  "id": "chatcmpl-abc123",
+  "object": "chat.completion",
+  "choices": [{
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "content": "The answer is 4.",
+      "reasoning": "Let me think..."
+    },
+    "finish_reason": "stop"
+  }],
+  "usage": { "...": "..." }
+}
+```
+
+`reasoning` becomes `reasoning_content` on `/v1legacy/`. On `/v1thinking/`, the reasoning stays embedded inside `content` (`"<think>...</think>The answer..."`) and no separate field is emitted.
+
+## Disabling Reasoning Output
+
+Reasoning can be hidden in three equivalent ways &mdash; the model still pays the cost for reasoning compute, but the tokens are stripped from the response:
+
+1. Request body: `{ "reasoning": { "exclude": true } }`
+2. Model suffix: `"model": "deepseek-r1:reasoning-exclude"`
+3. Request body: `{ "reasoning_effort": "none" }` *(only honored on OpenAI-shaped models &mdash; safely ignored elsewhere for API parity).*
+
+When excluded, neither the `reasoning` field nor `<think>` tags appear in the response, regardless of which endpoint variant was hit.
 
 ### Example
 
@@ -41,6 +123,7 @@ Generate responses for conversational AI applications.
 ```python Python
 import requests
 
+# Default: reasoning + content in separate fields
 response = requests.post(
     'https://api.electronhub.ai/v1/chat/completions',
     headers={
@@ -48,39 +131,60 @@ response = requests.post(
         'Content-Type': 'application/json'
     },
     json={
-        'model': 'gpt-3.5-turbo',
-        'messages': [
-            {'role': 'user', 'content': 'Hello!'}
-        ]
+        'model': 'deepseek-r1',
+        'messages': [{'role': 'user', 'content': "What's 2 + 2?"}],
+        'reasoning_effort': 'medium'
     }
 )
+data = response.json()
+print(data['choices'][0]['message']['reasoning'])  # thinking text
+print(data['choices'][0]['message']['content'])    # answer
 ```
 
 ```javascript Node.js
-const response = await fetch('https://api.electronhub.ai/v1/chat/completions', {
+const res = await fetch('https://api.electronhub.ai/v1/chat/completions', {
   method: 'POST',
   headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
+    'Authorization': `Bearer ${process.env.ELECTRONHUB_API_KEY}`,
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    model: 'gpt-3.5-turbo',
-    messages: [
-      { role: 'user', content: 'Hello!' }
-    ]
+    model: 'deepseek-r1',
+    messages: [{ role: 'user', content: "What's 2 + 2?" }],
+    reasoning_effort: 'medium'
   })
 });
+const data = await res.json();
+console.log(data.choices[0].message.reasoning);
+console.log(data.choices[0].message.content);
 ```
 
 ```bash cURL
+# Legacy field name (reasoning_content)
+curl https://api.electronhub.ai/v1legacy/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "deepseek-r1",
+    "messages": [{"role": "user", "content": "What is 2+2?"}]
+  }'
+
+# Merged (<think> inline)
+curl https://api.electronhub.ai/v1thinking/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "deepseek-r1",
+    "messages": [{"role": "user", "content": "What is 2+2?"}]
+  }'
+
+# Hide reasoning entirely
 curl https://api.electronhub.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-3.5-turbo",
-    "messages": [
-      {"role": "user", "content": "Hello!"}
-    ]
+    "model": "deepseek-r1:reasoning-exclude",
+    "messages": [{"role": "user", "content": "What is 2+2?"}]
   }'
 ```
 
@@ -140,3 +244,8 @@ curl https://api.electronhub.ai/v1/chat/completions \
   }'
 ```
 
+## Notes
+
+- **Cost.** Reasoning tokens count as output tokens (per [NanoGPT's extended-thinking docs](https://docs.nano-gpt.com/api-reference/miscellaneous/extended-thinking)). Higher `reasoning_effort` and `/v1thinking/` requests typically have higher `completion_tokens` and cost.
+- **Model support.** Not every model exposes a reasoning stream. If a model doesn't emit one, the `reasoning` / `reasoning_content` field is simply omitted and `<think>` tags will not appear.
+- **API parity.** Passing `reasoning_effort` to a model that doesn't support it is silently ignored (no 400) so clients can use a single shared request shape across providers.

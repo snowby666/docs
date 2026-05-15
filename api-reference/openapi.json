@@ -83,8 +83,66 @@
     "/chat/completions": {
       "post": {
         "summary": "Create Chat Completion",
-        "description": "Create a chat completion using OpenAI format",
+        "description": "Create a chat completion using OpenAI format. Reasoning models stream their thoughts in a separate `reasoning` field (NanoGPT-style) by default; see `/v1legacy/chat/completions` and `/v1thinking/chat/completions` for alternative shapes.",
         "operationId": "createChatCompletion",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatCompletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1legacy/chat/completions": {
+      "post": {
+        "summary": "Create Chat Completion (legacy reasoning_content)",
+        "description": "Same request/response shape as `/v1/chat/completions`, but reasoning output is delivered in the legacy `reasoning_content` field instead of `reasoning`. Use this for clients that only understand `reasoning_content` (e.g. older DeepSeek SDKs).",
+        "operationId": "createChatCompletionLegacy",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatCompletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1thinking/chat/completions": {
+      "post": {
+        "summary": "Create Chat Completion (thinking inline)",
+        "description": "Same request/response shape as `/v1/chat/completions`, but the model's reasoning is merged into the normal `content` stream wrapped in `<think>...</think>` tags instead of a separate field.",
+        "operationId": "createChatCompletionThinking",
         "requestBody": {
           "required": true,
           "content": {
@@ -912,8 +970,37 @@
           },
           "reasoning_effort": {
             "type": "string",
-            "enum": ["low", "medium", "high"],
-            "description": "Reasoning effort level"
+            "enum": ["none", "minimal", "low", "medium", "high", "xhigh"],
+            "description": "Reasoning effort level. Silently ignored for models that do not support reasoning_effort, so clients can send a single shared request across providers."
+          },
+          "reasoning": {
+            "type": "object",
+            "description": "NanoGPT-style reasoning configuration. Per-request override for reasoning output behavior.",
+            "properties": {
+              "effort": {
+                "type": "string",
+                "enum": ["none", "minimal", "low", "medium", "high", "xhigh"],
+                "description": "Same enum as `reasoning_effort`."
+              },
+              "exclude": {
+                "type": "boolean",
+                "description": "If true, strip the reasoning stream from the response entirely. The model still computes (and is billed for) reasoning tokens."
+              },
+              "delta_field": {
+                "type": "string",
+                "enum": ["reasoning", "reasoning_content"],
+                "description": "Override the streaming/non-streaming field name regardless of which endpoint variant was hit."
+              }
+            }
+          },
+          "reasoning_delta_field": {
+            "type": "string",
+            "enum": ["reasoning", "reasoning_content"],
+            "description": "Shorthand for `reasoning.delta_field`."
+          },
+          "reasoning_content_compat": {
+            "type": "boolean",
+            "description": "Shorthand: set to `true` to force the legacy `reasoning_content` field, equivalent to `reasoning.delta_field = \"reasoning_content\"`."
           }
         }
       },
@@ -934,7 +1021,19 @@
                   "$ref": "#/components/schemas/ContentPart"
                 }
               }
-            ]
+            ],
+            "nullable": true,
+            "description": "May be null in assistant deltas/responses when only reasoning is being emitted."
+          },
+          "reasoning": {
+            "type": "string",
+            "nullable": true,
+            "description": "(Assistant only) The model's thinking/reasoning output, returned alongside `content` by `/v1/chat/completions`. Omitted when the model does not produce reasoning or when reasoning is excluded."
+          },
+          "reasoning_content": {
+            "type": "string",
+            "nullable": true,
+            "description": "(Assistant only) Legacy field name for `reasoning`. Populated by `/v1legacy/chat/completions` or when `reasoning_content_compat=true` / `reasoning.delta_field=\"reasoning_content\"` is set."
           },
           "name": {
             "type": "string",
@@ -1194,7 +1293,8 @@
           },
           "reasoning_effort": {
             "type": "string",
-            "enum": ["low", "medium", "high"]
+            "enum": ["none", "minimal", "low", "medium", "high", "xhigh"],
+            "description": "Reasoning effort level. Silently ignored for models that do not support reasoning_effort."
           }
         }
       },

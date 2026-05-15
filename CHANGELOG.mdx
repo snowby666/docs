@@ -5,6 +5,29 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-05-15] - Separate reasoning streams for chat completions
+
+### Added
+- **Separate `reasoning` field** on `/v1/chat/completions`. Reasoning models now return their chain-of-thought in a dedicated `reasoning` field (NanoGPT style) instead of inline `<think>...</think>` tags inside `content`. Streaming deltas use `delta.reasoning`.
+- **`POST /v1legacy/chat/completions`** &mdash; identical request/response shape, but reasoning uses the legacy field name `reasoning_content` (for older DeepSeek-style clients).
+- **`POST /v1thinking/chat/completions`** &mdash; merges reasoning and answer into the normal `content` stream wrapped in `<think>...</think>` (the pre-migration behavior).
+- New request fields on chat completions:
+  - `reasoning` object (`{ effort, exclude, delta_field }`)
+  - `reasoning_delta_field` (`"reasoning"` or `"reasoning_content"`)
+  - `reasoning_content_compat` (boolean)
+  - `:reasoning-exclude` model suffix to strip reasoning for a single call
+- `reasoning_effort` now also accepts `"none"`, `"minimal"`, and `"xhigh"` in addition to `low`/`medium`/`high`.
+- Playground (`playground.electronhub.ai`) consumes the new separate `reasoning` field and renders it in the existing collapsible thinking container.
+
+### Changed
+- `reasoning_effort` is **silently ignored** for models that don't support it instead of returning HTTP 400. This lets clients share a single request shape across providers.
+
+### Migration
+- **No action required** for clients that ignore reasoning fields &mdash; `content` keeps containing the final answer.
+- Clients that previously parsed `<think>...</think>` from `content` should either:
+  1. Switch to consuming the new `reasoning` (or `reasoning_content`) field, or
+  2. Point at `/v1thinking/chat/completions` to keep the old inline behavior.
+
 ## [2024-06-02] - Documentation Restructure
 
 ### Added
