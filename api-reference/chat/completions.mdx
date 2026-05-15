@@ -243,9 +243,3 @@ curl https://api.electronhub.ai/v1/chat/completions \
     "tool_choice": "auto"
   }'
 ```
-
-## Notes
-
-- **Cost.** Reasoning tokens count as output tokens. Higher `reasoning_effort` and `/v1thinking/` requests typically have higher `completion_tokens` and cost.
-- **Model support.** Not every model exposes a reasoning stream. If a model doesn't emit one, the `reasoning` / `reasoning_content` field is simply omitted and `<think>` tags will not appear.
-- **API parity.** Passing `reasoning_effort` to a model that doesn't support it is silently ignored (no 400) so clients can use a single shared request shape across providers.
