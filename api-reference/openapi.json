@@ -83,7 +83,7 @@
     "/chat/completions": {
       "post": {
         "summary": "Create Chat Completion",
-        "description": "Create a chat completion using OpenAI format. Reasoning models stream their thoughts in a separate `reasoning` field (NanoGPT-style) by default; see `/v1legacy/chat/completions` and `/v1thinking/chat/completions` for alternative shapes.",
+        "description": "Create a chat completion using OpenAI format. Reasoning models stream their thoughts in a separate `reasoning` field by default; see `/v1legacy/chat/completions` and `/v1thinking/chat/completions` for alternative shapes.",
         "operationId": "createChatCompletion",
         "requestBody": {
           "required": true,
@@ -975,7 +975,7 @@
           },
           "reasoning": {
             "type": "object",
-            "description": "NanoGPT-style reasoning configuration. Per-request override for reasoning output behavior.",
+            "description": "Reasoning configuration. Per-request override for reasoning output behavior.",
             "properties": {
               "effort": {
                 "type": "string",

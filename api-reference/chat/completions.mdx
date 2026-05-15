@@ -39,7 +39,7 @@ Generate responses for conversational AI applications.
 </ParamField>
 
 <ParamField body="reasoning" type="object">
-  NanoGPT-style reasoning configuration. Supports:
+  Reasoning configuration object. Supports:
   - `reasoning.effort` &mdash; same enum as `reasoning_effort`.
   - `reasoning.exclude` (boolean) &mdash; strip reasoning from the response entirely.
   - `reasoning.delta_field` &mdash; `"reasoning"` or `"reasoning_content"`; overrides the streaming/non-streaming field name regardless of which endpoint variant was hit.
@@ -246,6 +246,6 @@ curl https://api.electronhub.ai/v1/chat/completions \
 
 ## Notes
 
-- **Cost.** Reasoning tokens count as output tokens (per [NanoGPT's extended-thinking docs](https://docs.nano-gpt.com/api-reference/miscellaneous/extended-thinking)). Higher `reasoning_effort` and `/v1thinking/` requests typically have higher `completion_tokens` and cost.
+- **Cost.** Reasoning tokens count as output tokens. Higher `reasoning_effort` and `/v1thinking/` requests typically have higher `completion_tokens` and cost.
 - **Model support.** Not every model exposes a reasoning stream. If a model doesn't emit one, the `reasoning` / `reasoning_content` field is simply omitted and `<think>` tags will not appear.
 - **API parity.** Passing `reasoning_effort` to a model that doesn't support it is silently ignored (no 400) so clients can use a single shared request shape across providers.

@@ -8,7 +8,7 @@ Track all updates, changes, and new features to the Electron Hub API.
 ## [2026-05-15] - Separate reasoning streams for chat completions
 
 ### Added
-- **Separate `reasoning` field** on `/v1/chat/completions`. Reasoning models now return their chain-of-thought in a dedicated `reasoning` field (NanoGPT style) instead of inline `<think>...</think>` tags inside `content`. Streaming deltas use `delta.reasoning`.
+- **Separate `reasoning` field** on `/v1/chat/completions`. Reasoning models now return their chain-of-thought in a dedicated `reasoning` field instead of inline `<think>...</think>` tags inside `content`. Streaming deltas use `delta.reasoning`.
 - **`POST /v1legacy/chat/completions`** &mdash; identical request/response shape, but reasoning uses the legacy field name `reasoning_content` (for older DeepSeek-style clients).
 - **`POST /v1thinking/chat/completions`** &mdash; merges reasoning and answer into the normal `content` stream wrapped in `<think>...</think>` (the pre-migration behavior).
 - New request fields on chat completions:
