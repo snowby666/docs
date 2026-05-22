@@ -49,37 +49,6 @@
         }
       }
     },
-    "/models/{model}": {
-      "get": {
-        "summary": "Get Model",
-        "description": "Retrieve information about a specific model",
-        "operationId": "getModel",
-        "security": [],
-        "parameters": [
-          {
-            "name": "model",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Model ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Model"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/chat/completions": {
       "post": {
         "summary": "Create Chat Completion",
@@ -453,10 +422,12 @@
             }
           }
         }
-      },
+      }
+    },
+    "/auth/proxy/delete": {
       "delete": {
         "summary": "Delete All Proxy Keys",
-        "description": "Delete all proxy keys for the authenticated user",
+        "description": "Delete every proxy key on the authenticated account.",
         "operationId": "deleteAllProxyKeys",
         "responses": {
           "200": {
@@ -507,22 +478,21 @@
         }
       }
     },
-    "/auth/proxy/{proxy_key}": {
-      "get": {
-        "summary": "Get Proxy Key",
-        "description": "Retrieve information about a specific proxy key",
-        "operationId": "getProxyKey",
-        "parameters": [
-          {
-            "name": "proxy_key",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Proxy key ID"
+    "/auth/proxy/lookup": {
+      "post": {
+        "summary": "Lookup Proxy Key",
+        "description": "Retrieve metadata for a single proxy key you own. Replaces the legacy `GET /auth/proxy/{proxy_key}`; uses a static URL so the path can be exact-matched at the edge.",
+        "operationId": "lookupProxyKey",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProxyKeyLookupRequest"
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success",
@@ -533,26 +503,18 @@
                 }
               }
             }
-          }
+          },
+          "401": { "description": "Missing, invalid, or non-API-key Authorization header" },
+          "403": { "description": "Proxy key is owned by a different account" },
+          "404": { "description": "Proxy key not found" }
         }
       }
     },
-    "/auth/proxy/update/{proxy_key}": {
+    "/auth/proxy/update": {
       "post": {
         "summary": "Update Proxy Key",
-        "description": "Update an existing proxy key's configuration",
+        "description": "Update an existing proxy key's configuration. Replaces the legacy `POST /auth/proxy/update/{proxy_key}`; the proxy key identifier is sent in the request body so the URL is static.",
         "operationId": "updateProxyKey",
-        "parameters": [
-          {
-            "name": "proxy_key",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Proxy key ID"
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -579,26 +541,28 @@
                 }
               }
             }
-          }
+          },
+          "401": { "description": "Missing, invalid, or non-API-key Authorization header" },
+          "403": { "description": "Proxy key is owned by a different account" },
+          "404": { "description": "Proxy key not found" }
         }
       }
     },
-    "/auth/proxy/toggle/{proxy_key}": {
+    "/auth/proxy/toggle": {
       "post": {
         "summary": "Toggle Proxy Key Status",
-        "description": "Enable or disable a proxy key",
+        "description": "Enable or disable a proxy key. Replaces the legacy `POST /auth/proxy/toggle/{proxy_key}`; the proxy key identifier is sent in the request body so the URL is static.",
         "operationId": "toggleProxyKey",
-        "parameters": [
-          {
-            "name": "proxy_key",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Proxy key ID"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProxyKeyLookupRequest"
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Proxy key status updated",
@@ -619,26 +583,28 @@
                 }
               }
             }
-          }
+          },
+          "401": { "description": "Missing, invalid, or non-API-key Authorization header" },
+          "403": { "description": "Proxy key is owned by a different account" },
+          "404": { "description": "Proxy key not found" }
         }
       }
     },
-    "/auth/proxy/delete/{proxy_key}": {
-      "delete": {
+    "/auth/proxy/remove": {
+      "post": {
         "summary": "Delete Proxy Key",
-        "description": "Delete a specific proxy key",
+        "description": "Permanently delete a single proxy key you own. Replaces the legacy `DELETE /auth/proxy/delete/{proxy_key}`; the proxy key identifier is sent in the request body so the URL is static.",
         "operationId": "deleteProxyKey",
-        "parameters": [
-          {
-            "name": "proxy_key",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Proxy key ID"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProxyKeyLookupRequest"
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Proxy key deleted successfully",
@@ -655,7 +621,10 @@
                 }
               }
             }
-          }
+          },
+          "401": { "description": "Missing, invalid, or non-API-key Authorization header" },
+          "403": { "description": "Proxy key is owned by a different account" },
+          "404": { "description": "Proxy key not found" }
         }
       }
     },
@@ -2322,8 +2291,15 @@
       },
       "UpdateProxyKeyRequest": {
         "type": "object",
-        "required": ["name", "expires_at", "allocated_ammount"],
+        "required": ["proxy_key", "name", "expires_at", "allocated_ammount"],
         "properties": {
+          "proxy_key": {
+            "type": "string",
+            "description": "The proxy key to update (must be one you own)",
+            "minLength": 1,
+            "maxLength": 256,
+            "example": "ek-proxy-1234567890abcdef"
+          },
           "name": {
             "type": "string",
             "description": "Name of the proxy key",
@@ -2340,6 +2316,12 @@
             "description": "Allocated credit amount",
             "minimum": 0,
             "example": 15.0
+          },
+          "limit_type": {
+            "type": "string",
+            "description": "Spend window for the allocation",
+            "enum": ["daily", "weekly", "monthly"],
+            "default": "daily"
           },
           "model_whitelist": {
             "type": "array",
@@ -2358,6 +2340,19 @@
             "description": "List of allowed IP addresses or CIDR blocks (empty for all IPs)",
             "example": ["192.168.1.0/24", "203.0.113.42"],
             "default": []
+          }
+        }
+      },
+      "ProxyKeyLookupRequest": {
+        "type": "object",
+        "required": ["proxy_key"],
+        "properties": {
+          "proxy_key": {
+            "type": "string",
+            "description": "The proxy key to look up / toggle / delete (must be one you own)",
+            "minLength": 1,
+            "maxLength": 256,
+            "example": "ek-proxy-1234567890abcdef"
           }
         }
       },

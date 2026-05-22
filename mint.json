@@ -64,8 +64,7 @@
           "group": "Models",
           "icon": "brain",
           "pages": [
-            "api-reference/models",
-            "api-reference/model"
+            "api-reference/models"
           ]
         },
         {
@@ -115,6 +114,7 @@
           "icon": "key",
           "pages": [
             "api-reference/proxy-keys",
+            "api-reference/proxy-lookup",
             "api-reference/proxy-create",
             "api-reference/proxy-update",
             "api-reference/proxy-toggle",

@@ -5,6 +5,120 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-05-23] - DDoS hardening: dynamic IDs move from URL path to request body
+
+A long path-traversal-append DDoS attack (`GET /v1/models/<random>/<random>`, `GET /v1/stats/models/<random>/<random>`, etc.) made it impossible to safely whitelist dynamic-path GETs at the Cloudflare edge without a regex-capable plan. To fix this without an enterprise plan upgrade, every endpoint that previously took an `{order_id}`, `{proxy_key}`, or `{model_id}` in the URL now has a static-URL POST sibling that takes the same identifier in the JSON body. The URL is therefore an exact-match at the edge and the appending-random-segments attack pattern becomes meaningless.
+
+### Added &mdash; new POST endpoints (identifier in JSON body)
+
+All new endpoints accept a single field in the body and return the same shape as their original GET counterpart. They all inherit the original auth requirements (see "Auth model" below).
+
+| New endpoint | Body | Replaces (still works) |
+|---|---|---|
+| `POST /auth/paypal/transaction` + `/v1/...` | `{"order_id": "..."}` | `GET /auth/paypal/transaction/{order_id}` |
+| `POST /auth/paypal/invoice` + `/v1/...` | `{"order_id": "..."}` | `GET /auth/paypal/invoice/{order_id}` |
+| `POST /auth/paypal/invoice/send` + `/v1/...` | `{"order_id": "..."}` | `POST /auth/paypal/invoice/{order_id}/send` |
+| `POST /auth/payment/crypto/transaction` + `/v1/...` | `{"order_id": "..."}` | `GET /auth/payment/crypto/transaction/{order_id}` |
+| `POST /auth/proxy/lookup` + `/v1/...` | `{"proxy_key": "..."}` | `GET /auth/proxy/{proxy_key}` |
+| `POST /auth/proxy/update` + `/v1/...` | `{"proxy_key": "...", "name": "...", "expires_at": ..., "allocated_ammount": ..., "model_whitelist": [...], "ip_whitelist": [...]}` | `POST /auth/proxy/update/{proxy_key}` |
+| `POST /auth/proxy/toggle` + `/v1/...` | `{"proxy_key": "..."}` | `POST /auth/proxy/toggle/{proxy_key}` |
+| `POST /auth/proxy/remove` + `/v1/...` | `{"proxy_key": "..."}` | `DELETE /auth/proxy/delete/{proxy_key}` |
+| `POST /stats/model` + `/v1/...` | `{"model_id": "..."}` | `GET /stats/models/{model_id}` |
+
+All body fields are Pydantic-validated with `min_length=1, max_length=256` so attackers cannot push huge payloads.
+
+### Auth model
+
+- **Required (API key or JWT):** `/auth/paypal/transaction`, `/auth/paypal/invoice`, `/auth/paypal/invoice/send`, `/auth/payment/crypto/transaction`.
+- **Required (API key only) + ownership check:** `/auth/proxy/lookup`, `/auth/proxy/update`, `/auth/proxy/toggle`, `/auth/proxy/remove` &mdash; each returns 404 if the proxy key doesn't exist and 403 if the caller is not its owner.
+- **Public (no auth):** `/stats/model` &mdash; per-model statistics are public information consumed by the anonymous rankings page.
+
+### Security fixes (pre-existing bugs found during this audit)
+
+- **`DELETE /auth/proxy/delete/{proxy_key}`** previously had **no auth dependency and no ownership check** &mdash; any unauthenticated caller who knew or guessed a proxy key value could delete it. It now requires an API key and verifies that the caller owns the key (`404` if not found, `403` if not owned).
+- **`POST /auth/proxy/update/{proxy_key}`** had an auth dependency but **no ownership check** &mdash; any authenticated user could overwrite anyone else's proxy key (name, allocated amount, model whitelist, IP whitelist) by knowing its value. It now verifies ownership (`404` / `403`).
+- **`GET /auth/proxy/{proxy_key}`** previously had no ownership check, so anyone who knew or guessed a proxy key could read its metadata. It now requires an API key and verifies ownership.
+
+### Changed &mdash; existing GETs are now authenticated
+
+These GETs were previously anonymous and are now behind authentication so that any leftover path-traversal hits return `401` cheaply (FastAPI rejects them at the dependency stage, before any DB or cache work):
+
+- `GET /models/{model}` and `GET /v1/models/{model}` &mdash; require API key or JWT.
+- `GET /nsfw/models/{model}` &mdash; require API key or JWT.
+- `GET /stats/models/{model_id}` and `GET /v1/stats/models/{model_id}` &mdash; require API key or JWT. (The public landing page now uses the new `POST /v1/stats/model` instead.)
+- `GET /auth/proxy/{proxy_key}` and `GET /v1/auth/proxy/{proxy_key}` &mdash; require API key + ownership check.
+
+`GET /models` and `GET /v1/models` (list-all) remain public so the playground model picker keeps working for anonymous visitors.
+
+### Frontend migration
+
+- **`playground.electronhub.ai/console`** &mdash; all five payment lookup `fetch` calls were converted to the new POST endpoints.
+- **`electronhub.ai/rankings`** &mdash; the model detail modal now POSTs to `/v1/stats/model` with `{ model_id }` instead of `GET /v1/stats/models/<id>`.
+
+### Migration
+
+- **No action required** for clients of the public OpenAI-style endpoints (`/v1/chat/completions`, `/v1/embeddings`, etc.) &mdash; they are completely unaffected.
+- **Clients that previously hit `GET /auth/proxy/{proxy_key}` anonymously** must now send a Bearer token. Recommended: migrate to `POST /auth/proxy/lookup` with `{"proxy_key": "..."}` in the body.
+- **Clients polling `GET /auth/paypal/transaction/{order_id}` / `GET /auth/payment/crypto/transaction/{order_id}`** should switch to the new POST variants. The old GET routes continue to work (still authenticated as before) but will be removed in a future release.
+
+### Cloudflare allowlist (recommended)
+
+With every dynamic identifier in the body, the WAF can use a pure exact-match allowlist (no `matches` regex required &mdash; works on Pro/Free plans):
+
+```
+http.host eq "api.electronhub.ai" and
+(
+  (http.request.method eq "GET" and http.request.uri.path in {
+    "/" "/models" "/models/" "/v1/models" "/nsfw/models" "/discord"
+    "/ws/auth" "/v1/ws/auth"
+    "/protected" "/v1/protected"
+    "/playground/token" "/v1/playground/token"
+    "/otp/firebase-config"
+    "/flex-credits/info" "/v1/flex-credits/info"
+    "/rewards/claim-with-token" "/v1/rewards/claim-with-token"
+    "/images/search" "/v1/images/search"
+    "/users/settings/thinking" "/v1/users/settings/thinking"
+    "/user/me" "/v1/user/me" "/user/logs" "/v1/user/logs" "/user/models" "/v1/user/models"
+    "/auth/login" "/v1/auth/login"
+    "/auth/google/login" "/v1/auth/google/login"
+    "/auth/patreon/login" "/v1/auth/patreon/login"
+    "/auth/callback" "/v1/auth/callback"
+    "/auth/google/callback" "/v1/auth/google/callback"
+    "/auth/patreon/callback" "/v1/auth/patreon/callback"
+    "/auth/patreon/status" "/v1/auth/patreon/status"
+    "/auth/discord/status" "/v1/auth/discord/status"
+    "/auth/key/regen" "/v1/auth/key/regen"
+    "/auth/proxy" "/v1/auth/proxy"
+    "/auth/transactions" "/v1/auth/transactions"
+    "/auth/kofi/transactions" "/v1/auth/kofi/transactions"
+    "/auth/crypto/return"
+    "/auth/crypto/transactions" "/v1/auth/crypto/transactions"
+    "/auth/payment/crypto/return"
+    "/auth/payment/crypto/transactions" "/v1/auth/payment/crypto/transactions"
+    "/auth/payment/crypto/currencies" "/v1/auth/payment/crypto/currencies"
+    "/auth/paypal/return"
+    "/auth/paypal/transactions" "/v1/auth/paypal/transactions"
+    "/auth/permanent-credits/info" "/v1/auth/permanent-credits/info"
+    "/auth/permanent-credits/alerts/info" "/v1/auth/permanent-credits/alerts/info"
+    "/stats/global" "/v1/stats/global"
+    "/stats/models/active" "/v1/stats/models/active"
+    "/stats/rankings/models" "/v1/stats/rankings/models"
+    "/stats/rankings/providers" "/v1/stats/rankings/providers"
+  }) or
+  (http.request.method eq "POST" and http.request.uri.path in {
+    "/auth/paypal/transaction" "/v1/auth/paypal/transaction"
+    "/auth/paypal/invoice" "/v1/auth/paypal/invoice"
+    "/auth/paypal/invoice/send" "/v1/auth/paypal/invoice/send"
+    "/auth/payment/crypto/transaction" "/v1/auth/payment/crypto/transaction"
+    "/auth/proxy/lookup" "/v1/auth/proxy/lookup"
+    "/auth/proxy/update" "/v1/auth/proxy/update"
+    "/auth/proxy/toggle" "/v1/auth/proxy/toggle"
+    "/auth/proxy/remove" "/v1/auth/proxy/remove"
+    "/stats/model" "/v1/stats/model"
+  })
+)
+```
+
 ## [2026-05-15] - Separate reasoning streams for chat completions
 
 ### Added

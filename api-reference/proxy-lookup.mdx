@@ -1,0 +1,155 @@
+---
+title: "Lookup Proxy Key"
+api: "POST https://api.electronhub.ai/v1/auth/proxy/lookup"
+description: "Retrieve metadata about a single proxy key you own"
+openapi: "POST /auth/proxy/lookup"
+---
+
+Returns the full metadata for one of your proxy keys, identified by the `proxy_key` field in the request body. This is the static-URL replacement for `GET /v1/auth/proxy/{proxy_key}`, designed so the URL can be exact-matched at the edge (Cloudflare, etc.) without being susceptible to path-traversal-append abuse.
+
+The legacy `GET /v1/auth/proxy/{proxy_key}` still works for backward compatibility but is discouraged for new integrations.
+
+<RequestExample>
+
+```bash cURL
+curl https://api.electronhub.ai/v1/auth/proxy/lookup \
+  -H "Authorization: Bearer $ELECTRONHUB_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"proxy_key": "ek-proxy-1234567890abcdef"}'
+```
+
+```python Python
+import httpx
+
+response = httpx.post(
+    "https://api.electronhub.ai/v1/auth/proxy/lookup",
+    headers={
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    },
+    json={"proxy_key": "ek-proxy-1234567890abcdef"},
+)
+
+proxy = response.json()
+print(proxy["name"], proxy["allocated_ammount"] - proxy["used_ammount"])
+```
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/auth/proxy/lookup', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${process.env.ELECTRONHUB_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ proxy_key: 'ek-proxy-1234567890abcdef' }),
+});
+
+const proxy = await response.json();
+console.log(proxy.name, proxy.allocated_ammount - proxy.used_ammount);
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "name": "Production API Key",
+  "key": "ek-proxy-1234567890abcdef",
+  "user_id": "user_abc123",
+  "expires_at": 1735689600,
+  "allocated_ammount": 100.0,
+  "used_ammount": 25.5,
+  "is_active": true,
+  "model_whitelist": ["gpt-4o", "claude-3-5-sonnet-20241022"],
+  "ip_whitelist": ["192.168.1.0/24"],
+  "enabled_thinking": true,
+  "created_at": 1704067200,
+  "last_used": 1704153600
+}
+```
+
+</ResponseExample>
+
+## Request Body
+
+<ParamField body="proxy_key" type="string" required>
+  The proxy key to look up. Must be a string between 1 and 256 characters and must be a proxy key you own &mdash; cross-account lookups return `403 Forbidden`.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="name" type="string">
+  The human-readable name of the proxy key.
+</ResponseField>
+
+<ResponseField name="key" type="string">
+  The proxy key value (starts with `ek-proxy-`).
+</ResponseField>
+
+<ResponseField name="user_id" type="string">
+  The ID of the account that owns this proxy key.
+</ResponseField>
+
+<ResponseField name="expires_at" type="integer">
+  Expiration timestamp in seconds since Unix epoch. `-1` means no expiration.
+</ResponseField>
+
+<ResponseField name="allocated_ammount" type="number">
+  Total credit amount allocated to this proxy key.
+</ResponseField>
+
+<ResponseField name="used_ammount" type="number">
+  Amount of credits already used by this proxy key.
+</ResponseField>
+
+<ResponseField name="is_active" type="boolean">
+  Whether the proxy key is currently active.
+</ResponseField>
+
+<ResponseField name="model_whitelist" type="array">
+  Model IDs this key can access. Empty array means all models.
+</ResponseField>
+
+<ResponseField name="ip_whitelist" type="array">
+  IPs or CIDR blocks allowed to use this key. Empty array means all IPs.
+</ResponseField>
+
+<ResponseField name="enabled_thinking" type="boolean">
+  Whether extended-thinking models are allowed on this proxy key.
+</ResponseField>
+
+<ResponseField name="created_at" type="integer">
+  Timestamp the proxy key was created.
+</ResponseField>
+
+<ResponseField name="last_used" type="integer">
+  Timestamp the proxy key was last used.
+</ResponseField>
+
+## Error Responses
+
+<ResponseField name="401" type="error">
+  **Unauthorized** &mdash; missing, malformed, or invalid `Authorization` header. JWT tokens are not accepted on this endpoint.
+</ResponseField>
+
+<ResponseField name="403" type="error">
+  **Forbidden** &mdash; the proxy key exists but is owned by a different account.
+</ResponseField>
+
+<ResponseField name="404" type="error">
+  **Not Found** &mdash; no proxy key with that value exists.
+</ResponseField>
+
+<ResponseField name="422" type="error">
+  **Unprocessable Entity** &mdash; the request body is missing `proxy_key` or violates the length constraint (`1 <= len <= 256`).
+</ResponseField>
+
+<ResponseField name="429" type="error">
+  **Rate Limited** &mdash; too many requests, please slow down.
+</ResponseField>
+
+## Notes
+
+- Requires an **API key** (`ek-...`) in the `Authorization` header. JWT tokens are intentionally rejected.
+- Proxy keys themselves (`ek-proxy-...`) cannot call this endpoint &mdash; only the parent account that owns the proxy key can read its metadata.

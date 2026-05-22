@@ -1,30 +1,33 @@
 ---
 title: "Toggle Proxy Key Status"
-api: "POST https://api.electronhub.ai/v1/auth/proxy/toggle/{proxy_key}"
+api: "POST https://api.electronhub.ai/v1/auth/proxy/toggle"
 description: "Enable or disable a proxy key without deleting it"
-openapi: "POST /auth/proxy/toggle/{proxy_key}"
+openapi: "POST /auth/proxy/toggle"
 ---
 
+Toggle the active status of a proxy key you own between enabled and disabled. The proxy key is identified by the `proxy_key` field in the request body so the URL is static and can be exact-matched at the edge (Cloudflare, etc.), making it immune to path-traversal-append DDoS abuse.
 
+The legacy `POST /v1/auth/proxy/toggle/{proxy_key}` still works for backward compatibility but is discouraged for new integrations.
 
 <RequestExample>
 
 ```bash cURL
-curl -X POST https://api.electronhub.ai/v1/auth/proxy/toggle/ek-proxy-1234567890abcdef \
-  -H "Authorization: Bearer $ELECTRONHUB_API_KEY"
+curl -X POST https://api.electronhub.ai/v1/auth/proxy/toggle \
+  -H "Authorization: Bearer $ELECTRONHUB_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"proxy_key": "ek-proxy-1234567890abcdef"}'
 ```
 
 ```python Python
 import httpx
 
-proxy_key_id = "ek-proxy-1234567890abcdef"
-
-client = httpx.Client()
-response = client.post(
-    f"https://api.electronhub.ai/v1/auth/proxy/toggle/{proxy_key_id}",
+response = httpx.post(
+    "https://api.electronhub.ai/v1/auth/proxy/toggle",
     headers={
-        "Authorization": f"Bearer {api_key}"
-    }
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    },
+    json={"proxy_key": "ek-proxy-1234567890abcdef"},
 )
 
 result = response.json()
@@ -33,13 +36,13 @@ print(f"New status: {'Active' if result['status'] else 'Inactive'}")
 ```
 
 ```javascript Node.js
-const proxyKeyId = 'ek-proxy-1234567890abcdef';
-
-const response = await fetch(`https://api.electronhub.ai/v1/auth/proxy/toggle/${proxyKeyId}`, {
+const response = await fetch('https://api.electronhub.ai/v1/auth/proxy/toggle', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${process.env.ELECTRONHUB_API_KEY}`,
+    'Content-Type': 'application/json',
   },
+  body: JSON.stringify({ proxy_key: 'ek-proxy-1234567890abcdef' }),
 });
 
 const result = await response.json();
@@ -60,54 +63,50 @@ console.log(`New status: ${result.status ? 'Active' : 'Inactive'}`);
 
 ```json Disable Response
 {
-  "message": "Proxy key status updated", 
+  "message": "Proxy key status updated",
   "status": false
 }
 ```
 
 </ResponseExample>
 
-## Overview
+## Request Body
 
-Toggle the active status of a proxy key between enabled and disabled states. This provides a non-destructive way to temporarily revoke access without losing the key's configuration.
-
-## Path Parameters
-
-<ParamField path="proxy_key" type="string" required>
-  The proxy key ID to toggle (starts with `ek-proxy-`)
+<ParamField body="proxy_key" type="string" required>
+  The proxy key to toggle (starts with `ek-proxy-`). Must be a string between 1 and 256 characters and must be a proxy key you own &mdash; cross-account toggles return `403 Forbidden`.
 </ParamField>
 
 ## Response Fields
 
 <ResponseField name="message" type="string">
-  Confirmation message that the status was updated
+  Confirmation message that the status was updated.
 </ResponseField>
 
 <ResponseField name="status" type="boolean">
-  The new status of the proxy key (`true` = active, `false` = inactive)
+  The new status of the proxy key (`true` = active, `false` = inactive).
 </ResponseField>
 
 ## Behavior
 
 The toggle endpoint switches the proxy key between two states:
 
-- **Active (`true`)**: The proxy key can be used for API requests
-- **Inactive (`false`)**: The proxy key is rejected with authentication errors
+- **Active (`true`)** &mdash; the proxy key can be used for API requests.
+- **Inactive (`false`)** &mdash; the proxy key is rejected with authentication errors.
 
 ## Use Cases
 
 <CardGroup cols={2}>
   <Card title="Temporary Suspension" icon="pause">
-    Quickly disable access during maintenance or investigations
+    Quickly disable access during maintenance or investigations.
   </Card>
   <Card title="Conditional Access" icon="key">
-    Enable/disable keys based on business logic or schedules
+    Enable/disable keys based on business logic or schedules.
   </Card>
   <Card title="Security Response" icon="shield">
-    Immediately block suspicious activity without permanent deletion
+    Immediately block suspicious activity without permanent deletion.
   </Card>
   <Card title="Testing" icon="flask">
-    Safely test key revocation and restoration workflows
+    Safely test key revocation and restoration workflows.
   </Card>
 </CardGroup>
 
@@ -115,19 +114,19 @@ The toggle endpoint switches the proxy key between two states:
 
 <AccordionGroup>
   <Accordion title="Preservation">
-    All key settings (name, expiration, credits, restrictions) are preserved
+    All key settings (name, expiration, credits, restrictions) are preserved.
   </Accordion>
-  
+
   <Accordion title="Reversibility">
-    Can be quickly re-enabled without reconfiguring settings
+    Can be quickly re-enabled without reconfiguring settings.
   </Accordion>
-  
+
   <Accordion title="Audit Trail">
-    Key history and usage statistics remain intact
+    Key history and usage statistics remain intact.
   </Accordion>
-  
+
   <Accordion title="Credit Protection">
-    Allocated credits stay with the key and aren't returned to main balance
+    Allocated credits stay with the key and are not returned to the main balance.
   </Accordion>
 </AccordionGroup>
 
@@ -137,49 +136,59 @@ The toggle endpoint switches the proxy key between two states:
 import httpx
 import time
 
-def toggle_proxy_key(api_key: str, proxy_key_id: str) -> bool:
-    """Toggle proxy key status and return new status"""
-    client = httpx.Client()
-    response = client.post(
-        f"https://api.electronhub.ai/v1/auth/proxy/toggle/{proxy_key_id}",
-        headers={"Authorization": f"Bearer {api_key}"}
+def toggle_proxy_key(api_key: str, proxy_key: str) -> bool:
+    """Toggle proxy key status and return the new status."""
+    response = httpx.post(
+        "https://api.electronhub.ai/v1/auth/proxy/toggle",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={"proxy_key": proxy_key},
     )
-    result = response.json()
-    return result["status"]
+    return response.json()["status"]
 
-# Disable key during maintenance window
-proxy_key_id = "ek-proxy-1234567890abcdef"
-new_status = toggle_proxy_key(api_key, proxy_key_id)
+proxy_key = "ek-proxy-1234567890abcdef"
+
+new_status = toggle_proxy_key(api_key, proxy_key)
 print(f"Key disabled: {not new_status}")
 
-# Perform maintenance...
 time.sleep(60)
 
-# Re-enable key after maintenance
-new_status = toggle_proxy_key(api_key, proxy_key_id) 
+new_status = toggle_proxy_key(api_key, proxy_key)
 print(f"Key re-enabled: {new_status}")
 ```
 
 ## Error Codes
 
 <ResponseField name="401" type="error">
-  **Unauthorized** - Invalid or missing API key
+  **Unauthorized** &mdash; missing, malformed, or invalid `Authorization` header. JWT tokens are not accepted on this endpoint.
 </ResponseField>
 
 <ResponseField name="403" type="error">
-  **Forbidden** - You don't have permission to modify this proxy key
+  **Forbidden** &mdash; the proxy key exists but is owned by a different account.
 </ResponseField>
 
 <ResponseField name="404" type="error">
-  **Not Found** - Proxy key doesn't exist
+  **Not Found** &mdash; no proxy key with that value exists.
+</ResponseField>
+
+<ResponseField name="422" type="error">
+  **Unprocessable Entity** &mdash; the request body is missing `proxy_key` or violates the length constraint (`1 <= len <= 256`).
 </ResponseField>
 
 <ResponseField name="429" type="error">
-  **Rate Limited** - Too many requests, please slow down
+  **Rate Limited** &mdash; too many requests, please slow down.
 </ResponseField>
+
+## Notes
+
+- Requires an **API key** (`ek-...`) in the `Authorization` header. JWT tokens are intentionally rejected.
+- Proxy keys themselves (`ek-proxy-...`) cannot call this endpoint &mdash; only the parent account that owns the proxy key can toggle it.
 
 ## Related Endpoints
 
-- [List Proxy Keys](/api-reference/proxy-keys) - View current status of all keys
-- [Update Proxy Key](/api-reference/proxy-update) - Modify key configuration
-- [Delete Proxy Key](/api-reference/proxy-delete) - Permanently remove a key 
+- [List Proxy Keys](/api-reference/proxy-keys) &mdash; view current status of all keys.
+- [Lookup Proxy Key](/api-reference/proxy-lookup) &mdash; read a single key's metadata.
+- [Update Proxy Key](/api-reference/proxy-update) &mdash; modify key configuration.
+- [Delete Proxy Key](/api-reference/proxy-delete) &mdash; permanently remove a key.
