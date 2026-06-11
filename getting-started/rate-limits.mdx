@@ -180,7 +180,7 @@ Even if you haven't hit your daily request limit, you can still be blocked if yo
 
 ### OpenAI Models (Monthly Token Limits)
 
-OpenAI models have a **monthly token budget** (combined input + output) that resets at 21:00 UTC on the 1st of each month. No separate daily cap applies.
+OpenAI models have a **monthly token budget** that caps total input + output tokens. No separate daily request limit applies.
 
 | Subscription Plan | Monthly Token Limit |
 | ----------------- | ------------------- |
@@ -192,7 +192,8 @@ OpenAI models have a **monthly token budget** (combined input + output) that res
 | **Business**      | 200M tokens         |
 | **Enterprise**    | 300M tokens         |
 
-Applies to all OpenAI models (e.g. `gpt-4o`, `o3`). Pay-as-you-go users are billed per use and exempt.
+- **Reset Time**: 21:00 UTC on the 1st of each month
+- **Applies to**: Combined input + output tokens across all OpenAI models
 
 ### Midjourney Models (Daily Limits)
 
