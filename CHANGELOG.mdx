@@ -5,6 +5,25 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-06-11] - OpenAI models: monthly token limits
+
+OpenAI models now have a **monthly token budget** per subscription plan, mirroring the existing Anthropic (Claude) monthly limit. The budget caps combined input + output tokens and resets at **21:00 UTC on the 1st of each month**. There is no separate daily request cap for OpenAI models — only the standard per-minute rate limit and this monthly token budget apply.
+
+| Subscription Plan | Monthly Token Limit |
+|---|---|
+| **Free** | 100K tokens |
+| **Starter** | 10M tokens |
+| **Plus** | 25M tokens |
+| **Core** | 50M tokens |
+| **Pro** | 100M tokens |
+| **Business** | 200M tokens |
+| **Enterprise** | 300M tokens |
+
+- **Applies to:** all OpenAI models (e.g. `gpt-4o`, `gpt-4.1`, `o3`, `o4-mini`) across `/chat/completions`, `/messages`, and `/responses`.
+- **Exemptions:** Pay-as-you-go users with active permanent credits are billed per use and bypass the budget; admin keys are unlimited.
+- **Exceeding the budget** returns a `429` with a message indicating the limit and reset date, independent of your per-minute rate limit.
+- See [Rate Limits](/getting-started/rate-limits#openai-models-monthly-token-limits) for full details.
+
 ## [2026-05-23] - DDoS hardening: dynamic IDs move from URL path to request body
 
 A long path-traversal-append DDoS attack (`GET /v1/models/<random>/<random>`, `GET /v1/stats/models/<random>/<random>`, etc.) made it impossible to safely whitelist dynamic-path GETs at the Cloudflare edge without a regex-capable plan. To fix this without an enterprise plan upgrade, every endpoint that previously took an `{order_id}`, `{proxy_key}`, or `{model_id}` in the URL now has a static-URL POST sibling that takes the same identifier in the JSON body. The URL is therefore an exact-match at the edge and the appending-random-segments attack pattern becomes meaningless.
