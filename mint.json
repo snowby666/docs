@@ -18,7 +18,7 @@
   "topbarLinks": [
     {
       "name": "Playground",
-      "url": "https://playground.electronhub.ai"
+      "url": "https://app.electronhub.ai"
     },
     {
       "name": "Discord",
@@ -27,7 +27,7 @@
   ],
   "topbarCtaButton": {
     "name": "Get API Key",
-    "url": "https://playground.electronhub.ai/console"
+    "url": "https://app.electronhub.ai#console"
   },
   "api": {
     "baseUrl": [

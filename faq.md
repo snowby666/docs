@@ -90,7 +90,7 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 **How it works:**
 - You can save up to **20% of your weekly credits** per week to your flex wallet
 - The total cap is **50% of your weekly credits** (e.g., if you get \$60/week, your flex wallet can hold up to \$30)
-- You can save at any time (no cooldown) — the weekly save limit resets every Sunday at 21:00 UTC
+- You can save at any time (no cooldown) â€” the weekly save limit resets every Sunday at 21:00 UTC
 - Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
 - Flex balance rolls over until you use it
 
@@ -103,7 +103,7 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 **When to use Flex Credits:**
 - Enable flex credits if you want to build up a buffer for heavy usage weeks
 - Useful if you don't use all your weekly credits every week
-- Flex balance rolls over — save up over a few weeks and use it when you need extra credits
+- Flex balance rolls over â€” save up over a few weeks and use it when you need extra credits
 
 ### What are Neutrinos?
 
@@ -137,7 +137,7 @@ Currently, Electron Hub accepts:
 
 ### How do I purchase permanent credits?
 
-1. Go to the [Electron Hub Dashboard](https://playground.electronhub.ai/console)
+1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai#console)
 2. Navigate to the credits/payment section
 3. Select the amount you want to purchase
 4. Complete the payment through PayPal
@@ -206,7 +206,7 @@ If you pay more than the base cost on Patreon, your weekly credits scale automat
 - **Extra credits formula**: For every dollar above the base cost, you get **1 additional credit per week**
 - **Example**: If you pay \$300/month instead of \$249:
   - Extra paid: \$300 - \$249 = \$51
-  - Extra credits: \$51 × 1 = \$51 credits
+  - Extra credits: \$51 Ã— 1 = \$51 credits
   - **Total weekly credits**: \$250 + \$51 = **\$301/week**
 
 **How it works:**
@@ -221,7 +221,7 @@ This allows Enterprise users to customize their plan based on their needs and bu
 
 Subscriptions are managed through **Patreon**. To subscribe:
 1. **First, purchase your subscription on Patreon** - Visit the Electron Hub Patreon page and select your desired tier
-2. Go to the [Electron Hub Dashboard](https://playground.electronhub.ai/console) → **Billing** section
+2. Go to the [Electron Hub Dashboard](https://app.electronhub.ai#console) â†’ **Billing** section
 3. Link your Patreon account to your Electron Hub account
 4. Your subscription benefits will be applied automatically
 
@@ -335,7 +335,7 @@ No, credits cannot be transferred between accounts. Each account's credits are t
 ### How do I check my credit balance?
 
 You can check your balance:
-- In the [Electron Hub Dashboard](https://playground.electronhub.ai/console)
+- In the [Electron Hub Dashboard](https://app.electronhub.ai#console)
 - Through the API by checking your user information
 - Balance includes: regular credits, flex credits (if enabled), and permanent credits (if enabled)
 
@@ -384,16 +384,16 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
 | Total Spent | Scale Tier | Multiplier | Example (Pro Tier) |
 |-------------|------------|------------|-------------------|
 | \$0-\$99 | Base | 1x (no scaling) | 30 requests/min |
-| \$100+ | Tier 1 | 2x | 60 requests/min (30 × 2) |
-| \$250+ | Tier 2 | 3x | 90 requests/min (30 × 3) |
-| \$500+ | Tier 3 | 5x | 150 requests/min (30 × 5) |
-| \$1,000+ | Tier 4 | 7x | 210 requests/min (30 × 7) |
-| \$2,500+ | Tier 5 | 10x | 300 requests/min (30 × 10) |
+| \$100+ | Tier 1 | 2x | 60 requests/min (30 Ã— 2) |
+| \$250+ | Tier 2 | 3x | 90 requests/min (30 Ã— 3) |
+| \$500+ | Tier 3 | 5x | 150 requests/min (30 Ã— 5) |
+| \$1,000+ | Tier 4 | 7x | 210 requests/min (30 Ã— 7) |
+| \$2,500+ | Tier 5 | 10x | 300 requests/min (30 Ã— 10) |
 
 **How it works:**
 - Your base rate limit depends on your subscription tier (e.g., Pro tier = 30 requests/min)
 - The multiplier is applied to your base limit based on your total permanent credits spending
-- **Example**: If you're on Pro tier (30 req/min) and have spent \$500+ on permanent credits, your rate limit becomes 150 requests/min (30 × 5)
+- **Example**: If you're on Pro tier (30 req/min) and have spent \$500+ on permanent credits, your rate limit becomes 150 requests/min (30 Ã— 5)
 
 **Base Rate Limits by Tier:**
 - Free: 5 requests/min
@@ -446,7 +446,7 @@ Credits refill automatically every Sunday at 21:00 UTC. If you don't see your cr
 
 ### How do I enable/disable flex credits or permanent credits?
 
-You can manage these settings in the [Electron Hub Dashboard](https://playground.electronhub.ai/console):
+You can manage these settings in the [Electron Hub Dashboard](https://app.electronhub.ai#console):
 - Navigate to account settings
 - Toggle flex credits on/off
 - Toggle permanent credits on/off
@@ -461,7 +461,7 @@ Free models are hosted by Electron Hub and may experience downtime during peak u
 ### How do I calculate how many credits I need?
 
 Credits are calculated based on:
-- **Token-based models**: Price per million tokens × tokens used
+- **Token-based models**: Price per million tokens Ã— tokens used
 - **Fixed-price models**: Fixed cost per request (like image generation)
 
 Check the model pricing in the dashboard or API documentation for specific costs.
@@ -469,7 +469,7 @@ Check the model pricing in the dashboard or API documentation for specific costs
 **Example:**
 - Model costs \$3 per million input tokens and \$15 per million output tokens
 - You use 1,000 input tokens and 500 output tokens
-- Cost = (1,000 / 1,000,000 × \$3) + (500 / 1,000,000 × \$15) = \$0.003 + \$0.0075 = \$0.0105 credits
+- Cost = (1,000 / 1,000,000 Ã— \$3) + (500 / 1,000,000 Ã— \$15) = \$0.003 + \$0.0075 = \$0.0105 credits
 
 ---
 
@@ -509,7 +509,7 @@ To comply with our AI provider content policies and legal requirements, we apply
 ## Helpful Links
 
 - **Documentation**: [https://docs.electronhub.ai](https://docs.electronhub.ai)
-- **Dashboard**: [https://playground.electronhub.ai/console](https://playground.electronhub.ai/console)
+- **Dashboard**: [https://app.electronhub.ai#console](https://app.electronhub.ai#console)
 - **Status Page**: [https://status.electronhub.ai](https://status.electronhub.ai) - Check uptime status for popular models
 - **Terms of Service**: [https://tos.electronhub.ai](https://tos.electronhub.ai)
 - **Privacy Policy**: [https://privacy.electronhub.ai](https://privacy.electronhub.ai)

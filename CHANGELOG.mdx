@@ -7,7 +7,7 @@ Track all updates, changes, and new features to the Electron Hub API.
 
 ## [2026-06-11] - OpenAI models: monthly token limits
 
-OpenAI models now have a **monthly token budget** per subscription plan, mirroring the existing Anthropic (Claude) monthly limit. The budget caps combined input + output tokens and resets at **21:00 UTC on the 1st of each month**. There is no separate daily request cap for OpenAI models — only the standard per-minute rate limit and this monthly token budget apply.
+OpenAI models now have a **monthly token budget** per subscription plan, mirroring the existing Anthropic (Claude) monthly limit. The budget caps combined input + output tokens and resets at **21:00 UTC on the 1st of each month**. There is no separate daily request cap for OpenAI models â€” only the standard per-minute rate limit and this monthly token budget apply.
 
 | Subscription Plan | Monthly Token Limit |
 |---|---|
@@ -71,7 +71,7 @@ These GETs were previously anonymous and are now behind authentication so that a
 
 ### Frontend migration
 
-- **`playground.electronhub.ai/console`** &mdash; all five payment lookup `fetch` calls were converted to the new POST endpoints.
+- **`app.electronhub.ai#console`** &mdash; all five payment lookup `fetch` calls were converted to the new POST endpoints.
 - **`electronhub.ai/rankings`** &mdash; the model detail modal now POSTs to `/v1/stats/model` with `{ model_id }` instead of `GET /v1/stats/models/<id>`.
 
 ### Migration
@@ -150,7 +150,7 @@ http.host eq "api.electronhub.ai" and
   - `reasoning_content_compat` (boolean)
   - `:reasoning-exclude` model suffix to strip reasoning for a single call
 - `reasoning_effort` now also accepts `"none"`, `"minimal"`, and `"xhigh"` in addition to `low`/`medium`/`high`.
-- Playground (`playground.electronhub.ai`) consumes the new separate `reasoning` field and renders it in the existing collapsible thinking container.
+- Playground (`app.electronhub.ai`) consumes the new separate `reasoning` field and renders it in the existing collapsible thinking container.
 
 ### Changed
 - `reasoning_effort` is **silently ignored** for models that don't support it instead of returning HTTP 400. This lets clients share a single request shape across providers.

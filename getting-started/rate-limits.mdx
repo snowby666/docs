@@ -9,7 +9,7 @@ icon: 'gauge'
 Electron Hub implements rate limiting to ensure fair usage and maintain service quality for all users. Rate limits are measured in **Requests Per Minute (RPM)** and vary by subscription plan.
 
 <Tip>
-  You can check your current rate limits and usage anytime in the [API Keys section](https://playground.electronhub.ai/console) of your dashboard.
+  You can check your current rate limits and usage anytime in the [API Keys section](https://app.electronhub.ai#console) of your dashboard.
 </Tip>
 
 ## Rate Limit Tiers
@@ -175,7 +175,7 @@ In addition to daily request limits, Anthropic models have a **monthly token bud
 - **Applies to**: Combined input + output tokens across all Claude models
 
 <Warning>
-Even if you haven't hit your daily request limit, you can still be blocked if your monthly token budget is exhausted. Monitor both limits in your [dashboard](https://playground.electronhub.ai/console).
+Even if you haven't hit your daily request limit, you can still be blocked if your monthly token budget is exhausted. Monitor both limits in your [dashboard](https://app.electronhub.ai#console).
 </Warning>
 
 ### OpenAI Models (Monthly Token Limits)
@@ -470,7 +470,7 @@ def check_rate_limit_status(response):
     print(f"Resets at: {reset_time}")
     
     if remaining < 5:
-        print("⚠️  Warning: Approaching rate limit!")
+        print("âš ï¸  Warning: Approaching rate limit!")
 ```
 
 
@@ -486,7 +486,7 @@ function checkRateLimitStatus(response) {
     console.log(`Resets at: ${resetTime}`);
     
     if (remaining < 5) {
-        console.log('⚠️  Warning: Approaching rate limit!');
+        console.log('âš ï¸  Warning: Approaching rate limit!');
     }
 }
 ```
@@ -495,7 +495,7 @@ function checkRateLimitStatus(response) {
 
 ### Dashboard Monitoring
 
-Use the [dashboard](https://playground.electronhub.ai/console) to:
+Use the [dashboard](https://app.electronhub.ai#console) to:
 
 - View real-time usage statistics
 - Set up usage alerts
@@ -515,7 +515,7 @@ Consider upgrading when you:
 
 ### How to Upgrade
 
-1. Visit your [dashboard](https://playground.electronhub.ai/console)
+1. Visit your [dashboard](https://app.electronhub.ai#console)
 2. Go to "Billing"
 3. Select your desired plan
 4. Complete the upgrade process
