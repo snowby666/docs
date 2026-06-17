@@ -155,7 +155,7 @@ Yes, there are limits to prevent abuse:
 **Refund Policy:**
 
 - **Permanent Credits Purchases**: Refunds are available within 30 days of purchase if you haven't used the credits. Once credits have been used, refunds are not available except in cases of technical errors or service issues.
-- **Subscription Refunds**: Subscriptions are managed through Patreon. Refund requests for subscriptions should be made through Patreon's refund system.
+- **Subscription Refunds**: Monthly subscriptions are managed through Ko-fi. Refund requests for subscriptions should be made through Ko-fi's refund system.
 - **Failed Requests**: Credits are **not charged** for failed requests (only successful and cancelled requests are charged). If you believe you were incorrectly charged for a failed request, contact support with your request ID.
 - **Technical Issues**: If you experience technical issues that prevent you from using the service, contact support for assistance. Refunds may be provided on a case-by-case basis.
 
@@ -172,7 +172,7 @@ For complete refund terms, please review our [Terms of Service](https://tos.elec
 
 ### What subscription tiers are available?
 
-Electron Hub offers several subscription tiers through Patreon:
+Electron Hub offers several monthly subscription tiers through Ko-fi:
 
 | Tier | Name | Weekly Credits | Max Bots | Studio Credits |
 |------|------|----------------|----------|----------------|
@@ -193,7 +193,7 @@ Electron Hub offers several subscription tiers through Patreon:
 
 ### Enterprise Tier (Custom Plan)
 
-The **Enterprise tier (Tier 4)** is a custom plan that scales with your Patreon payment amount:
+The **Enterprise tier (Tier 4)** is a custom plan that scales with your Ko-fi payment amount:
 
 **Base Benefits:**
 - Base weekly credits: **\$250**
@@ -202,7 +202,7 @@ The **Enterprise tier (Tier 4)** is a custom plan that scales with your Patreon 
 - 500 studio credits
 
 **Custom Scaling:**
-If you pay more than the base cost on Patreon, your weekly credits scale automatically:
+If you pay more than the base cost on Ko-fi, your weekly credits scale automatically:
 - **Extra credits formula**: For every dollar above the base cost, you get **1 additional credit per week**
 - **Example**: If you pay \$300/month instead of \$249:
   - Extra paid: \$300 - \$249 = \$51
@@ -210,7 +210,7 @@ If you pay more than the base cost on Patreon, your weekly credits scale automat
   - **Total weekly credits**: \$250 + \$51 = **\$301/week**
 
 **How it works:**
-- Your Patreon payment amount is automatically detected
+- Your Ko-fi payment amount is automatically detected
 - Weekly credits are calculated based on your actual payment
 - Credits update automatically when your payment changes
 - Works for both monthly and yearly subscriptions (yearly payments are divided by 12 for monthly calculation, with a 20% annual discount)
@@ -219,17 +219,17 @@ This allows Enterprise users to customize their plan based on their needs and bu
 
 ### How do I subscribe?
 
-Subscriptions are managed through **Patreon**. To subscribe:
-1. **First, purchase your subscription on Patreon** - Visit the Electron Hub Patreon page and select your desired tier
-2. Go to the [Electron Hub Dashboard](https://app.electronhub.ai#console) â†’ **Billing** section
-3. Link your Patreon account to your Electron Hub account
-4. Your subscription benefits will be applied automatically
+Monthly subscriptions are managed through **Ko-fi memberships**. To subscribe:
+1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai#console) â†’ **Billing** section and generate your Ko-fi link code (`KF-XXXXXXXX`)
+2. Visit the Electron Hub Ko-fi page and join the monthly membership for your desired tier
+3. Paste your link code (`KF-XXXXXXXX`) into the **message field** on Ko-fi
+4. Once Ko-fi confirms the payment (usually within ~1 minute), your subscription benefits are applied automatically
 
-**Important**: You must purchase the subscription on Patreon first before linking your account. If you link your account without an active Patreon subscription, you won't receive any benefits.
+**Important**: Always include your link code (`KF-XXXXXXXX`) in the Ko-fi message field. If it's missing, we fall back to matching by the **verified email** on your Ko-fi payment, but the link code is the most reliable way to credit your account.
 
 ### When do subscriptions renew?
 
-Subscriptions renew based on your Patreon subscription cycle (usually monthly). Your subscription expiry date is shown in your dashboard.
+Monthly subscriptions renew automatically through your Ko-fi membership cycle. Your subscription expiry date is shown in your dashboard.
 
 ### What happens if my subscription expires?
 
@@ -427,7 +427,7 @@ You can enable **low balance alerts** for permanent credits:
 
 ### Why can't I use a premium model?
 
-Premium models require a **Pro tier or higher** subscription. Check your subscription tier in the dashboard. If you're on a lower tier, you'll need to upgrade through Patreon.
+Premium models require a **Pro tier or higher** subscription. Check your subscription tier in the dashboard. If you're on a lower tier, you'll need to upgrade through Ko-fi.
 
 ### My credits didn't refill on Sunday at 21:00 UTC
 
