@@ -17,10 +17,6 @@
     {
       "url": "https://api.electronhub.ai/v1",
       "description": "Production API v1"
-    },
-    {
-      "url": "https://api.electronhub.ai",
-      "description": "Production API"
     }
   ],
   "security": [

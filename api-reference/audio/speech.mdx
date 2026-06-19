@@ -260,13 +260,13 @@ requests.post(
 
 ```python Python - MeloTTS Languages
 # English
-requests.post('/audio/speech', json={'model': 'melotts', 'input': 'Hello world', 'voice': 'en'})
+requests.post('/v1/audio/speech', json={'model': 'melotts', 'input': 'Hello world', 'voice': 'en'})
 
 # Spanish  
-requests.post('/audio/speech', json={'model': 'melotts', 'input': 'Hola mundo', 'voice': 'es'})
+requests.post('/v1/audio/speech', json={'model': 'melotts', 'input': 'Hola mundo', 'voice': 'es'})
 
 # Chinese
-requests.post('/audio/speech', json={'model': 'melotts', 'input': '你好世界', 'voice': 'zh'})
+requests.post('/v1/audio/speech', json={'model': 'melotts', 'input': '你好世界', 'voice': 'zh'})
 ```
 
 </CodeGroup>
@@ -586,7 +586,7 @@ Common error scenarios:
 
 ```javascript
 try {
-  const response = await fetch('/audio/speech', {
+  const response = await fetch('/v1/audio/speech', {
     method: 'POST',
     headers: {
       'Authorization': 'Bearer YOUR_API_KEY',

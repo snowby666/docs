@@ -81,7 +81,7 @@ headers = {
 }
 
 client = Client()
-response = client.get("https://api.electronhub.ai/user/models", headers=headers)
+response = client.get("https://api.electronhub.ai/v1/user/models", headers=headers)
 data = response.json()
 
 print(f"Total spend: ${data['total_consumption']:.2f}")
@@ -90,7 +90,7 @@ for model, stats in sorted(data['models'].items(), key=lambda x: x[1]['total_cos
 ```
 
 ```javascript Node.js
-const response = await fetch('https://api.electronhub.ai/user/models', {
+const response = await fetch('https://api.electronhub.ai/v1/user/models', {
   method: 'GET',
   headers: {
     'Authorization': 'Bearer YOUR_API_KEY'
@@ -107,7 +107,7 @@ for (const [model, stats] of Object.entries(data.models)
 ```
 
 ```bash cURL
-curl -X GET "https://api.electronhub.ai/user/models" \
+curl -X GET "https://api.electronhub.ai/v1/user/models" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
