@@ -158,7 +158,7 @@ Yes, there are limits to prevent abuse:
 **Refund Policy:**
 
 - **Permanent Credits Purchases**: Refunds are available within 30 days of purchase if you haven't used the credits. Once credits have been used, refunds are not available except in cases of technical errors or service issues.
-- **Subscription Refunds**: Monthly subscriptions are managed through **Creem** or **Ko-fi**, depending on which you subscribed with. Creem subscribers can cancel anytime via the Manage billing portal; refund requests should go through Creem support. Ko-fi refund requests should be made through Ko-fi's refund system.
+- **Subscription Refunds**: Subscriptions are managed through **Creem** or **Ko-fi**, depending on which you subscribed with. Creem subscribers can cancel anytime via the Manage billing portal; refund requests should go through Creem support. Ko-fi refund requests should be made through Ko-fi's refund system.
 - **Failed Requests**: Credits are **not charged** for failed requests (only successful and cancelled requests are charged). If you believe you were incorrectly charged for a failed request, contact support with your request ID.
 - **Technical Issues**: If you experience technical issues that prevent you from using the service, contact support for assistance. Refunds may be provided on a case-by-case basis.
 
@@ -201,8 +201,7 @@ Enterprise is the highest subscription tier:
 - **$200/week** credits
 - 200 max bots
 - 500 studio credits
-- Creem: **$249/month** or **$2,390/year**
-- Ko-fi: **$200+/month** membership
+- **$249+/month** on Creem or Ko-fi (**$2,390/year** on Creem)
 
 ### How do I subscribe?
 
@@ -221,13 +220,13 @@ Creem subscribers also get a **Manage billing** button and a **Cancel** option o
 2. Join the monthly membership for your desired tier on the Electron Hub Ko-fi page, using the same email as your verified Electron Hub account
 3. Once Ko-fi confirms the payment (usually within ~1 minute), it's matched to your account by email and your subscription benefits are applied
 
-**Important**: The email you pay with on Ko-fi must match your verified Electron Hub email exactly. If your email isn't verified yet when the payment arrives, it's held as pending and applied once you verify.
+**Important**: The email you pay with on Ko-fi must match your verified Electron Hub email exactly. If your email isn't verified yet when the payment arrives, it's held as pending and applied once you verify. Ko-fi annual plans are one-time shop purchases (12 months, no auto-renew).
 
 > Note: Creem pricing is slightly higher than Ko-fi's for the same tier, to cover payment processing fees. In-app benefits are identical either way.
 
 ### When do subscriptions renew?
 
-Monthly subscriptions renew automatically — through your Creem billing cycle or your Ko-fi membership cycle, depending on which you subscribed with. Your subscription expiry date is shown on the Billing → Subscription page.
+**Creem** (monthly and annual) and **Ko-fi monthly memberships** renew automatically. **Ko-fi annual** plans are one-time purchases for 12 months and do not auto-renew. Your expiry date is shown on the Billing → Subscription page.
 
 ### What happens if my subscription expires?
 
