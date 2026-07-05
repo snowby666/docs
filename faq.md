@@ -129,6 +129,9 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 
 Currently, Electron Hub accepts:
 - **PayPal** - for purchasing permanent credits
+- **Cryptocurrency** - for purchasing permanent credits
+- **Creem** - for subscriptions (recommended)
+- **Ko-fi** - for subscriptions
 
 **Payment Limits:**
 - Maximum 20 orders per day
@@ -155,7 +158,7 @@ Yes, there are limits to prevent abuse:
 **Refund Policy:**
 
 - **Permanent Credits Purchases**: Refunds are available within 30 days of purchase if you haven't used the credits. Once credits have been used, refunds are not available except in cases of technical errors or service issues.
-- **Subscription Refunds**: Monthly subscriptions are managed through Ko-fi. Refund requests for subscriptions should be made through Ko-fi's refund system.
+- **Subscription Refunds**: Monthly subscriptions are managed through **Creem** or **Ko-fi**, depending on which you subscribed with. Creem subscribers can cancel anytime via the Manage billing portal; refund requests should go through Creem support. Ko-fi refund requests should be made through Ko-fi's refund system.
 - **Failed Requests**: Credits are **not charged** for failed requests (only successful and cancelled requests are charged). If you believe you were incorrectly charged for a failed request, contact support with your request ID.
 - **Technical Issues**: If you experience technical issues that prevent you from using the service, contact support for assistance. Refunds may be provided on a case-by-case basis.
 
@@ -172,7 +175,7 @@ For complete refund terms, please review our [Terms of Service](https://tos.elec
 
 ### What subscription tiers are available?
 
-Electron Hub offers several monthly subscription tiers through Ko-fi:
+Electron Hub offers several monthly subscription tiers, available through **Creem** or **Ko-fi**:
 
 | Tier | Name | Weekly Credits | Max Bots | Studio Credits |
 |------|------|----------------|----------|----------------|
@@ -193,6 +196,8 @@ Electron Hub offers several monthly subscription tiers through Ko-fi:
 
 ### Enterprise Tier (Custom Plan)
 
+> The custom scaling below applies to **Ko-fi** payments only. Creem checkouts use fixed tier pricing (see "How do I subscribe?" below).
+
 The **Enterprise tier (Tier 4)** is a custom plan that scales with your Ko-fi payment amount:
 
 **Base Benefits:**
@@ -206,7 +211,7 @@ If you pay more than the base cost on Ko-fi, your weekly credits scale automatic
 - **Extra credits formula**: For every dollar above the base cost, you get **1 additional credit per week**
 - **Example**: If you pay \$300/month instead of \$249:
   - Extra paid: \$300 - \$249 = \$51
-  - Extra credits: \$51 Ã— 1 = \$51 credits
+  - Extra credits: \$51 × 1 = \$51 credits
   - **Total weekly credits**: \$250 + \$51 = **\$301/week**
 
 **How it works:**
@@ -219,17 +224,28 @@ This allows Enterprise users to customize their plan based on their needs and bu
 
 ### How do I subscribe?
 
-Monthly subscriptions are managed through **Ko-fi memberships**. To subscribe:
-1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai#console) â†’ **Billing** section and generate your Ko-fi link code (`KF-XXXXXXXX`)
-2. Visit the Electron Hub Ko-fi page and join the monthly membership for your desired tier
-3. Paste your link code (`KF-XXXXXXXX`) into the **message field** on Ko-fi
-4. Once Ko-fi confirms the payment (usually within ~1 minute), your subscription benefits are applied automatically
+You can subscribe with **Creem** (recommended) or **Ko-fi**. Both grant the same tier benefits, and you can only have one active subscription at a time.
 
-**Important**: Always include your link code (`KF-XXXXXXXX`) in the Ko-fi message field. If it's missing, we fall back to matching by the **verified email** on your Ko-fi payment, but the link code is the most reliable way to credit your account.
+**Creem:**
+1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai) → **Console** → **Billing** → **Subscription**
+2. Choose your plan and billing period (monthly or annual), then click **Subscribe**
+3. Complete checkout on Creem's hosted page
+4. Once Creem confirms the payment (usually within a few seconds), your subscription benefits are applied automatically
+
+Creem subscribers also get a **Manage billing** button and a **Cancel** option on the Billing → Subscription page.
+
+**Ko-fi:**
+1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai) → **Console** → **Billing** → **Subscription** and verify your account email
+2. Join the monthly membership for your desired tier on the Electron Hub Ko-fi page, using the same email as your verified Electron Hub account
+3. Once Ko-fi confirms the payment (usually within ~1 minute), it's matched to your account by email and your subscription benefits are applied
+
+**Important**: The email you pay with on Ko-fi must match your verified Electron Hub email exactly. If your email isn't verified yet when the payment arrives, it's held as pending and applied once you verify.
+
+> Note: Creem pricing is slightly higher than Ko-fi's for the same tier, to cover payment processing fees. In-app benefits are identical either way.
 
 ### When do subscriptions renew?
 
-Monthly subscriptions renew automatically through your Ko-fi membership cycle. Your subscription expiry date is shown in your dashboard.
+Monthly subscriptions renew automatically — through your Creem billing cycle or your Ko-fi membership cycle, depending on which you subscribed with. Your subscription expiry date is shown on the Billing → Subscription page.
 
 ### What happens if my subscription expires?
 
@@ -384,16 +400,16 @@ Your rate limits can scale based on your **total purchased credits** (permanent 
 | Total Spent | Scale Tier | Multiplier | Example (Pro Tier) |
 |-------------|------------|------------|-------------------|
 | \$0-\$99 | Base | 1x (no scaling) | 30 requests/min |
-| \$100+ | Tier 1 | 2x | 60 requests/min (30 Ã— 2) |
-| \$250+ | Tier 2 | 3x | 90 requests/min (30 Ã— 3) |
-| \$500+ | Tier 3 | 5x | 150 requests/min (30 Ã— 5) |
-| \$1,000+ | Tier 4 | 7x | 210 requests/min (30 Ã— 7) |
-| \$2,500+ | Tier 5 | 10x | 300 requests/min (30 Ã— 10) |
+| \$100+ | Tier 1 | 2x | 60 requests/min (30 × 2) |
+| \$250+ | Tier 2 | 3x | 90 requests/min (30 × 3) |
+| \$500+ | Tier 3 | 5x | 150 requests/min (30 × 5) |
+| \$1,000+ | Tier 4 | 7x | 210 requests/min (30 × 7) |
+| \$2,500+ | Tier 5 | 10x | 300 requests/min (30 × 10) |
 
 **How it works:**
 - Your base rate limit depends on your subscription tier (e.g., Pro tier = 30 requests/min)
 - The multiplier is applied to your base limit based on your total permanent credits spending
-- **Example**: If you're on Pro tier (30 req/min) and have spent \$500+ on permanent credits, your rate limit becomes 150 requests/min (30 Ã— 5)
+- **Example**: If you're on Pro tier (30 req/min) and have spent \$500+ on permanent credits, your rate limit becomes 150 requests/min (30 × 5)
 
 **Base Rate Limits by Tier:**
 - Free: 5 requests/min
@@ -427,7 +443,7 @@ You can enable **low balance alerts** for permanent credits:
 
 ### Why can't I use a premium model?
 
-Premium models require a **Pro tier or higher** subscription. Check your subscription tier in the dashboard. If you're on a lower tier, you'll need to upgrade through Ko-fi.
+Premium models require a **Pro tier or higher** subscription. Check your subscription tier in the dashboard. If you're on a lower tier, you'll need to upgrade via **Console → Billing → Subscription** (Creem or Ko-fi).
 
 ### My credits didn't refill on Sunday at 21:00 UTC
 
@@ -461,7 +477,7 @@ Free models are hosted by Electron Hub and may experience downtime during peak u
 ### How do I calculate how many credits I need?
 
 Credits are calculated based on:
-- **Token-based models**: Price per million tokens Ã— tokens used
+- **Token-based models**: Price per million tokens × tokens used
 - **Fixed-price models**: Fixed cost per request (like image generation)
 
 Check the model pricing in the dashboard or API documentation for specific costs.
@@ -469,7 +485,7 @@ Check the model pricing in the dashboard or API documentation for specific costs
 **Example:**
 - Model costs \$3 per million input tokens and \$15 per million output tokens
 - You use 1,000 input tokens and 500 output tokens
-- Cost = (1,000 / 1,000,000 Ã— \$3) + (500 / 1,000,000 Ã— \$15) = \$0.003 + \$0.0075 = \$0.0105 credits
+- Cost = (1,000 / 1,000,000 × \$3) + (500 / 1,000,000 × \$15) = \$0.003 + \$0.0075 = \$0.0105 credits
 
 ---
 
@@ -537,9 +553,9 @@ To comply with our AI provider content policies and legal requirements, we apply
 - **Premium Models**: Require Pro+ subscription + credits
 
 ### Payment
-- **Method**: PayPal
-- **Base Rate**: \$1 = 2 credits
+- **Permanent Credits**: PayPal or Cryptocurrency — \$1 = 2 credits
 - **Volume Discount**: 5% per \$500, max 20% at \$2,000+
+- **Subscriptions**: Creem or Ko-fi (one active provider at a time)
 
 ### Support
 For additional help, contact support through the dashboard or visit the documentation.

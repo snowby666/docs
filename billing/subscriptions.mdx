@@ -8,7 +8,7 @@ Subscriptions provide weekly credits that automatically refill every Sunday, alo
 
 ## Subscription Tiers
 
-Electron Hub offers several monthly subscription tiers through Ko-fi:
+Electron Hub offers several monthly subscription tiers, available through **Creem** (recommended) or **Ko-fi**:
 
 | Tier | Weekly Credits | Max Bots | Studio Credits |
 |------|----------------|----------|----------------|
@@ -35,7 +35,7 @@ Electron Hub offers several monthly subscription tiers through Ko-fi:
   
   **Example:**
   - Monthly Pro tier: `$69`/month
-  - Annual Pro tier: `$69` Ã— 12 Ã— 0.8 = `$662.40`/year (Save 20%)
+  - Annual Pro tier: `$69` × 12 × 0.8 = `$662.40`/year (Save 20%)
 </Card>
 
 <Tip>
@@ -46,6 +46,10 @@ Electron Hub offers several monthly subscription tiers through Ko-fi:
 </Tip>
 
 ## Enterprise Tier (Custom Plan)
+
+<Info>
+  The custom scaling below applies to **Ko-fi** payments only. Creem checkouts use fixed tier pricing (see [How to Subscribe](#how-to-subscribe)).
+</Info>
 
 The **Enterprise tier** is a custom plan that scales with your Ko-fi payment amount:
 
@@ -63,7 +67,7 @@ The **Enterprise tier** is a custom plan that scales with your Ko-fi payment amo
   
   **Example**: If you pay `$300`/month instead of `$249`:
   - Extra paid: `$300` - `$249` = `$51`
-  - Extra credits: `$51` Ã— 1 = \$51 credits
+  - Extra credits: `$51` × 1 = \$51 credits
   - **Total weekly credits**: \$250 + \$51 = **\$301/week**
 </Card>
 
@@ -81,31 +85,60 @@ The **Enterprise tier** is a custom plan that scales with your Ko-fi payment amo
 
 ## How to Subscribe
 
-Monthly subscriptions are managed through **Ko-fi memberships**. To subscribe:
+You can subscribe with **Creem** (recommended) or **Ko-fi**. Both grant the same tier benefits. You can only have one active subscription at a time.
 
-<Steps>
-  <Step title="Get your link code">
-    Go to the [Electron Hub Dashboard](https://app.electronhub.ai#console) â†’ **Billing** section and generate your Ko-fi link code (it looks like `KF-XXXXXXXX`).
-  </Step>
-  <Step title="Subscribe on Ko-fi">
-    Visit the Electron Hub Ko-fi page and join the monthly membership for your desired tier.
-  </Step>
-  <Step title="Paste your link code">
-    Paste your link code (`KF-XXXXXXXX`) into the **message field** on Ko-fi so we can credit the payment to your account.
-  </Step>
-  <Step title="Activate Benefits">
-    Once Ko-fi confirms the payment (usually within ~1 minute), your subscription benefits are applied automatically.
-  </Step>
-</Steps>
+<Tabs>
+  <Tab title="Creem (Recommended)">
+    <Steps>
+      <Step title="Open Billing">
+        Go to the [Electron Hub Dashboard](https://app.electronhub.ai) → **Console** → **Billing** → **Subscription**.
+      </Step>
+      <Step title="Choose your plan">
+        Pick a tier and billing period (monthly or annual), then click **Subscribe**.
+      </Step>
+      <Step title="Complete checkout">
+        You'll be redirected to Creem's hosted checkout to enter your payment details.
+      </Step>
+      <Step title="Activate Benefits">
+        Once Creem confirms the payment (usually within a few seconds), your subscription benefits are applied automatically.
+      </Step>
+    </Steps>
+
+    <Info>
+      Creem subscribers get a **Manage billing** button (update card, invoices, change plan) and a **Cancel** option on the Billing → Subscription page.
+    </Info>
+
+    <Tip>
+      Creem pricing is slightly higher than Ko-fi's for the same tier, to cover payment processing fees. In-app benefits are identical either way.
+    </Tip>
+  </Tab>
+  <Tab title="Ko-fi">
+    <Steps>
+      <Step title="Verify your email">
+        Go to the [Electron Hub Dashboard](https://app.electronhub.ai) → **Console** → **Billing** → **Subscription** and verify your account email.
+      </Step>
+      <Step title="Subscribe on Ko-fi">
+        Join the monthly membership for your desired tier on the Electron Hub Ko-fi page, using the same email as your verified Electron Hub account.
+      </Step>
+      <Step title="Activate Benefits">
+        Once Ko-fi confirms the payment (usually within ~1 minute), it's matched to your account by email and your subscription benefits are applied.
+      </Step>
+    </Steps>
+
+    <Warning>
+      <strong>Important:</strong> The email you pay with on Ko-fi must match your verified Electron Hub email exactly. If your email isn't verified yet when the payment arrives, it's held as pending and applied once you verify.
+    </Warning>
+  </Tab>
+</Tabs>
 
 <Warning>
-  <strong>Important:</strong> Always include your link code (`KF-XXXXXXXX`) in the Ko-fi message field. If it's missing, we fall back to matching by the **verified email** on your Ko-fi payment, but the link code is the most reliable way to credit your account.
+  You can't subscribe with Creem while you have an active Ko-fi subscription, or vice versa. Cancel your existing subscription first, or use the billing portal to change plans within the same provider.
 </Warning>
 
 ## Subscription Renewal
 
 <Card title="Automatic Renewal" icon="repeat" color="#8B5CF6">
-  Monthly subscriptions renew automatically through your Ko-fi membership cycle. Your subscription expiry date is shown in your dashboard.
+  Monthly subscriptions renew automatically through your Creem or Ko-fi billing cycle, depending on which you subscribed with. Your subscription expiry date is shown on the Billing → Subscription page.
 </Card>
 
 ## What Happens When Subscription Expires?
