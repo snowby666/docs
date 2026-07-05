@@ -27,7 +27,7 @@
   ],
   "topbarCtaButton": {
     "name": "Get API Key",
-    "url": "https://app.electronhub.ai#console"
+    "url": "https://app.electronhub.ai"
   },
   "api": {
     "baseUrl": [

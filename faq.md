@@ -52,12 +52,12 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 | Tier | Weekly Credits |
 |------|----------------|
 | Free | $0.25 |
-| Starter | $10 |
-| Plus | $20 |
-| Core | $40 |
-| Pro | $60 |
-| Business | $120 |
-| Enterprise | $250+ (scales with custom payment) |
+| Starter | $8 |
+| Plus | $15 |
+| Core | $30 |
+| Pro | $50 |
+| Business | $100 |
+| Enterprise | $200 |
 
 **Important Notes:**
 - Weekly credits refill every **Sunday at 21:00 UTC**
@@ -69,7 +69,7 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 
 **Permanent Credits** are credits you purchase with real money. Unlike weekly credits, these credits:
 - **Never expire** - they stay in your account forever
-- Can be purchased through PayPal
+- Can be purchased through PayPal or Cryptocurrency
 - Can be used alongside weekly credits
 - Have volume discounts (the more you spend, the more bonus credits you get)
 
@@ -89,21 +89,21 @@ For example, if you ask "What is the weather?" and the AI responds "The weather 
 
 **How it works:**
 - You can save up to **20% of your weekly credits** per week to your flex wallet
-- The total cap is **50% of your weekly credits** (e.g., if you get \$60/week, your flex wallet can hold up to \$30)
-- You can save at any time (no cooldown) â€” the weekly save limit resets every Sunday at 21:00 UTC
+- The total cap is **50% of your weekly credits** (e.g., if you get \$50/week, your flex wallet can hold up to \$25)
+- You can save at any time (no cooldown) — the weekly save limit resets every Sunday at 21:00 UTC
 - Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
 - Flex balance rolls over until you use it
 
 **Example:**
-- You have a Pro subscription (\$60/week)
-- Weekly save limit: \$12 (20% of \$60)
-- Maximum flex wallet: \$30 (50% of \$60)
-- If you save \$12 every week for 2.5 weeks, you'll have \$30 saved (the maximum)
+- You have a Pro subscription (\$50/week)
+- Weekly save limit: \$10 (20% of \$50)
+- Maximum flex wallet: \$25 (50% of \$50)
+- If you save \$10 every week for 2.5 weeks, you'll have \$25 saved (the maximum)
 
 **When to use Flex Credits:**
 - Enable flex credits if you want to build up a buffer for heavy usage weeks
 - Useful if you don't use all your weekly credits every week
-- Flex balance rolls over â€” save up over a few weeks and use it when you need extra credits
+- Flex balance rolls over — save up over a few weeks and use it when you need extra credits
 
 ### What are Neutrinos?
 
@@ -140,11 +140,11 @@ Currently, Electron Hub accepts:
 
 ### How do I purchase permanent credits?
 
-1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai#console)
+1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai)
 2. Navigate to the credits/payment section
 3. Select the amount you want to purchase
-4. Complete the payment through PayPal
-5. Credits are added to your account immediately after payment
+4. Complete payment through PayPal or cryptocurrency
+5. Credits are added to your account (PayPal: instant, crypto: after confirmation)
 
 ### Are there any purchase limits?
 
@@ -180,12 +180,12 @@ Electron Hub offers several monthly subscription tiers, available through **Cree
 | Tier | Name | Weekly Credits | Max Bots | Studio Credits |
 |------|------|----------------|----------|----------------|
 | 0 | Free | $0.25 | 5 | 5 |
-| 1 | Starter | $10 | 20 | 20 |
-| 5 | Plus | $20 | 30 | 50 |
-| 6 | Core | $40 | 50 | 75 |
-| 2 | Pro | $60 | 100 | 150 |
-| 3 | Business | $120 | 150 | 300 |
-| 4 | Enterprise | $250+ (custom) | 200 | 500 |
+| 1 | Starter | $8 | 20 | 20 |
+| 5 | Plus | $15 | 30 | 50 |
+| 6 | Core | $30 | 50 | 75 |
+| 2 | Pro | $50 | 100 | 150 |
+| 3 | Business | $100 | 150 | 300 |
+| 4 | Enterprise | $200 | 200 | 500 |
 
 **Benefits of Higher Tiers:**
 - More weekly credits
@@ -194,33 +194,15 @@ Electron Hub offers several monthly subscription tiers, available through **Cree
 - More bot creation slots
 - More studio credits (for AI bot creation)
 
-### Enterprise Tier (Custom Plan)
+### Enterprise Tier
 
-> The custom scaling below applies to **Ko-fi** payments only. Creem checkouts use fixed tier pricing (see "How do I subscribe?" below).
+Enterprise is the highest subscription tier:
 
-The **Enterprise tier (Tier 4)** is a custom plan that scales with your Ko-fi payment amount:
-
-**Base Benefits:**
-- Base weekly credits: **\$250**
-- Base monthly cost: \$249
+- **$200/week** credits
 - 200 max bots
 - 500 studio credits
-
-**Custom Scaling:**
-If you pay more than the base cost on Ko-fi, your weekly credits scale automatically:
-- **Extra credits formula**: For every dollar above the base cost, you get **1 additional credit per week**
-- **Example**: If you pay \$300/month instead of \$249:
-  - Extra paid: \$300 - \$249 = \$51
-  - Extra credits: \$51 × 1 = \$51 credits
-  - **Total weekly credits**: \$250 + \$51 = **\$301/week**
-
-**How it works:**
-- Your Ko-fi payment amount is automatically detected
-- Weekly credits are calculated based on your actual payment
-- Credits update automatically when your payment changes
-- Works for both monthly and yearly subscriptions (yearly payments are divided by 12 for monthly calculation, with a 20% annual discount)
-
-This allows Enterprise users to customize their plan based on their needs and budget.
+- Creem: **$249/month** or **$2,390/year**
+- Ko-fi: **$200+/month** membership
 
 ### How do I subscribe?
 
@@ -279,9 +261,8 @@ Electron Hub has three main model categories:
 - Best for: Regular usage without subscription commitment
 
 #### 3. Premium/Ultimate Models
-- Models that **require a subscription** (Pro tier or higher)
-- Examples: `gpt-4.5-preview`, `o1`, `o3-pro`, `gpt-4`
-- **Best uptime** - routed to multiple providers for reliability
+- **Premium models** require a **Starter tier or higher** subscription, OR permanent credits on the free tier
+- **Ultimate models** require a **Pro tier or higher** subscription
 - Also deduct credits from your balance
 - Best for: Production applications, critical workloads
 
@@ -302,8 +283,9 @@ Free models are hosted by Electron Hub directly, and during peak usage times, we
 ### How do I know which models I can access?
 
 - **Free tier**: Free models (with Neutrinos) and freemium models (with credits)
-- **Starter/Plus/Core tiers**: All freemium models + some premium models
-- **Pro/Business/Enterprise tiers**: All models including premium/ultimate models
+- **Free + permanent credits**: Premium models (not ultimate)
+- **Starter/Plus/Core**: Premium models
+- **Pro/Business/Enterprise**: Premium and ultimate models
 
 Check the model list in the dashboard or API documentation to see which models require which tier.
 
@@ -351,7 +333,7 @@ No, credits cannot be transferred between accounts. Each account's credits are t
 ### How do I check my credit balance?
 
 You can check your balance:
-- In the [Electron Hub Dashboard](https://app.electronhub.ai#console)
+- In the [Electron Hub Dashboard](https://app.electronhub.ai)
 - Through the API by checking your user information
 - Balance includes: regular credits, flex credits (if enabled), and permanent credits (if enabled)
 
@@ -438,12 +420,12 @@ You can enable **low balance alerts** for permanent credits:
 1. **Wait for the weekly refill** (Sunday 21:00 UTC) to get your weekly credits
 2. **Enable flex credits** if you have any saved
 3. **Enable permanent credits** if you have purchased credits
-4. **Purchase more permanent credits** through PayPal
+4. **Purchase more permanent credits** through PayPal or cryptocurrency
 5. **Upgrade your subscription** for more weekly credits
 
 ### Why can't I use a premium model?
 
-Premium models require a **Pro tier or higher** subscription. Check your subscription tier in the dashboard. If you're on a lower tier, you'll need to upgrade via **Console → Billing → Subscription** (Creem or Ko-fi).
+**Premium models** require a **Starter tier or higher** subscription, or permanent credits on the free tier. **Ultimate models** require a **Pro tier or higher** subscription. Check your tier in the dashboard, or upgrade via **Console → Billing → Subscription** (Creem or Ko-fi).
 
 ### My credits didn't refill on Sunday at 21:00 UTC
 
@@ -454,7 +436,7 @@ Credits refill automatically every Sunday at 21:00 UTC. If you don't see your cr
 
 ### I purchased credits but they're not showing up
 
-1. Check your PayPal payment status
+1. Check your PayPal or cryptocurrency payment status
 2. Refresh your dashboard
 3. Check your permanent credits balance (separate from regular balance)
 4. Make sure permanent credits are enabled in your settings
@@ -462,7 +444,7 @@ Credits refill automatically every Sunday at 21:00 UTC. If you don't see your cr
 
 ### How do I enable/disable flex credits or permanent credits?
 
-You can manage these settings in the [Electron Hub Dashboard](https://app.electronhub.ai#console):
+You can manage these settings in the [Electron Hub Dashboard](https://app.electronhub.ai):
 - Navigate to account settings
 - Toggle flex credits on/off
 - Toggle permanent credits on/off
@@ -525,7 +507,7 @@ To comply with our AI provider content policies and legal requirements, we apply
 ## Helpful Links
 
 - **Documentation**: [https://docs.electronhub.ai](https://docs.electronhub.ai)
-- **Dashboard**: [https://app.electronhub.ai#console](https://app.electronhub.ai#console)
+- **Dashboard**: [https://app.electronhub.ai](https://app.electronhub.ai)
 - **Status Page**: [https://status.electronhub.ai](https://status.electronhub.ai) - Check uptime status for popular models
 - **Terms of Service**: [https://tos.electronhub.ai](https://tos.electronhub.ai)
 - **Privacy Policy**: [https://privacy.electronhub.ai](https://privacy.electronhub.ai)
