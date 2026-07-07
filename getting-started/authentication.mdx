@@ -6,6 +6,20 @@ icon: 'shield'
 
 The Electron Hub API uses API keys for authentication. You'll need to include your API key in the `Authorization` header of every request.
 
+## Key Types
+
+Electron Hub issues three kinds of API keys, all used the same way (Bearer token):
+
+| Prefix | Type | What it's for |
+|---|---|---|
+| `ek-` | **Master key** | Your main account key — full model catalog, billed against your credits |
+| `ek-proxy-` | **Proxy key** | Scoped sub-keys you create under your master key, with per-key budgets and model allowlists |
+| `ek-dev-` | **DevPass key** | [Coding Plan](/billing/coding-plan) key — flat-rate access to the dedicated `:dev` coding models, never touches credits |
+
+<Note>
+  `:dev` models accept only `ek-dev-` keys, and DevPass keys work only on the Coding Plan model list — the key types don't overlap.
+</Note>
+
 ## Getting Your API Key
 
 1. Visit the [Electron Hub Console](https://app.electronhub.ai)

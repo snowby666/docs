@@ -1,0 +1,145 @@
+---
+title: 'Coding Plan (DevPass)'
+description: 'Flat-rate subscription for agentic coding — dedicated dev models, no credits, no per-token billing'
+icon: 'terminal'
+---
+
+The **ElectronHub Coding Plan** (DevPass) is a flat-rate subscription built for coding agents and CLI tools (Claude Code, Cline, Roo Code, OpenCode, and anything OpenAI/Anthropic-compatible). You get a dedicated `ek-dev-` API key with access to a curated set of frontier coding models — **usage never touches your credits**.
+
+<Info>
+  DevPass is fully independent from your regular subscription and credits. You can hold a DevPass alongside any other Electron Hub plan (or none at all).
+</Info>
+
+## Tiers
+
+| | **Lite** | **Turbo** |
+|---|---|---|
+| Price | **$5**/month | **$20**/month |
+| Concurrent requests | 2 | 5 |
+| Queue class | Standard | Priority |
+| Daily usage allowance | Generous | 6× Lite |
+| Credits consumed | None | None |
+
+<Card title="Which tier?" icon="scale-balanced" color="#8B5CF6">
+  **Lite** comfortably covers a full day of interactive agentic coding. **Turbo** is for heavy daily driving: more parallel agents, a much higher daily allowance, and priority dispatch when the pool is busy.
+</Card>
+
+<Warning>
+  Seats are **capped per tier** at launch to guarantee capacity for subscribers. If your tier is sold out, join the waitlist on the dashboard — you'll be notified the moment a seat opens (first come, first served).
+</Warning>
+
+## Included Models
+
+DevPass keys can call the Coding Plan model list (and only that list). Current lineup:
+
+| Model ID | Context | Highlights |
+|---|---|---|
+| `kimi-k2.6:dev` | 240K | Long-horizon coding, UI/UX generation, agent swarms |
+| `minimax-m2.7:dev` | 180K | Agentic productivity, multi-agent collaboration |
+| `glm-5.2:dev` | 400K | Repo-scale context — **coming soon** |
+
+All Coding Plan models support function calling and reasoning, and are served on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
+
+<Note>
+  `:dev` models are **exclusive to `ek-dev-` keys** — they can't be called with a master or proxy key, and a DevPass key can't call any non-`:dev` model. The lineup may expand over time; check [`/v1/models`](/api-reference/models) for the live list.
+</Note>
+
+## Getting Your DevPass Key
+
+<Steps>
+  <Step title="Subscribe">
+    Go to the [Dashboard](https://app.electronhub.ai) → **Console** → **Coding Plan**, pick Lite or Turbo, and complete the Creem checkout.
+  </Step>
+  <Step title="Grab your key">
+    Your `ek-dev-...` key is provisioned automatically within seconds and shown on the Coding Plan tab. It's always retrievable there — no need to save it anywhere fragile.
+  </Step>
+  <Step title="Point your tool at Electron Hub">
+    Use the key as a Bearer token against the standard API base URL, with a `:dev` model.
+  </Step>
+</Steps>
+
+```bash
+curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
+  -H "Authorization: Bearer ek-dev-YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "kimi-k2.6:dev",
+    "messages": [{"role": "user", "content": "Refactor this function..."}],
+    "stream": true
+  }'
+```
+
+<Tip>
+  **Key rotation:** regenerate your DevPass key any time from the dashboard. The old key stops working **instantly** on every device — only regenerate if you actually need to revoke it, since your current key is always retrievable from the Coding Plan tab.
+</Tip>
+
+## How Fair Use Works
+
+DevPass is flat-rate, so instead of billing per token it uses a fair-use queue. **Your requests are never rejected for usage** — heavy use is deprioritized, not blocked:
+
+<AccordionGroup>
+  <Accordion title="Concurrency, not RPM" icon="layer-group">
+    DevPass limits **simultaneous in-flight requests** (2 on Lite, 5 on Turbo) instead of requests-per-minute — a much better fit for agentic tools that stream long responses. If you're at your limit, the API returns `429` with a `Retry-After` header; wait for an in-flight request to finish and retry.
+  </Accordion>
+  <Accordion title="Daily allowance & the slow lane" icon="gauge">
+    Each tier has a generous daily token allowance (resets **21:00 UTC**). Past it, your requests still work but are dispatched from a lower-priority "slow lane" until the reset. A rolling weekly allowance works the same way — it exists to keep 24/7 automation from crowding out interactive use.
+  </Accordion>
+  <Accordion title="Priority dispatch" icon="bolt">
+    Capacity is partitioned with reserved floors per tier, so Turbo traffic can never starve Lite (and vice versa). Every response includes an `X-ElectronHub-Queue` header (`priority` / `standard` / `slow`) telling you which lane the request rode in.
+  </Accordion>
+  <Accordion title="Burst smoothing" icon="wave-sine">
+    Starting very many requests in a very short window gets a brief `429` with `Retry-After`. Normal agent bursts fit comfortably — this only trips on abusive request spam.
+  </Accordion>
+</AccordionGroup>
+
+Track your live usage (tokens today, queue class, in-flight requests) on the dashboard's Coding Plan tab.
+
+## Common Errors
+
+| Status | Meaning | What to do |
+|---|---|---|
+| `429` `concurrency_limit_exceeded` | All your concurrent slots are busy | Wait for a request to finish; honor `Retry-After` |
+| `429` (burst) | Too many request starts at once | Slow your request rate briefly |
+| `429` (pool) | Shared pool momentarily saturated | Retry shortly — reserved floors keep this rare |
+| `404` model error | Model not in the Coding Plan list | Use a `:dev` model with your DevPass key |
+| `403` | Subscription suspended/ended | Check payment method or resubscribe |
+
+## Terms & Fair Play
+
+<Warning>
+  DevPass is licensed for **individual use**. One subscription = one developer. Sharing or reselling a key (many people behind one subscription) is detected — one key hammered from many different networks, permanent 24/7 saturation — and leads to suspension. Refunds/chargebacks on this plan are treated as account-level violations.
+</Warning>
+
+- Billing is monthly via **Creem**, auto-renewing; cancel any time from the billing portal — your key stays active until the end of the paid period.
+- Using your key from home, work, a laptop, and CI is fine. Rotating IPs from a VPN is fine. Enforcement targets resale patterns, never normal developer life.
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="Does DevPass usage consume my credits?">
+    No. `:dev` model usage is covered entirely by the flat subscription — weekly, permanent, and flex credits are untouched.
+  </Accordion>
+  <Accordion title="Can I use my master key for :dev models (or my dev key for other models)?">
+    No. `:dev` models only accept `ek-dev-` keys, and DevPass keys only work on the Coding Plan model list. Keep both keys configured if you need both worlds.
+  </Accordion>
+  <Accordion title="What happens if I hit the daily allowance?">
+    Nothing breaks — requests keep working from the slow lane until the 21:00 UTC reset. If you hit it regularly on Lite, Turbo's allowance is 6× larger.
+  </Accordion>
+  <Accordion title="Can I upgrade Lite → Turbo?">
+    Yes — change your plan from the Creem billing portal. Your existing `ek-dev-` key keeps working and picks up Turbo limits automatically.
+  </Accordion>
+  <Accordion title="What if my tier is sold out?">
+    Join the waitlist from the Coding Plan tab. Seats free up when subscriptions lapse, and waitlisted users are notified in order.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="OpenAI SDKs" icon="plug" href="/guides/openai-sdks">
+    Wire your DevPass key into any OpenAI-compatible tool
+  </Card>
+  <Card title="Anthropic SDKs" icon="plug" href="/guides/anthropic-sdks">
+    Use /v1/messages with Claude-style clients
+  </Card>
+</CardGroup>
