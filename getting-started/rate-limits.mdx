@@ -109,7 +109,7 @@ When you encounter rate limits, you'll receive different error codes depending o
 
 ### Coding Plan (DevPass) Keys
 
-`ek-dev-` keys are **not** rate-limited in RPM at all. They use a concurrency model instead (2 simultaneous requests on Lite, 5 on Turbo) plus a fair-use queue — see the [Coding Plan docs](/billing/coding-plan#how-fair-use-works) for how admission, the daily allowance, and priority dispatch work.
+`ek-dev-` keys have **no RPM limit**. They allow a set number of parallel requests instead (2 on Lite, 5 on Turbo) plus a daily fair-use allowance — see the [Coding Plan docs](/billing/coding-plan#fair-use).
 
 ## Special Model Limits
 

@@ -11,8 +11,8 @@ The **Electron Hub Coding Plan** (DevPass) is a flat-rate subscription for codin
 | | **Lite** | **Turbo** |
 |---|---|---|
 | Price | **$5**/month | **$20**/month |
-| Concurrent requests | 2 | 5 |
-| Queue class | Standard | Priority |
+| Parallel requests | 2 | 5 |
+| Priority when busy | Standard | High |
 | Daily usage allowance | Generous | 6× Lite |
 
 <Warning>
@@ -52,21 +52,27 @@ curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
 
 ## Fair Use
 
-DevPass is flat-rate, so it uses a fair-use queue instead of per-token billing. **Requests are never rejected for usage** — heavy use is deprioritized, not blocked:
+DevPass is flat-rate — no per-token billing, no request quota. Instead of cutting you off, heavy usage is simply slowed down:
 
-- **Concurrency, not RPM** — the only hard limit is simultaneous in-flight requests (2 Lite / 5 Turbo). At the limit you get a `429` with `Retry-After`.
-- **Daily allowance** — past your tier's daily token allowance (resets 21:00 UTC), requests run from a lower-priority "slow lane" until reset. A rolling weekly allowance works the same way.
-- **Priority dispatch** — capacity has reserved floors per tier, so Turbo can never starve Lite (or vice versa). The `X-ElectronHub-Queue` response header (`priority` / `standard` / `slow`) shows which lane each request rode in.
-- **Burst smoothing** — spamming many request starts in seconds gets a brief `429`; normal agent bursts fit comfortably.
+<AccordionGroup>
+  <Accordion title="Parallel requests" icon="layer-group">
+    Each plan allows a set number of requests running at the same time (2 on Lite, 5 on Turbo) — there's no requests-per-minute limit. If all your slots are busy, you get a `429` with a `Retry-After` header; wait for one to finish and retry.
+  </Accordion>
+  <Accordion title="Heavy days" icon="gauge">
+    Each plan includes a generous daily usage allowance (resets 21:00 UTC). Going past it never blocks you — responses may just be slower until the reset.
+  </Accordion>
+  <Accordion title="Sudden spikes" icon="wave-sine">
+    Firing a very large number of requests within a few seconds may get a brief `429`. Normal coding-agent workloads fit comfortably.
+  </Accordion>
+</AccordionGroup>
 
-Live usage (tokens today, queue class, in-flight) is on the dashboard's Coding Plan tab.
+Your live usage is shown on the dashboard's Coding Plan tab.
 
 ## Errors
 
 | Status | Meaning | What to do |
 |---|---|---|
-| `429` `concurrency_limit_exceeded` | All concurrent slots busy | Honor `Retry-After`, then retry |
-| `429` (burst / pool) | Request-start spam or momentary pool saturation | Retry shortly |
+| `429` | All parallel slots busy, or too many requests at once | Honor `Retry-After`, then retry |
 | `404` model error | Model not in the Coding Plan list | Use a `:dev` model |
 | `403` | Subscription suspended or ended | Check payment method / resubscribe |
 
