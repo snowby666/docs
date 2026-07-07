@@ -141,8 +141,8 @@ console.log(proxy.name, proxy.allocated_ammount - proxy.used_ammount);
   **Not Found** &mdash; no proxy key with that value exists.
 </ResponseField>
 
-<ResponseField name="422" type="error">
-  **Unprocessable Entity** &mdash; the request body is missing `proxy_key` or violates the length constraint (`1 <= len <= 256`).
+<ResponseField name="400" type="error">
+  **Bad Request** &mdash; the request body is missing `proxy_key` or violates the length constraint (`1 <= len <= 256`). Returned as the standard [error envelope](/getting-started/errors) (`{"error": {...}}`).
 </ResponseField>
 
 <ResponseField name="429" type="error">

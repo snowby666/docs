@@ -5,6 +5,16 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-07-07] - Unified error response format
+
+All API errors now return a single, consistent envelope with a top-level `error` object, matching OpenAI/OpenRouter conventions. Previously some responses were wrapped in a framework `detail` field (e.g. `{"detail": {"error": {...}}}`).
+
+- **Standard shape:** `{"error": {"message", "type", "param", "code"}}` across all endpoints (including auth, billing, and proxy-key management).
+- **Anthropic `/v1/messages`** keeps Anthropic's native error shape (`{"type": "error", "error": {...}}`).
+- **Request validation** errors now return `400` (previously `422`) using the same envelope.
+- **Action:** parse `response.error.message` instead of `response.detail`.
+- See [Error Handling](/getting-started/errors) for full details.
+
 ## [2026-06-11] - OpenAI models: monthly token limits
 
 OpenAI models now have a **monthly token budget** per subscription plan, mirroring the existing Anthropic (Claude) monthly limit. The budget caps combined input + output tokens and resets at **21:00 UTC on the 1st of each month**. There is no separate daily request cap for OpenAI models — only the standard per-minute rate limit and this monthly token budget apply.

@@ -81,7 +81,7 @@ The Electron Hub API uses standard HTTP status codes to indicate the success or 
 
 ## Error Response Format
 
-All errors return a consistent JSON format:
+All errors return a consistent JSON envelope with a top-level `error` object:
 
 ```json
 {
@@ -89,10 +89,17 @@ All errors return a consistent JSON format:
     "message": "Description of the error",
     "type": "invalid_request_error",
     "param": "parameter_name",
-    "code": "specific_error_code"
+    "code": 400
   }
 }
 ```
+
+- `message` &mdash; human-readable description (always present).
+- `type` &mdash; error category (e.g. `invalid_request_error`).
+- `param` &mdash; the offending parameter, or `null`.
+- `code` &mdash; the HTTP status code, or `null`.
+
+The Anthropic-compatible `/v1/messages` endpoint instead returns Anthropic's native error shape: `{"type": "error", "error": {"type": "...", "message": "..."}}`.
 
 ## Best Practices
 
