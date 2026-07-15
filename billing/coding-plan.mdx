@@ -55,21 +55,44 @@ curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
 
 ## Fair Use
 
-DevPass is flat-rate — no per-token billing, no request quota. Instead of cutting you off, heavy usage is simply slowed down:
+Plans are for **individual coding**: one human working interactively in the tools they already use. Flat monthly price, generous rolling headroom, and a key that is yours alone — every machine you own, never shared.
+
+Instead of cutting you off, elevated usage is slowed or reordered so interactive subscribers stay responsive when the platform is busy. Live status is always on the dashboard's Coding Plan tab.
 
 <AccordionGroup>
   <Accordion title="Parallel requests" icon="layer-group">
-    Each plan allows a set number of requests running at the same time (2 on Lite, 5 on Turbo) — there's no requests-per-minute limit. If all your slots are busy, you get a `429` with a `Retry-After` header; wait for one to finish and retry.
+    Each plan allows a set number of requests running at the same time (2 on Lite, 5 on Turbo) — there is no requests-per-minute limit. If all your slots are busy, you get a `429` with a `Retry-After` header; wait for one to finish and retry. Coding agents handle this automatically.
   </Accordion>
-  <Accordion title="Heavy days" icon="gauge">
-    Each plan includes a generous daily usage allowance (resets 21:00 UTC). Going past it never blocks you — responses may just be slower until the reset.
+  <Accordion title="Daily soft headroom" icon="gauge">
+    Each plan includes a generous daily usage allowance that resets at **21:00 UTC**. Going past it never blocks you — requests continue with reduced concurrency and added latency until the reset. Your dashboard shows how close you are to full-speed headroom.
+  </Accordion>
+  <Accordion title="Weekly headroom" icon="calendar-week">
+    A rolling weekly token cap sits above the daily soft limit. Past it, the same absolute slow lane applies (lower concurrency + latency) — not a hard stop. This keeps sustained 24/7 grinders from crowding out interactive work across the week.
   </Accordion>
   <Accordion title="Sudden spikes" icon="wave-sine">
-    Firing a very large number of requests within a few seconds may get a brief `429`. Normal coding-agent workloads fit comfortably.
+    Firing a very large number of request starts within a few seconds may get a brief `429`. Normal coding-agent workloads fit comfortably.
+  </Accordion>
+  <Accordion title="Temporary pause after concurrency hammering" icon="pause">
+    Repeatedly hitting the parallel-slot limit (hundreds of concurrency `429`s in a usage day) can temporarily pause admission for a few hours. Your key stays valid; service resumes automatically at the time shown on the dashboard. Regenerating the key clears an automatic concurrency pause.
   </Accordion>
 </AccordionGroup>
 
-Your live usage is shown on the dashboard's Coding Plan tab.
+### Low-interactivity mode
+
+Plans are sized for a person coding, even intensively, all day. On rare occasions when an account shows an **unusual usage pattern** far beyond typical interactive work, the plan enters **low-interactivity mode** for about **24 hours**:
+
+- Under light load, behavior is unchanged.
+- When the platform is busy, requests may be queued behind interactive sessions and may occasionally need a retry.
+- Nothing is blocked. Your plan, models, and answer quality stay the same.
+- Interactive mode resumes automatically at the time shown on the Coding Plan tab — no action is required.
+
+Low-interactivity mode is a temporary fairness control so interactive subscribers keep responsive access during busy periods. It is **not** a suspension.
+
+If this ever surprises you, check for a runaway automation first, then ask us on [Discord](https://discord.com/invite/electronhub). Workloads that need unattended or high-duty-cycle throughput are a better fit for a regular Electron Hub API key billed on credits.
+
+### Fair use, in one paragraph
+
+Plans are individual, for a human coding interactively. Your key can run on every machine you own, and usage simply adds up across them. What it cannot do is serve other people or power shared/unattended workloads: no sharing with teammates, no pooling behind a proxy, no reselling, no deployed apps or backends riding a plan key. That is what makes the flat price work. Accounts with clearly non-individual usage patterns may lose access. If you are not sure which side of the line your setup is on, ask us on Discord — the answer is usually that you are fine.
 
 ## Errors
 
@@ -93,5 +116,8 @@ Your live usage is shown on the dashboard's Coding Plan tab.
   </Accordion>
   <Accordion title="What happens when my subscription ends?">
     Your `ek-dev-` key is deactivated. Resubscribe any time to restore it.
+  </Accordion>
+  <Accordion title="What does the Low-interactivity mode banner mean?">
+    See [Low-interactivity mode](#low-interactivity-mode). Requests remain available; under load they may queue behind interactive sessions until interactive mode resumes automatically.
   </Accordion>
 </AccordionGroup>
