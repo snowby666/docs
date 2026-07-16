@@ -76,7 +76,7 @@ Instead of cutting you off, elevated usage is slowed or reordered so interactive
     Firing a very large number of request starts within a few seconds may get a brief `429`. Normal coding-agent workloads fit comfortably.
   </Accordion>
   <Accordion title="Temporary pause after concurrency hammering" icon="pause">
-    Repeatedly hitting the parallel-slot limit (hundreds of concurrency `429`s in a usage day) can temporarily pause admission for a few hours. Your key stays valid; service resumes automatically at the time shown on the dashboard. Regenerating the key clears an automatic concurrency pause.
+    Repeatedly hitting the parallel-slot limit (hundreds of concurrency `429`s in a usage day) can temporarily pause admission for a few hours. While paused, requests return **`403`** with `code: "devpass_paused"` and a `Retry-After` header (not `429`, so agents do not keep auto-retrying). Your key stays valid; service resumes automatically at the time shown on the dashboard. Regenerating the key clears an automatic concurrency pause.
   </Accordion>
 </AccordionGroup>
 
@@ -103,6 +103,7 @@ Plans are individual, for a human coding interactively. Your key can run on ever
 |---|---|---|
 | `429` | All parallel slots busy, or too many requests at once | Honor `Retry-After`, then retry |
 | `404` model error | Model not in the Coding Plan list | Use a `:dev` model |
+| `403` | Temporarily paused after concurrency hammering | Wait for the resume time on the dashboard, or regenerate your key to clear the pause |
 | `403` | Subscription suspended or ended | Check payment method / resubscribe |
 
 ## Terms
