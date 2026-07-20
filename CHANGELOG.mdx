@@ -5,6 +5,15 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-07-21] - Speech-to-Text (`/v1/audio/transcriptions`)
+
+OpenAI-compatible speech-to-text is available via `POST /v1/audio/transcriptions` (multipart upload).
+
+- **Models:** Deepgram Nova 2/3 & Flux, Whisper turbo, Distil-Whisper, Grok STT, AssemblyAI, Speechmatics, Soniox
+- **Caps:** 25 MB / 25 minutes; formats match OpenAI (`flac`, `mp3`, `wav`, …)
+- **Billing:** per minute of audio (minimum 1 second)
+- See [Speech-to-Text](/api-reference/audio/transcriptions)
+
 ## [2026-07-07] - Unified error response format
 
 All API errors now return a single, consistent envelope with a top-level `error` object, matching OpenAI/OpenRouter conventions. Previously some responses were wrapped in a framework `detail` field (e.g. `{"detail": {"error": {...}}}`).

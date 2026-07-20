@@ -94,7 +94,8 @@
           "group": "Audio",
           "icon": "volume-high",
           "pages": [
-            "api-reference/audio/speech"
+            "api-reference/audio/speech",
+            "api-reference/audio/transcriptions"
           ]
         },
         "api-reference/moderations",

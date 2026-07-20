@@ -83,6 +83,22 @@ const embedding = await openai.embeddings.create({
 console.log(embedding.data[0].embedding);
 ```
 
+### Speech-to-Text
+
+```javascript
+import fs from "fs";
+
+const transcript = await openai.audio.transcriptions.create({
+  model: "deepgram-nova-3",
+  file: fs.createReadStream("audio.mp3"),
+  language: "auto",
+});
+
+console.log(transcript.text);
+```
+
+See [Speech-to-Text](/api-reference/audio/transcriptions) for formats, caps, and models.
+
 ### Moderations
 
 Check content for policy violations using text and image moderation:
@@ -194,6 +210,18 @@ completion = client.chat.completions.create(
 )
 
 print(completion.choices[0].message)
+```
+
+### Speech-to-Text
+
+```python
+with open("audio.mp3", "rb") as f:
+    transcript = client.audio.transcriptions.create(
+        model="deepgram-nova-3",
+        file=f,
+        language="auto",
+    )
+print(transcript.text)
 ```
 
 ### Moderations

@@ -1,0 +1,127 @@
+---
+title: 'Speech-to-Text'
+openapi: 'POST /audio/transcriptions'
+description: 'Transcribe audio to text (OpenAI-compatible)'
+---
+
+`POST /audio/transcriptions`
+
+Upload an audio file and get a text transcript. OpenAI-compatible multipart API.
+
+## Limits
+
+| Cap | Value |
+|---|---|
+| File size | **25 MB** |
+| Duration | **25 minutes** |
+| Formats | `flac`, `mp3`, `mp4`, `mpeg`, `mpga`, `m4a`, `ogg`, `wav`, `webm` |
+
+Billing is **per minute** of audio (minimum 1 second). Rates are listed on each model in `/v1/models`.
+
+## Request (multipart)
+
+<ParamField body="file" type="file" required>
+  Audio file to transcribe
+</ParamField>
+
+<ParamField body="model" type="string" required>
+  STT model ID (e.g. `deepgram-nova-3`, `whisper-large-v3-turbo`)
+</ParamField>
+
+<ParamField body="language" type="string">
+  ISO-639-1 code, or `auto` / `multi` where supported
+</ParamField>
+
+<ParamField body="response_format" type="string">
+  `json` (default), `text`, `srt`, `verbose_json`, or `vtt`
+</ParamField>
+
+<ParamField body="prompt" type="string">
+  Optional hint text (Whisper-family models)
+</ParamField>
+
+<ParamField body="temperature" type="number">
+  `0`–`1` (ignored by some engines)
+</ParamField>
+
+<ParamField body="model_config" type="string">
+  JSON string of engine options (Deepgram: `smart_format`, `punctuate`, `diarize`, …)
+</ParamField>
+
+You can also pass Deepgram flags as flat form fields: `smart_format`, `punctuate`, `diarize`, `utterance`, `numerals`.
+
+## Response
+
+Default (`json`):
+
+```json
+{ "text": "Hello, how are you?" }
+```
+
+`text` / `srt` / `vtt` return a plain-text body. `verbose_json` may include extra fields such as `duration`.
+
+## Models
+
+Usable models (see `/v1/models` for live pricing):
+
+| Model | Notes |
+|---|---|
+| `deepgram-nova-3` | Multilingual; upload + streaming engines |
+| `deepgram-nova-2` | Prefer `language=en` (not `auto`) |
+| `deepgram-flux` | Streaming engine; file upload converted server-side |
+| `whisper-large-v3-turbo` | Whisper turbo |
+| `distil-whisper-large-v2` | Distil-Whisper |
+| `grok-stt` | xAI |
+| `assemblyai-universal-streaming` | Use `language=en` (or `es`/`de`/…) |
+| `speechmatics-standard` | Speechmatics |
+| `soniox-stt-rt-v4` | Prefer omitting `language` or use a concrete code |
+
+## Examples
+
+<CodeGroup>
+
+```bash cURL
+curl https://api.electronhub.ai/v1/audio/transcriptions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F model=deepgram-nova-3 \
+  -F language=auto \
+  -F file=@audio.mp3
+```
+
+```python Python (OpenAI SDK)
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="YOUR_API_KEY",
+    base_url="https://api.electronhub.ai/v1",
+)
+
+with open("audio.mp3", "rb") as f:
+    result = client.audio.transcriptions.create(
+        model="deepgram-nova-3",
+        file=f,
+        language="auto",
+    )
+
+print(result.text)
+```
+
+```javascript Node.js (OpenAI SDK)
+import OpenAI from "openai";
+import fs from "fs";
+
+const openai = new OpenAI({
+  apiKey: "YOUR_API_KEY",
+  baseURL: "https://api.electronhub.ai/v1",
+});
+
+const result = await openai.audio.transcriptions.create({
+  model: "deepgram-nova-3",
+  file: fs.createReadStream("audio.mp3"),
+  language: "auto",
+});
+
+console.log(result.text);
+```
+
+</CodeGroup>

@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Electron Hub API",
-    "description": "Unified API platform integrating 200+ AI models for chat, image generation, embeddings, and more.",
+    "description": "Unified API platform integrating 200+ AI models for chat, image generation, speech-to-text, embeddings, and more.",
     "version": "1.0.0",
     "contact": {
       "name": "Electron Hub Support",
@@ -340,7 +340,9 @@
         "summary": "Get Usage",
         "description": "Get current user usage statistics and account information",
         "operationId": "getUsage",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -360,7 +362,9 @@
         "summary": "Get Model Breakdown",
         "description": "Retrieve a per-model cost and usage breakdown for the authenticated user, including request counts, token usage, total cost, and provider information for every model used.",
         "operationId": "getUserModelBreakdown",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -380,7 +384,9 @@
         "summary": "Get User Logs",
         "description": "Get recent API request logs for the authenticated user",
         "operationId": "getUserLogs",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -500,9 +506,15 @@
               }
             }
           },
-          "401": { "description": "Missing, invalid, or non-API-key Authorization header" },
-          "403": { "description": "Proxy key is owned by a different account" },
-          "404": { "description": "Proxy key not found" }
+          "401": {
+            "description": "Missing, invalid, or non-API-key Authorization header"
+          },
+          "403": {
+            "description": "Proxy key is owned by a different account"
+          },
+          "404": {
+            "description": "Proxy key not found"
+          }
         }
       }
     },
@@ -538,9 +550,15 @@
               }
             }
           },
-          "401": { "description": "Missing, invalid, or non-API-key Authorization header" },
-          "403": { "description": "Proxy key is owned by a different account" },
-          "404": { "description": "Proxy key not found" }
+          "401": {
+            "description": "Missing, invalid, or non-API-key Authorization header"
+          },
+          "403": {
+            "description": "Proxy key is owned by a different account"
+          },
+          "404": {
+            "description": "Proxy key not found"
+          }
         }
       }
     },
@@ -580,9 +598,15 @@
               }
             }
           },
-          "401": { "description": "Missing, invalid, or non-API-key Authorization header" },
-          "403": { "description": "Proxy key is owned by a different account" },
-          "404": { "description": "Proxy key not found" }
+          "401": {
+            "description": "Missing, invalid, or non-API-key Authorization header"
+          },
+          "403": {
+            "description": "Proxy key is owned by a different account"
+          },
+          "404": {
+            "description": "Proxy key not found"
+          }
         }
       }
     },
@@ -618,9 +642,15 @@
               }
             }
           },
-          "401": { "description": "Missing, invalid, or non-API-key Authorization header" },
-          "403": { "description": "Proxy key is owned by a different account" },
-          "404": { "description": "Proxy key not found" }
+          "401": {
+            "description": "Missing, invalid, or non-API-key Authorization header"
+          },
+          "403": {
+            "description": "Proxy key is owned by a different account"
+          },
+          "404": {
+            "description": "Proxy key not found"
+          }
         }
       }
     },
@@ -733,6 +763,41 @@
           }
         }
       }
+    },
+    "/audio/transcriptions": {
+      "post": {
+        "summary": "Create Transcription",
+        "description": "Transcribe audio to text (OpenAI-compatible multipart upload). Max 25 MB / 25 minutes.",
+        "operationId": "createTranscription",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AudioTranscriptionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transcription result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AudioTranscriptionResponse"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "description": "Plain text when response_format is text, srt, or vtt"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -747,7 +812,18 @@
     "schemas": {
       "Model": {
         "type": "object",
-        "required": ["name", "description", "id", "object", "created", "owned_by", "tokens", "pricing", "endpoints", "premium_model"],
+        "required": [
+          "name",
+          "description",
+          "id",
+          "object",
+          "created",
+          "owned_by",
+          "tokens",
+          "pricing",
+          "endpoints",
+          "premium_model"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -859,7 +935,10 @@
       },
       "ChatCompletionRequest": {
         "type": "object",
-        "required": ["model", "messages"],
+        "required": [
+          "model",
+          "messages"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -921,8 +1000,16 @@
           },
           "tool_choice": {
             "oneOf": [
-              {"type": "string", "enum": ["none", "auto"]},
-              {"$ref": "#/components/schemas/ToolChoice"}
+              {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "auto"
+                ]
+              },
+              {
+                "$ref": "#/components/schemas/ToolChoice"
+              }
             ]
           },
           "web_search": {
@@ -935,7 +1022,14 @@
           },
           "reasoning_effort": {
             "type": "string",
-            "enum": ["none", "minimal", "low", "medium", "high", "xhigh"],
+            "enum": [
+              "none",
+              "minimal",
+              "low",
+              "medium",
+              "high",
+              "xhigh"
+            ],
             "description": "Reasoning effort level. Silently ignored for models that do not support reasoning_effort, so clients can send a single shared request across providers."
           },
           "reasoning": {
@@ -944,7 +1038,14 @@
             "properties": {
               "effort": {
                 "type": "string",
-                "enum": ["none", "minimal", "low", "medium", "high", "xhigh"],
+                "enum": [
+                  "none",
+                  "minimal",
+                  "low",
+                  "medium",
+                  "high",
+                  "xhigh"
+                ],
                 "description": "Same enum as `reasoning_effort`."
               },
               "exclude": {
@@ -953,14 +1054,20 @@
               },
               "delta_field": {
                 "type": "string",
-                "enum": ["reasoning", "reasoning_content"],
+                "enum": [
+                  "reasoning",
+                  "reasoning_content"
+                ],
                 "description": "Override the streaming/non-streaming field name regardless of which endpoint variant was hit."
               }
             }
           },
           "reasoning_delta_field": {
             "type": "string",
-            "enum": ["reasoning", "reasoning_content"],
+            "enum": [
+              "reasoning",
+              "reasoning_content"
+            ],
             "description": "Shorthand for `reasoning.delta_field`."
           },
           "reasoning_content_compat": {
@@ -971,15 +1078,25 @@
       },
       "ChatMessage": {
         "type": "object",
-        "required": ["role", "content"],
+        "required": [
+          "role",
+          "content"
+        ],
         "properties": {
           "role": {
             "type": "string",
-            "enum": ["system", "user", "assistant", "tool"]
+            "enum": [
+              "system",
+              "user",
+              "assistant",
+              "tool"
+            ]
           },
           "content": {
             "oneOf": [
-              {"type": "string"},
+              {
+                "type": "string"
+              },
               {
                 "type": "array",
                 "items": {
@@ -1014,17 +1131,26 @@
       },
       "ContentPart": {
         "oneOf": [
-          {"$ref": "#/components/schemas/TextContentPart"},
-          {"$ref": "#/components/schemas/ImageContentPart"}
+          {
+            "$ref": "#/components/schemas/TextContentPart"
+          },
+          {
+            "$ref": "#/components/schemas/ImageContentPart"
+          }
         ]
       },
       "TextContentPart": {
         "type": "object",
-        "required": ["type", "text"],
+        "required": [
+          "type",
+          "text"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["text"]
+            "enum": [
+              "text"
+            ]
           },
           "text": {
             "type": "string"
@@ -1033,23 +1159,34 @@
       },
       "ImageContentPart": {
         "type": "object",
-        "required": ["type", "image_url"],
+        "required": [
+          "type",
+          "image_url"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["image_url"]
+            "enum": [
+              "image_url"
+            ]
           },
           "image_url": {
             "oneOf": [
-              {"type": "string"},
-              {"$ref": "#/components/schemas/ImageUrl"}
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/ImageUrl"
+              }
             ]
           }
         }
       },
       "ImageUrl": {
         "type": "object",
-        "required": ["url"],
+        "required": [
+          "url"
+        ],
         "properties": {
           "url": {
             "type": "string",
@@ -1057,18 +1194,27 @@
           },
           "detail": {
             "type": "string",
-            "enum": ["low", "high", "auto"],
+            "enum": [
+              "low",
+              "high",
+              "auto"
+            ],
             "default": "auto"
           }
         }
       },
       "Tool": {
         "type": "object",
-        "required": ["type", "function"],
+        "required": [
+          "type",
+          "function"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["function"]
+            "enum": [
+              "function"
+            ]
           },
           "function": {
             "$ref": "#/components/schemas/FunctionDefinition"
@@ -1077,7 +1223,9 @@
       },
       "FunctionDefinition": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string"
@@ -1092,15 +1240,22 @@
       },
       "ToolChoice": {
         "type": "object",
-        "required": ["type", "function"],
+        "required": [
+          "type",
+          "function"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["function"]
+            "enum": [
+              "function"
+            ]
           },
           "function": {
             "type": "object",
-            "required": ["name"],
+            "required": [
+              "name"
+            ],
             "properties": {
               "name": {
                 "type": "string"
@@ -1111,18 +1266,26 @@
       },
       "ToolCall": {
         "type": "object",
-        "required": ["id", "type", "function"],
+        "required": [
+          "id",
+          "type",
+          "function"
+        ],
         "properties": {
           "id": {
             "type": "string"
           },
           "type": {
             "type": "string",
-            "enum": ["function"]
+            "enum": [
+              "function"
+            ]
           },
           "function": {
             "type": "object",
-            "required": ["name"],
+            "required": [
+              "name"
+            ],
             "properties": {
               "name": {
                 "type": "string"
@@ -1136,11 +1299,16 @@
       },
       "ThinkingConfig": {
         "type": "object",
-        "required": ["type", "budget_tokens"],
+        "required": [
+          "type",
+          "budget_tokens"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["enabled"]
+            "enum": [
+              "enabled"
+            ]
           },
           "budget_tokens": {
             "type": "integer",
@@ -1150,7 +1318,13 @@
       },
       "ChatCompletionResponse": {
         "type": "object",
-        "required": ["id", "object", "created", "model", "choices"],
+        "required": [
+          "id",
+          "object",
+          "created",
+          "model",
+          "choices"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -1178,7 +1352,10 @@
       },
       "ChatChoice": {
         "type": "object",
-        "required": ["index", "message"],
+        "required": [
+          "index",
+          "message"
+        ],
         "properties": {
           "index": {
             "type": "integer"
@@ -1188,13 +1365,23 @@
           },
           "finish_reason": {
             "type": "string",
-            "enum": ["stop", "length", "content_filter", "tool_calls", "function_call"]
+            "enum": [
+              "stop",
+              "length",
+              "content_filter",
+              "tool_calls",
+              "function_call"
+            ]
           }
         }
       },
       "Usage": {
         "type": "object",
-        "required": ["prompt_tokens", "completion_tokens", "total_tokens"],
+        "required": [
+          "prompt_tokens",
+          "completion_tokens",
+          "total_tokens"
+        ],
         "properties": {
           "prompt_tokens": {
             "type": "integer"
@@ -1209,7 +1396,10 @@
       },
       "MessageRequest": {
         "type": "object",
-        "required": ["model", "messages"],
+        "required": [
+          "model",
+          "messages"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -1258,22 +1448,37 @@
           },
           "reasoning_effort": {
             "type": "string",
-            "enum": ["none", "minimal", "low", "medium", "high", "xhigh"],
+            "enum": [
+              "none",
+              "minimal",
+              "low",
+              "medium",
+              "high",
+              "xhigh"
+            ],
             "description": "Reasoning effort level. Silently ignored for models that do not support reasoning_effort."
           }
         }
       },
       "AnthropicMessage": {
         "type": "object",
-        "required": ["role", "content"],
+        "required": [
+          "role",
+          "content"
+        ],
         "properties": {
           "role": {
             "type": "string",
-            "enum": ["user", "assistant"]
+            "enum": [
+              "user",
+              "assistant"
+            ]
           },
           "content": {
             "oneOf": [
-              {"type": "string"},
+              {
+                "type": "string"
+              },
               {
                 "type": "array",
                 "items": {
@@ -1286,19 +1491,32 @@
       },
       "AnthropicContentPart": {
         "oneOf": [
-          {"$ref": "#/components/schemas/AnthropicTextContent"},
-          {"$ref": "#/components/schemas/AnthropicImageContent"},
-          {"$ref": "#/components/schemas/AnthropicToolUseContent"},
-          {"$ref": "#/components/schemas/AnthropicToolResultContent"}
+          {
+            "$ref": "#/components/schemas/AnthropicTextContent"
+          },
+          {
+            "$ref": "#/components/schemas/AnthropicImageContent"
+          },
+          {
+            "$ref": "#/components/schemas/AnthropicToolUseContent"
+          },
+          {
+            "$ref": "#/components/schemas/AnthropicToolResultContent"
+          }
         ]
       },
       "AnthropicTextContent": {
         "type": "object",
-        "required": ["type", "text"],
+        "required": [
+          "type",
+          "text"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["text"]
+            "enum": [
+              "text"
+            ]
           },
           "text": {
             "type": "string"
@@ -1307,11 +1525,16 @@
       },
       "AnthropicImageContent": {
         "type": "object",
-        "required": ["type", "source"],
+        "required": [
+          "type",
+          "source"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["image"]
+            "enum": [
+              "image"
+            ]
           },
           "source": {
             "$ref": "#/components/schemas/AnthropicImageSource"
@@ -1320,11 +1543,17 @@
       },
       "AnthropicImageSource": {
         "type": "object",
-        "required": ["type", "media_type", "data"],
+        "required": [
+          "type",
+          "media_type",
+          "data"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["base64"]
+            "enum": [
+              "base64"
+            ]
           },
           "media_type": {
             "type": "string",
@@ -1338,11 +1567,18 @@
       },
       "AnthropicToolUseContent": {
         "type": "object",
-        "required": ["type", "id", "name", "input"],
+        "required": [
+          "type",
+          "id",
+          "name",
+          "input"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["tool_use"]
+            "enum": [
+              "tool_use"
+            ]
           },
           "id": {
             "type": "string"
@@ -1357,18 +1593,25 @@
       },
       "AnthropicToolResultContent": {
         "type": "object",
-        "required": ["type", "tool_use_id"],
+        "required": [
+          "type",
+          "tool_use_id"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["tool_result"]
+            "enum": [
+              "tool_result"
+            ]
           },
           "tool_use_id": {
             "type": "string"
           },
           "content": {
             "oneOf": [
-              {"type": "string"},
+              {
+                "type": "string"
+              },
               {
                 "type": "array",
                 "items": {
@@ -1385,7 +1628,10 @@
       },
       "AnthropicTool": {
         "type": "object",
-        "required": ["name", "input_schema"],
+        "required": [
+          "name",
+          "input_schema"
+        ],
         "properties": {
           "name": {
             "type": "string"
@@ -1402,15 +1648,23 @@
         "oneOf": [
           {
             "type": "string",
-            "enum": ["auto", "any"]
+            "enum": [
+              "auto",
+              "any"
+            ]
           },
           {
             "type": "object",
-            "required": ["type", "name"],
+            "required": [
+              "type",
+              "name"
+            ],
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["tool"]
+                "enum": [
+                  "tool"
+                ]
               },
               "name": {
                 "type": "string"
@@ -1421,18 +1675,30 @@
       },
       "MessageResponse": {
         "type": "object",
-        "required": ["id", "type", "role", "content", "model", "stop_reason", "usage"],
+        "required": [
+          "id",
+          "type",
+          "role",
+          "content",
+          "model",
+          "stop_reason",
+          "usage"
+        ],
         "properties": {
           "id": {
             "type": "string"
           },
           "type": {
             "type": "string",
-            "enum": ["message"]
+            "enum": [
+              "message"
+            ]
           },
           "role": {
             "type": "string",
-            "enum": ["assistant"]
+            "enum": [
+              "assistant"
+            ]
           },
           "content": {
             "type": "array",
@@ -1445,7 +1711,12 @@
           },
           "stop_reason": {
             "type": "string",
-            "enum": ["end_turn", "max_tokens", "stop_sequence", "tool_use"],
+            "enum": [
+              "end_turn",
+              "max_tokens",
+              "stop_sequence",
+              "tool_use"
+            ],
             "nullable": true
           },
           "stop_sequence": {
@@ -1459,7 +1730,10 @@
       },
       "AnthropicUsage": {
         "type": "object",
-        "required": ["input_tokens", "output_tokens"],
+        "required": [
+          "input_tokens",
+          "output_tokens"
+        ],
         "properties": {
           "input_tokens": {
             "type": "integer"
@@ -1471,7 +1745,10 @@
       },
       "ResponseRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -1479,7 +1756,9 @@
           },
           "input": {
             "oneOf": [
-              {"type": "string"},
+              {
+                "type": "string"
+              },
               {
                 "type": "array",
                 "items": {
@@ -1516,8 +1795,16 @@
           },
           "tool_choice": {
             "oneOf": [
-              {"type": "string", "enum": ["auto", "none"]},
-              {"type": "object"}
+              {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none"
+                ]
+              },
+              {
+                "type": "object"
+              }
             ],
             "default": "auto"
           },
@@ -1538,15 +1825,24 @@
       },
       "ResponseMessage": {
         "type": "object",
-        "required": ["role", "content"],
+        "required": [
+          "role",
+          "content"
+        ],
         "properties": {
           "role": {
             "type": "string",
-            "enum": ["user", "assistant", "system"]
+            "enum": [
+              "user",
+              "assistant",
+              "system"
+            ]
           },
           "content": {
             "oneOf": [
-              {"type": "string"},
+              {
+                "type": "string"
+              },
               {
                 "type": "array",
                 "items": {
@@ -1559,18 +1855,29 @@
       },
       "ResponseContentPart": {
         "oneOf": [
-          {"$ref": "#/components/schemas/InputTextContentPart"},
-          {"$ref": "#/components/schemas/InputImageContentPart"},
-          {"$ref": "#/components/schemas/OutputTextContentPart"}
+          {
+            "$ref": "#/components/schemas/InputTextContentPart"
+          },
+          {
+            "$ref": "#/components/schemas/InputImageContentPart"
+          },
+          {
+            "$ref": "#/components/schemas/OutputTextContentPart"
+          }
         ]
       },
       "InputTextContentPart": {
         "type": "object",
-        "required": ["type", "text"],
+        "required": [
+          "type",
+          "text"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["input_text"]
+            "enum": [
+              "input_text"
+            ]
           },
           "text": {
             "type": "string"
@@ -1579,11 +1886,16 @@
       },
       "InputImageContentPart": {
         "type": "object",
-        "required": ["type", "image_url"],
+        "required": [
+          "type",
+          "image_url"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["input_image"]
+            "enum": [
+              "input_image"
+            ]
           },
           "image_url": {
             "type": "string",
@@ -1593,11 +1905,16 @@
       },
       "OutputTextContentPart": {
         "type": "object",
-        "required": ["type", "text"],
+        "required": [
+          "type",
+          "text"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["output_text"]
+            "enum": [
+              "output_text"
+            ]
           },
           "text": {
             "type": "string"
@@ -1610,17 +1927,26 @@
       },
       "ResponseTool": {
         "oneOf": [
-          {"$ref": "#/components/schemas/FunctionTool"},
-          {"$ref": "#/components/schemas/WebSearchTool"}
+          {
+            "$ref": "#/components/schemas/FunctionTool"
+          },
+          {
+            "$ref": "#/components/schemas/WebSearchTool"
+          }
         ]
       },
       "FunctionTool": {
         "type": "object",
-        "required": ["type", "function"],
+        "required": [
+          "type",
+          "function"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["function"]
+            "enum": [
+              "function"
+            ]
           },
           "function": {
             "$ref": "#/components/schemas/FunctionDefinition"
@@ -1629,11 +1955,15 @@
       },
       "WebSearchTool": {
         "type": "object",
-        "required": ["type"],
+        "required": [
+          "type"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["web_search"]
+            "enum": [
+              "web_search"
+            ]
           },
           "web_search": {
             "type": "object"
@@ -1645,7 +1975,11 @@
         "properties": {
           "effort": {
             "type": "string",
-            "enum": ["low", "medium", "high"]
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
           },
           "summary": {
             "type": "boolean"
@@ -1654,21 +1988,35 @@
       },
       "ResponseOutput": {
         "type": "object",
-        "required": ["id", "object", "created_at", "status", "model", "output"],
+        "required": [
+          "id",
+          "object",
+          "created_at",
+          "status",
+          "model",
+          "output"
+        ],
         "properties": {
           "id": {
             "type": "string"
           },
           "object": {
             "type": "string",
-            "enum": ["response"]
+            "enum": [
+              "response"
+            ]
           },
           "created_at": {
             "type": "integer"
           },
           "status": {
             "type": "string",
-            "enum": ["in_progress", "completed", "incomplete", "errored"]
+            "enum": [
+              "in_progress",
+              "completed",
+              "incomplete",
+              "errored"
+            ]
           },
           "model": {
             "type": "string"
@@ -1686,22 +2034,38 @@
       },
       "ResponseOutputItem": {
         "type": "object",
-        "required": ["id", "type", "status"],
+        "required": [
+          "id",
+          "type",
+          "status"
+        ],
         "properties": {
           "id": {
             "type": "string"
           },
           "type": {
             "type": "string",
-            "enum": ["message", "tool_call", "tool_result", "reasoning"]
+            "enum": [
+              "message",
+              "tool_call",
+              "tool_result",
+              "reasoning"
+            ]
           },
           "status": {
             "type": "string",
-            "enum": ["in_progress", "completed", "incomplete", "errored"]
+            "enum": [
+              "in_progress",
+              "completed",
+              "incomplete",
+              "errored"
+            ]
           },
           "role": {
             "type": "string",
-            "enum": ["assistant"]
+            "enum": [
+              "assistant"
+            ]
           },
           "content": {
             "type": "array",
@@ -1713,7 +2077,11 @@
       },
       "ResponseUsage": {
         "type": "object",
-        "required": ["input_tokens", "output_tokens", "total_tokens"],
+        "required": [
+          "input_tokens",
+          "output_tokens",
+          "total_tokens"
+        ],
         "properties": {
           "input_tokens": {
             "type": "integer"
@@ -1734,7 +2102,10 @@
       },
       "ImageGenerationRequest": {
         "type": "object",
-        "required": ["model", "prompt"],
+        "required": [
+          "model",
+          "prompt"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -1753,17 +2124,29 @@
           },
           "quality": {
             "type": "string",
-            "enum": ["standard", "hd"],
+            "enum": [
+              "standard",
+              "hd"
+            ],
             "default": "standard"
           },
           "size": {
             "type": "string",
-            "enum": ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"],
+            "enum": [
+              "256x256",
+              "512x512",
+              "1024x1024",
+              "1792x1024",
+              "1024x1792"
+            ],
             "default": "1024x1024"
           },
           "response_format": {
             "type": "string",
-            "enum": ["url", "b64_json"],
+            "enum": [
+              "url",
+              "b64_json"
+            ],
             "default": "url"
           },
           "public": {
@@ -1775,7 +2158,11 @@
       },
       "ImageEditRequest": {
         "type": "object",
-        "required": ["image", "prompt", "model"],
+        "required": [
+          "image",
+          "prompt",
+          "model"
+        ],
         "properties": {
           "image": {
             "type": "string",
@@ -1798,19 +2185,29 @@
           },
           "size": {
             "type": "string",
-            "enum": ["256x256", "512x512", "1024x1024"],
+            "enum": [
+              "256x256",
+              "512x512",
+              "1024x1024"
+            ],
             "default": "1024x1024"
           },
           "response_format": {
             "type": "string",
-            "enum": ["url", "b64_json"],
+            "enum": [
+              "url",
+              "b64_json"
+            ],
             "default": "url"
           }
         }
       },
       "ImageResponse": {
         "type": "object",
-        "required": ["created", "data"],
+        "required": [
+          "created",
+          "data"
+        ],
         "properties": {
           "created": {
             "type": "integer"
@@ -1840,7 +2237,10 @@
       },
       "VideoGenerationRequest": {
         "type": "object",
-        "required": ["model", "prompt"],
+        "required": [
+          "model",
+          "prompt"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -1853,13 +2253,22 @@
           "size": {
             "type": "string",
             "description": "Output aspect ratio (e.g., '16:9', '9:16', '1:1')",
-            "enum": ["16:9", "9:16", "1:1", "4:3", "3:4"]
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4"
+            ]
           }
         }
       },
       "EmbeddingRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -1867,17 +2276,24 @@
           },
           "input": {
             "oneOf": [
-              {"type": "string"},
+              {
+                "type": "string"
+              },
               {
                 "type": "array",
-                "items": {"type": "string"}
+                "items": {
+                  "type": "string"
+                }
               }
             ],
             "description": "Input text to embed"
           },
           "encoding_format": {
             "type": "string",
-            "enum": ["float", "base64"],
+            "enum": [
+              "float",
+              "base64"
+            ],
             "default": "float"
           },
           "dimensions": {
@@ -1888,7 +2304,12 @@
       },
       "EmbeddingResponse": {
         "type": "object",
-        "required": ["object", "data", "model", "usage"],
+        "required": [
+          "object",
+          "data",
+          "model",
+          "usage"
+        ],
         "properties": {
           "object": {
             "type": "string",
@@ -1910,7 +2331,11 @@
       },
       "EmbeddingData": {
         "type": "object",
-        "required": ["object", "embedding", "index"],
+        "required": [
+          "object",
+          "embedding",
+          "index"
+        ],
         "properties": {
           "object": {
             "type": "string",
@@ -1929,7 +2354,10 @@
       },
       "EmbeddingUsage": {
         "type": "object",
-        "required": ["prompt_tokens", "total_tokens"],
+        "required": [
+          "prompt_tokens",
+          "total_tokens"
+        ],
         "properties": {
           "prompt_tokens": {
             "type": "integer"
@@ -1941,7 +2369,10 @@
       },
       "ModerationRequest": {
         "type": "object",
-        "required": ["model", "input"],
+        "required": [
+          "model",
+          "input"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -1949,13 +2380,19 @@
           },
           "input": {
             "oneOf": [
-              {"type": "string"},
+              {
+                "type": "string"
+              },
               {
                 "type": "array",
                 "items": {
                   "oneOf": [
-                    {"type": "string"},
-                    {"type": "object"}
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object"
+                    }
                   ]
                 }
               }
@@ -1965,7 +2402,11 @@
       },
       "ModerationResponse": {
         "type": "object",
-        "required": ["id", "model", "results"],
+        "required": [
+          "id",
+          "model",
+          "results"
+        ],
         "properties": {
           "id": {
             "type": "string"
@@ -1983,7 +2424,11 @@
       },
       "ModerationResult": {
         "type": "object",
-        "required": ["flagged", "categories", "category_scores"],
+        "required": [
+          "flagged",
+          "categories",
+          "category_scores"
+        ],
         "properties": {
           "flagged": {
             "type": "boolean"
@@ -1991,44 +2436,93 @@
           "categories": {
             "type": "object",
             "properties": {
-              "sexual": {"type": "boolean"},
-              "hate": {"type": "boolean"},
-              "harassment": {"type": "boolean"},
-              "self-harm": {"type": "boolean"},
-              "sexual/minors": {"type": "boolean"},
-              "hate/threatening": {"type": "boolean"},
-              "violence/graphic": {"type": "boolean"},
-              "self-harm/intent": {"type": "boolean"},
-              "self-harm/instructions": {"type": "boolean"},
-              "harassment/threatening": {"type": "boolean"},
-              "violence": {"type": "boolean"}
+              "sexual": {
+                "type": "boolean"
+              },
+              "hate": {
+                "type": "boolean"
+              },
+              "harassment": {
+                "type": "boolean"
+              },
+              "self-harm": {
+                "type": "boolean"
+              },
+              "sexual/minors": {
+                "type": "boolean"
+              },
+              "hate/threatening": {
+                "type": "boolean"
+              },
+              "violence/graphic": {
+                "type": "boolean"
+              },
+              "self-harm/intent": {
+                "type": "boolean"
+              },
+              "self-harm/instructions": {
+                "type": "boolean"
+              },
+              "harassment/threatening": {
+                "type": "boolean"
+              },
+              "violence": {
+                "type": "boolean"
+              }
             }
           },
           "category_scores": {
             "type": "object",
             "properties": {
-              "sexual": {"type": "number"},
-              "hate": {"type": "number"},
-              "harassment": {"type": "number"},
-              "self-harm": {"type": "number"},
-              "sexual/minors": {"type": "number"},
-              "hate/threatening": {"type": "number"},
-              "violence/graphic": {"type": "number"},
-              "self-harm/intent": {"type": "number"},
-              "self-harm/instructions": {"type": "number"},
-              "harassment/threatening": {"type": "number"},
-              "violence": {"type": "number"}
+              "sexual": {
+                "type": "number"
+              },
+              "hate": {
+                "type": "number"
+              },
+              "harassment": {
+                "type": "number"
+              },
+              "self-harm": {
+                "type": "number"
+              },
+              "sexual/minors": {
+                "type": "number"
+              },
+              "hate/threatening": {
+                "type": "number"
+              },
+              "violence/graphic": {
+                "type": "number"
+              },
+              "self-harm/intent": {
+                "type": "number"
+              },
+              "self-harm/instructions": {
+                "type": "number"
+              },
+              "harassment/threatening": {
+                "type": "number"
+              },
+              "violence": {
+                "type": "number"
+              }
             }
           }
         }
       },
       "Error": {
         "type": "object",
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "properties": {
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string"
@@ -2045,7 +2539,10 @@
       },
       "ModelBreakdownResponse": {
         "type": "object",
-        "required": ["total_consumption", "models"],
+        "required": [
+          "total_consumption",
+          "models"
+        ],
         "properties": {
           "total_consumption": {
             "type": "number",
@@ -2116,7 +2613,13 @@
       },
       "UsageResponse": {
         "type": "object",
-        "required": ["subscription", "credits", "usage", "history", "endpoints"],
+        "required": [
+          "subscription",
+          "credits",
+          "usage",
+          "history",
+          "endpoints"
+        ],
         "properties": {
           "subscription": {
             "type": "string",
@@ -2128,7 +2631,10 @@
           },
           "usage": {
             "type": "object",
-            "required": ["input_tokens", "output_tokens"],
+            "required": [
+              "input_tokens",
+              "output_tokens"
+            ],
             "properties": {
               "input_tokens": {
                 "type": "integer",
@@ -2145,7 +2651,10 @@
             "description": "Daily usage history",
             "items": {
               "type": "object",
-              "required": ["date", "requests"],
+              "required": [
+                "date",
+                "requests"
+              ],
               "properties": {
                 "date": {
                   "type": "string",
@@ -2185,7 +2694,11 @@
       },
       "ProxyKey": {
         "type": "object",
-        "required": ["name", "expires_at", "allocated_ammount"],
+        "required": [
+          "name",
+          "expires_at",
+          "allocated_ammount"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -2246,7 +2759,11 @@
       },
       "CreateProxyKeyRequest": {
         "type": "object",
-        "required": ["name", "expires_at", "allocated_ammount"],
+        "required": [
+          "name",
+          "expires_at",
+          "allocated_ammount"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -2271,7 +2788,10 @@
               "type": "string"
             },
             "description": "List of allowed models (empty for all models)",
-            "example": ["gpt-4o", "claude-3-5-sonnet-20241022"],
+            "example": [
+              "gpt-4o",
+              "claude-3-5-sonnet-20241022"
+            ],
             "default": []
           },
           "ip_whitelist": {
@@ -2280,14 +2800,22 @@
               "type": "string"
             },
             "description": "List of allowed IP addresses or CIDR blocks (empty for all IPs)",
-            "example": ["192.168.1.0/24", "203.0.113.42"],
+            "example": [
+              "192.168.1.0/24",
+              "203.0.113.42"
+            ],
             "default": []
           }
         }
       },
       "UpdateProxyKeyRequest": {
         "type": "object",
-        "required": ["proxy_key", "name", "expires_at", "allocated_ammount"],
+        "required": [
+          "proxy_key",
+          "name",
+          "expires_at",
+          "allocated_ammount"
+        ],
         "properties": {
           "proxy_key": {
             "type": "string",
@@ -2316,7 +2844,11 @@
           "limit_type": {
             "type": "string",
             "description": "Spend window for the allocation",
-            "enum": ["daily", "weekly", "monthly"],
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly"
+            ],
             "default": "daily"
           },
           "model_whitelist": {
@@ -2325,7 +2857,10 @@
               "type": "string"
             },
             "description": "List of allowed models (empty for all models)",
-            "example": ["gpt-4o", "claude-3-5-sonnet-20241022"],
+            "example": [
+              "gpt-4o",
+              "claude-3-5-sonnet-20241022"
+            ],
             "default": []
           },
           "ip_whitelist": {
@@ -2334,14 +2869,19 @@
               "type": "string"
             },
             "description": "List of allowed IP addresses or CIDR blocks (empty for all IPs)",
-            "example": ["192.168.1.0/24", "203.0.113.42"],
+            "example": [
+              "192.168.1.0/24",
+              "203.0.113.42"
+            ],
             "default": []
           }
         }
       },
       "ProxyKeyLookupRequest": {
         "type": "object",
-        "required": ["proxy_key"],
+        "required": [
+          "proxy_key"
+        ],
         "properties": {
           "proxy_key": {
             "type": "string",
@@ -2354,7 +2894,15 @@
       },
       "UserLogEntry": {
         "type": "object",
-        "required": ["key", "model", "route", "credits", "timestamp", "status", "ip"],
+        "required": [
+          "key",
+          "model",
+          "route",
+          "credits",
+          "timestamp",
+          "status",
+          "ip"
+        ],
         "properties": {
           "key": {
             "type": "string",
@@ -2383,7 +2931,11 @@
           },
           "status": {
             "type": "string",
-            "enum": ["success", "cancelled", "error"],
+            "enum": [
+              "success",
+              "cancelled",
+              "error"
+            ],
             "description": "Status of the request",
             "example": "success"
           },
@@ -2406,7 +2958,9 @@
       },
       "AudioSpeechRequest": {
         "type": "object",
-        "required": ["model"],
+        "required": [
+          "model"
+        ],
         "properties": {
           "model": {
             "type": "string",
@@ -2427,7 +2981,14 @@
           },
           "response_format": {
             "type": "string",
-            "enum": ["mp3", "opus", "aac", "flac", "wav", "pcm"],
+            "enum": [
+              "mp3",
+              "opus",
+              "aac",
+              "flac",
+              "wav",
+              "pcm"
+            ],
             "default": "mp3",
             "description": "The audio format for the generated speech"
           },
@@ -2488,6 +3049,86 @@
           "emotional_style": {
             "type": "string",
             "description": "Emotional style for Microsoft TTS (e.g., 'cheerful', 'sad', 'angry')"
+          }
+        }
+      },
+      "AudioTranscriptionRequest": {
+        "type": "object",
+        "required": [
+          "file",
+          "model"
+        ],
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Audio file (flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, webm). Max 25 MB / 25 minutes."
+          },
+          "model": {
+            "type": "string",
+            "description": "STT model ID",
+            "example": "deepgram-nova-3"
+          },
+          "language": {
+            "type": "string",
+            "description": "ISO-639-1 code, or auto/multi where supported",
+            "example": "auto"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Optional hint text (Whisper-family)"
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "json",
+              "text",
+              "srt",
+              "verbose_json",
+              "vtt"
+            ],
+            "default": "json"
+          },
+          "temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "model_config": {
+            "type": "string",
+            "description": "JSON string of engine-specific options (e.g. Deepgram)"
+          },
+          "smart_format": {
+            "type": "boolean"
+          },
+          "punctuate": {
+            "type": "boolean"
+          },
+          "diarize": {
+            "type": "boolean"
+          },
+          "utterance": {
+            "type": "boolean"
+          },
+          "numerals": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AudioTranscriptionResponse": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Transcribed text",
+            "example": "Hello, how are you?"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Audio duration in seconds (verbose_json)"
           }
         }
       }
