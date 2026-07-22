@@ -21,19 +21,21 @@ The **Electron Hub Coding Plan** (DevPass) is a flat-rate subscription for codin
 
 ## Included Models
 
-| Model ID | Context | Highlights |
-|---|---|---|
-| `gpt-oss-120b:dev` | 128K | High-reasoning MoE with strong tool use |
-| `minimax-m2.7:dev` | 180K | Agentic productivity and multi-agent collaboration |
-| `glm-5.2:dev` | 200K | Repo-scale agentic software engineering |
-| `gemma-4-31b-it:dev` | 200K | Multimodal (text + image), 140+ languages |
-| `kimi-k2.6:dev` | 240K | Long-horizon coding, UI/UX generation, agent swarms |
-| `hy3:dev` | 262K | Tencent MoE for reasoning, coding, and agent workflows |
-| `qwen3.6-27b:dev` | 262K | Multimodal coding & reasoning, repo-level code comprehension |
-| `deepseek-v4-flash:dev` | 1M | Fast DeepSeek MoE (13B active); high-throughput coding & reasoning |
-| `mimo-v2.5:dev` | 1M | Xiaomi omnimodal; agentic coding at low inference cost |
+| Series | Weight | Model ID | Context | Highlights |
+|---|---|---|---|---|
+| **Flash** | 0.5× | `gpt-oss-120b:dev` | 128K | High-reasoning MoE with strong tool use |
+| **Flash** | 0.5× | `deepseek-v4-flash:dev` | 1M | Fast DeepSeek MoE (13B active); high-throughput coding & reasoning |
+| **Flash** | 0.5× | `mimo-v2.5:dev` | 1M | Xiaomi omnimodal; agentic coding at low inference cost |
+| **Standard** | 1× | `gemma-4-31b-it:dev` | 200K | Multimodal (text + image), 140+ languages |
+| **Standard** | 1× | `qwen3.6-27b:dev` | 262K | Multimodal coding & reasoning, repo-level code comprehension |
+| **Standard** | 1× | `hy3:dev` | 262K | Tencent MoE for reasoning, coding, and agent workflows |
+| **Standard** | 1× | `minimax-m2.7:dev` | 180K | Agentic productivity and multi-agent collaboration |
+| **Standard** | 1× | `kimi-k2.6:dev` | 240K | Long-horizon coding, UI/UX generation, agent swarms |
+| **Heavy** | 2× | `glm-5.2:dev` | 200K | Repo-scale agentic software engineering |
 
 All models support function calling and reasoning, on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
+
+Daily/weekly headroom uses the Series weight (`ceil(raw × weight)`). Per-model dashboard stats stay raw.
 
 <Note>
   `:dev` models accept only `ek-dev-` keys, and DevPass keys can call only `:dev` models. Keep your master key configured if you need the rest of the catalog.
