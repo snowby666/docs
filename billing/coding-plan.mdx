@@ -1,19 +1,24 @@
 ---
 title: 'Coding Plan (DevPass)'
-description: 'Flat-rate subscription for coding agents — dedicated dev models, no credits, no per-token billing'
+description: 'Unlimited token usage for coding agents — flat monthly price, no credits, no per-token billing'
 icon: 'terminal'
 ---
 
-The **Electron Hub Coding Plan** (DevPass) is a flat-rate subscription for coding agents and CLI tools (Claude Code, Cline, Roo Code, and anything OpenAI/Anthropic-compatible). It comes with a dedicated `ek-dev-` API key and **never consumes credits** — it's fully independent of any other Electron Hub plan.
+The **Electron Hub Coding Plan** (DevPass) is built for coding agents and CLI tools (Claude Code, Cline, Roo Code, Cursor, and anything OpenAI/Anthropic-compatible).
+
+**Unlimited token usage** on a flat monthly price. No credits. No per-token bill. You keep coding; we never hard-stop you for burning tokens.
+
+You get a dedicated `ek-dev-` API key that is fully independent of any other Electron Hub plan.
 
 ## Tiers
 
 | | **Lite** | **Turbo** |
 |---|---|---|
 | Price | **$5**/month | **$20**/month |
+| Token usage | **Unlimited** | **Unlimited** |
 | Parallel requests | 2 | 5 |
 | Priority when busy | Standard | High |
-| Daily usage allowance | Generous | 6× Lite |
+| Full-speed soft headroom | Generous | 6× Lite |
 
 <Warning>
   Launch seats are capped per tier. If a tier is sold out, join the waitlist on the dashboard — you'll be notified when a seat opens (first come, first served).
@@ -35,7 +40,7 @@ The **Electron Hub Coding Plan** (DevPass) is a flat-rate subscription for codin
 
 All models support function calling and reasoning, on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
 
-Daily/weekly headroom uses the Series weight (`ceil(raw × weight)`). Per-model dashboard stats stay raw.
+Series weight only affects soft full-speed headroom (`ceil(raw × weight)`), not whether you can keep using the plan. Dashboard per-model stats stay raw.
 
 <Note>
   `:dev` models accept only `ek-dev-` keys, and DevPass keys can call only `:dev` models. Keep your master key configured if you need the rest of the catalog.
@@ -60,19 +65,19 @@ curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
 
 ## Fair Use
 
-Plans are for **individual coding**: one human working interactively in the tools they already use. Flat monthly price, generous rolling headroom, and a key that is yours alone — every machine you own, never shared.
+Plans are for **individual coding**: one human working interactively in the tools they already use. Unlimited tokens, flat monthly price, and a key that is yours alone — every machine you own, never shared.
 
-Instead of cutting you off, elevated usage is slowed or reordered so interactive subscribers stay responsive when the platform is busy. Live status is always on the dashboard's Coding Plan tab.
+Token usage is never hard-capped. Elevated usage is slowed or reordered so interactive subscribers stay responsive when the platform is busy. Live status is always on the dashboard's Coding Plan tab.
 
 <AccordionGroup>
   <Accordion title="Parallel requests" icon="layer-group">
     Each plan allows a set number of requests running at the same time (2 on Lite, 5 on Turbo) — there is no requests-per-minute limit. If all your slots are busy, you get a `429` with a `Retry-After` header; wait for one to finish and retry. Coding agents handle this automatically.
   </Accordion>
-  <Accordion title="Daily soft headroom" icon="gauge">
-    Each plan includes a generous daily usage allowance that resets at **21:00 UTC**. Going past it never blocks you — requests continue with reduced concurrency and added latency until the reset. Your dashboard shows how close you are to full-speed headroom.
+  <Accordion title="Full-speed soft headroom (daily)" icon="gauge">
+    Each plan includes generous full-speed headroom that resets at **21:00 UTC**. Going past it never blocks you — requests continue with reduced concurrency and added latency until the reset. Your dashboard shows how close you are to full-speed headroom.
   </Accordion>
-  <Accordion title="Weekly headroom" icon="calendar-week">
-    A rolling weekly token cap sits above the daily soft limit. Past it, the same absolute slow lane applies (lower concurrency + latency) — not a hard stop. This keeps sustained 24/7 grinders from crowding out interactive work across the week.
+  <Accordion title="Full-speed soft headroom (weekly)" icon="calendar-week">
+    A rolling weekly soft headroom sits above the daily one. Past it, the same slow lane applies (lower concurrency + latency) — not a hard stop. This keeps sustained 24/7 grinders from crowding out interactive work across the week.
   </Accordion>
   <Accordion title="Sudden spikes" icon="wave-sine">
     Firing a very large number of request starts within a few seconds may get a brief `429`. Normal coding-agent workloads fit comfortably.
@@ -117,6 +122,9 @@ Plans are individual, for a human coding interactively. Your key can run on ever
 ## FAQ
 
 <AccordionGroup>
+  <Accordion title="Is token usage really unlimited?">
+    Yes. There is no hard token cap and no per-token charge. Soft full-speed headroom only affects concurrency and latency when you are far past typical interactive use — requests are never blocked for burning tokens.
+  </Accordion>
   <Accordion title="Can I upgrade Lite → Turbo?">
     Yes — change plans in the Creem billing portal. Your existing key picks up Turbo limits automatically.
   </Accordion>
