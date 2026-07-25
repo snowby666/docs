@@ -6,15 +6,6 @@ authMethod: "none"
 
 Retrieve a list of available models that can be used with the API.
 
-This endpoint is **public** — no `Authorization` header is required. Auth is only needed for per-model detail (`GET /models/{model}`) and for inference endpoints.
-
-## Example request
-
-```bash
-curl --request GET \
-  --url https://api.electronhub.ai/v1/models
-```
-
 ## Response
 
 Returns a list of model objects containing information about each available model including their capabilities and pricing tier.
