@@ -26,22 +26,22 @@ You get a dedicated `ek-dev-` API key that is fully independent of any other Ele
 
 ## Included Models
 
-| Series | Weight | Model ID | Modality | Context · Quant | Notes |
-|---|---|---|---|---|---|
-| Flash | 0.5× | `gpt-oss-120b:dev` | <Icon icon="font" size={14} /> → <Icon icon="font" size={14} /> | 128K · MXFP4 | High-reasoning MoE, strong tool use |
-| Flash | 0.5× | `deepseek-v4-flash:dev` | <Icon icon="font" size={14} /> → <Icon icon="font" size={14} /> | 1M · NVFP4 (FP4 MoE + FP8 attn) | Fast MoE (13B active); high-throughput coding |
-| Flash | 0.5× | `mimo-v2.5:dev` | <Icon icon="font" size={14} /> <Icon icon="image" size={14} /> → <Icon icon="font" size={14} /> | 1M · FP8 | Omnimodal agentic coding, low inference cost |
-| Flash | 0.5× | `glm-4.7-flash:dev` | <Icon icon="font" size={14} /> → <Icon icon="font" size={14} /> | 200K · BF16 | Efficient 30B-class coding & tool use |
-| Standard | 1× | `gemma-4-31b-it:dev` | <Icon icon="font" size={14} /> <Icon icon="image" size={14} /> → <Icon icon="font" size={14} /> | 200K · BF16 | Multimodal coding; 140+ languages |
-| Standard | 1× | `qwen3.6-27b:dev` | <Icon icon="font" size={14} /> <Icon icon="image" size={14} /> → <Icon icon="font" size={14} /> | 262K · BF16 | Repo-level coding & reasoning |
-| Standard | 1× | `minimax-m2.7:dev` | <Icon icon="font" size={14} /> → <Icon icon="font" size={14} /> | 180K · FP8 | Agentic productivity, multi-agent work |
-| Standard | 1× | `kimi-k2.6:dev` | <Icon icon="font" size={14} /> → <Icon icon="font" size={14} /> | 240K · INT4 (MoE) + BF16 | Long-horizon coding, UI/UX, agent swarms |
-| Heavy | 2× | `kimi-k2.7-code:dev` | <Icon icon="font" size={14} /> <Icon icon="image" size={14} /> → <Icon icon="font" size={14} /> | 262K · INT4 (MoE) + BF16 | Long-horizon coding agents (vision + tools) |
-| Heavy | 2× | `glm-5.2:dev` | <Icon icon="font" size={14} /> → <Icon icon="font" size={14} /> | 262K · FP8 | Repo-scale agentic software engineering |
+| Series | Model ID | Modality | Context · Quant | Notes |
+|---|---|---|---|---|
+| Flash · 0.5× | `gpt-oss-120b:dev` | <Icon icon="comment" size={14} /> → <Icon icon="comment" size={14} /> | 128K · MXFP4 | High-reasoning MoE, strong tool use |
+| Flash · 0.5× | `deepseek-v4-flash:dev` | <Icon icon="comment" size={14} /> → <Icon icon="comment" size={14} /> | 1M · NVFP4 (FP4 MoE + FP8 attn) | Fast MoE (13B active); high-throughput coding |
+| Flash · 0.5× | `mimo-v2.5:dev` | <Icon icon="comment" size={14} /> <Icon icon="image" size={14} /> → <Icon icon="comment" size={14} /> | 1M · FP8 | Omnimodal agentic coding, low inference cost |
+| Flash · 0.5× | `glm-4.7-flash:dev` | <Icon icon="comment" size={14} /> → <Icon icon="comment" size={14} /> | 200K · BF16 | Efficient 30B-class coding & tool use |
+| Standard · 1× | `gemma-4-31b-it:dev` | <Icon icon="comment" size={14} /> <Icon icon="image" size={14} /> → <Icon icon="comment" size={14} /> | 200K · BF16 | Multimodal coding; 140+ languages |
+| Standard · 1× | `qwen3.6-27b:dev` | <Icon icon="comment" size={14} /> <Icon icon="image" size={14} /> → <Icon icon="comment" size={14} /> | 262K · BF16 | Repo-level coding & reasoning |
+| Standard · 1× | `minimax-m2.7:dev` | <Icon icon="comment" size={14} /> → <Icon icon="comment" size={14} /> | 180K · FP8 | Agentic productivity, multi-agent work |
+| Standard · 1× | `kimi-k2.6:dev` | <Icon icon="comment" size={14} /> → <Icon icon="comment" size={14} /> | 240K · INT4 (MoE) + BF16 | Long-horizon coding, UI/UX, agent swarms |
+| Heavy · 2× | `kimi-k2.7-code:dev` | <Icon icon="comment" size={14} /> <Icon icon="image" size={14} /> → <Icon icon="comment" size={14} /> | 262K · INT4 (MoE) + BF16 | Long-horizon coding agents (vision + tools) |
+| Heavy · 2× | `glm-5.2:dev` | <Icon icon="comment" size={14} /> → <Icon icon="comment" size={14} /> | 262K · FP8 | Repo-scale agentic software engineering |
 
 All models support function calling and reasoning on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
 
-Weight only affects soft full-speed headroom (`ceil(raw × weight)`), not whether you can keep using the plan. Dashboard per-model stats stay raw.
+Series weight (0.5× / 1× / 2×) only affects soft full-speed headroom (`ceil(raw × weight)`), not whether you can keep using the plan. Dashboard per-model stats stay raw.
 
 <Note>
   `:dev` models accept only `ek-dev-` keys, and DevPass keys can call only `:dev` models. Keep your master key configured if you need the rest of the catalog.
