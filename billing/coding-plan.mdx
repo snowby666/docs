@@ -14,7 +14,7 @@ You get a dedicated `ek-dev-` API key that is fully independent of any other Ele
 
 | | **Lite** | **Turbo** |
 |---|---|---|
-| Price | **$5**/month | **$20**/month |
+| Price | **$10**/month | **$40**/month |
 | Token usage | **Unlimited** | **Unlimited** |
 | Parallel requests | 2 | 5 |
 | Priority when busy | Standard | High |
@@ -31,12 +31,13 @@ You get a dedicated `ek-dev-` API key that is fully independent of any other Ele
 | **Flash** | 0.5× | `gpt-oss-120b:dev` | 128K | High-reasoning MoE with strong tool use |
 | **Flash** | 0.5× | `deepseek-v4-flash:dev` | 1M | Fast DeepSeek MoE (13B active); high-throughput coding & reasoning |
 | **Flash** | 0.5× | `mimo-v2.5:dev` | 1M | Xiaomi omnimodal; agentic coding at low inference cost |
+| **Flash** | 0.5× | `glm-4.7-flash:dev` | 200K | Efficient 30B-class agentic coding & tool collaboration |
 | **Standard** | 1× | `gemma-4-31b-it:dev` | 200K | Multimodal (text + image), 140+ languages |
 | **Standard** | 1× | `qwen3.6-27b:dev` | 262K | Multimodal coding & reasoning, repo-level code comprehension |
-| **Standard** | 1× | `hy3:dev` | 262K | Tencent MoE for reasoning, coding, and agent workflows |
 | **Standard** | 1× | `minimax-m2.7:dev` | 180K | Agentic productivity and multi-agent collaboration |
 | **Standard** | 1× | `kimi-k2.6:dev` | 240K | Long-horizon coding, UI/UX generation, agent swarms |
-| **Heavy** | 2× | `glm-5.2:dev` | 200K | Repo-scale agentic software engineering |
+| **Heavy** | 2× | `kimi-k2.7-code:dev` | 262K | Coding-focused Kimi K2.7; long-horizon agentic tasks (vision + tools) |
+| **Heavy** | 2× | `glm-5.2:dev` | 262K | Repo-scale agentic software engineering |
 
 All models support function calling and reasoning, on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
 
@@ -57,7 +58,7 @@ curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
   -H "Authorization: Bearer ek-dev-YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "kimi-k2.6:dev",
+    "model": "kimi-k2.7-code:dev",
     "messages": [{"role": "user", "content": "Refactor this function..."}],
     "stream": true
   }'
@@ -74,10 +75,10 @@ Token usage is never hard-capped. Elevated usage is slowed or reordered so inter
     Each plan allows a set number of requests running at the same time (2 on Lite, 5 on Turbo) — there is no requests-per-minute limit. If all your slots are busy, you get a `429` with a `Retry-After` header; wait for one to finish and retry. Coding agents handle this automatically.
   </Accordion>
   <Accordion title="Full-speed soft headroom (daily)" icon="gauge">
-    Each plan includes generous full-speed headroom that resets at **21:00 UTC**. Going past it never blocks you — requests continue with reduced concurrency and added latency until the reset. Your dashboard shows how close you are to full-speed headroom.
+    Each plan includes generous full-speed headroom that resets at **21:00 UTC**. Going past it never blocks you — requests continue with reduced concurrency and paced admission (consumption-scaled inter-request spacing, up to about a minute when far into overage) until the reset. Your dashboard shows how close you are to full-speed headroom.
   </Accordion>
   <Accordion title="Full-speed soft headroom (weekly)" icon="calendar-week">
-    A rolling weekly soft headroom sits above the daily one. Past it, the same slow lane applies (lower concurrency + latency) — not a hard stop. This keeps sustained 24/7 grinders from crowding out interactive work across the week.
+    A rolling weekly soft headroom sits above the daily one. Past it, the same slow lane applies (lower concurrency + paced admission) — not a hard stop. This keeps sustained 24/7 grinders from crowding out interactive work across the week.
   </Accordion>
   <Accordion title="Sudden spikes" icon="wave-sine">
     Firing a very large number of request starts within a few seconds may get a brief `429`. Normal coding-agent workloads fit comfortably.
@@ -124,6 +125,9 @@ Plans are individual, for a human coding interactively. Your key can run on ever
 <AccordionGroup>
   <Accordion title="Is token usage really unlimited?">
     Yes. There is no hard token cap and no per-token charge. Soft full-speed headroom only affects concurrency and latency when you are far past typical interactive use — requests are never blocked for burning tokens.
+  </Accordion>
+  <Accordion title="I bought during beta — do I keep the old price?">
+    Yes. Founding / beta subscribers who purchased at the launch rate keep that price for as long as the subscription stays active. If you cancel and subscribe again later, the current public price applies.
   </Accordion>
   <Accordion title="Can I upgrade Lite → Turbo?">
     Yes — change plans in the Creem billing portal. Your existing key picks up Turbo limits automatically.
