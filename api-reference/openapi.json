@@ -134,8 +134,8 @@
     },
     "/messages": {
       "post": {
-        "summary": "Create Message (Anthropic)",
-        "description": "Create a message using Anthropic format",
+        "summary": "Create Message",
+        "description": "Create a message using the Anthropic Messages API shape.",
         "operationId": "createMessage",
         "requestBody": {
           "required": true,
@@ -798,6 +798,35 @@
           }
         }
       }
+    },
+    "/messages/count_tokens": {
+      "post": {
+        "summary": "Count Tokens",
+        "description": "Estimate input tokens for a Messages-shaped request body. Returns input_tokens without running inference.",
+        "operationId": "countTokens",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountTokensResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1298,23 +1327,56 @@
         }
       },
       "ThinkingConfig": {
-        "type": "object",
-        "required": [
-          "type",
-          "budget_tokens"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "enabled"
-            ]
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "budget_tokens"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "enabled"
+                ]
+              },
+              "budget_tokens": {
+                "type": "integer",
+                "description": "Token budget for thinking"
+              },
+              "display": {
+                "type": "string",
+                "enum": [
+                  "summarized",
+                  "omitted"
+                ]
+              }
+            }
           },
-          "budget_tokens": {
-            "type": "integer",
-            "description": "Token budget for thinking"
+          {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "adaptive",
+                  "disabled"
+                ]
+              },
+              "display": {
+                "type": "string",
+                "enum": [
+                  "summarized",
+                  "omitted"
+                ]
+              }
+            }
           }
-        }
+        ]
       },
       "ChatCompletionResponse": {
         "type": "object",
@@ -1403,13 +1465,15 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "claude-3-5-sonnet-20241022"
+            "example": "claude-sonnet-4-5-20250929",
+            "description": "Model ID"
           },
           "messages": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AnthropicMessage"
-            }
+            },
+            "description": "Conversation turns"
           },
           "max_tokens": {
             "type": "integer",
@@ -1431,8 +1495,8 @@
             "default": false
           },
           "system": {
-            "type": "string",
-            "description": "System prompt"
+            "$ref": "#/components/schemas/AnthropicSystemPrompt",
+            "description": "Top-level system prompt"
           },
           "tools": {
             "type": "array",
@@ -1456,7 +1520,22 @@
               "high",
               "xhigh"
             ],
-            "description": "Reasoning effort level. Silently ignored for models that do not support reasoning_effort."
+            "description": "Ignored for models that do not support reasoning_effort"
+          },
+          "betas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "context_management": {
+            "type": "object"
+          },
+          "output_config": {
+            "type": "object"
+          },
+          "metadata": {
+            "type": "object"
           }
         }
       },
@@ -1471,8 +1550,10 @@
             "type": "string",
             "enum": [
               "user",
-              "assistant"
-            ]
+              "assistant",
+              "system"
+            ],
+            "description": "Turn role. Mid-conversation system turns are accepted."
           },
           "content": {
             "oneOf": [
@@ -1502,6 +1583,12 @@
           },
           {
             "$ref": "#/components/schemas/AnthropicToolResultContent"
+          },
+          {
+            "$ref": "#/components/schemas/AnthropicThinkingContent"
+          },
+          {
+            "$ref": "#/components/schemas/AnthropicRedactedThinkingContent"
           }
         ]
       },
@@ -1629,8 +1716,7 @@
       "AnthropicTool": {
         "type": "object",
         "required": [
-          "name",
-          "input_schema"
+          "name"
         ],
         "properties": {
           "name": {
@@ -1641,6 +1727,19 @@
           },
           "input_schema": {
             "type": "object"
+          },
+          "type": {
+            "type": "string",
+            "description": "Built-in Anthropic tool type when applicable"
+          },
+          "strict": {
+            "type": "boolean"
+          },
+          "defer_loading": {
+            "type": "boolean"
+          },
+          "eager_input_streaming": {
+            "type": "boolean"
           }
         }
       },
@@ -1650,24 +1749,28 @@
             "type": "string",
             "enum": [
               "auto",
-              "any"
+              "any",
+              "none"
             ]
           },
           {
             "type": "object",
             "required": [
-              "type",
-              "name"
+              "type"
             ],
             "properties": {
               "type": {
                 "type": "string",
                 "enum": [
+                  "auto",
+                  "any",
+                  "none",
                   "tool"
                 ]
               },
               "name": {
-                "type": "string"
+                "type": "string",
+                "description": "Required when type is tool"
               }
             }
           }
@@ -3129,6 +3232,82 @@
           "duration": {
             "type": "number",
             "description": "Audio duration in seconds (verbose_json)"
+          }
+        }
+      },
+      "AnthropicSystemPrompt": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "text"
+                  ]
+                },
+                "text": {
+                  "type": "string"
+                },
+                "cache_control": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "CountTokensResponse": {
+        "type": "object",
+        "required": [
+          "input_tokens"
+        ],
+        "properties": {
+          "input_tokens": {
+            "type": "integer"
+          }
+        }
+      },
+      "AnthropicThinkingContent": {
+        "type": "object",
+        "required": [
+          "type",
+          "thinking"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "thinking"
+            ]
+          },
+          "thinking": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          }
+        }
+      },
+      "AnthropicRedactedThinkingContent": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "redacted_thinking"
+            ]
+          },
+          "data": {
+            "type": "string"
           }
         }
       }

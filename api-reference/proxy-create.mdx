@@ -5,7 +5,9 @@ description: "Create a new proxy key with specified permissions and limits"
 openapi: "POST /auth/proxy/create"
 ---
 
+Tier key caps: Free 10, Basic 15, Standard 30, Pro 50, Enterprise 100.
 
+llocated_ammount max is \,000. expires_at is a Unix timestamp, or -1 for no expiry. Empty model_whitelist / ip_whitelist means unrestricted.
 
 <RequestExample>
 
@@ -92,92 +94,3 @@ console.log(`Created proxy key: ${proxyKey.key}`);
 ```
 
 </ResponseExample>
-
-## Overview
-
-Create a new proxy key with customized access controls and spending limits. Proxy keys allow you to delegate API access with fine-grained permissions, making them perfect for team collaboration, application isolation, and budget management.
-
-## Request Body
-
-<ParamField body="name" type="string" required>
-  Human-readable name for the proxy key (max 25 characters)
-</ParamField>
-
-<ParamField body="expires_at" type="integer" required>
-  Expiration timestamp in seconds since Unix epoch. Use `-1` for no expiration
-</ParamField>
-
-<ParamField body="allocated_ammount" type="number" required>
-  Credit amount to allocate to this proxy key (must be positive)
-</ParamField>
-
-<ParamField body="model_whitelist" type="array" optional>
-  List of model IDs this key can access. Leave empty to allow all models
-  
-  **Examples**: `["gpt-4o", "claude-3-5-sonnet-20241022", "dall-e-3"]`
-</ParamField>
-
-<ParamField body="ip_whitelist" type="array" optional>
-  List of IP addresses or CIDR blocks allowed to use this key. Leave empty to allow all IPs
-  
-  **Examples**: `["192.168.1.100", "10.0.0.0/8", "203.0.113.0/24"]`
-</ParamField>
-
-## Limitations by Tier
-
-The number of proxy keys you can create depends on your subscription tier:
-
-- **Free (Tier 0)**: 10 keys
-- **Basic (Tier 1)**: 15 keys  
-- **Standard (Tier 2)**: 30 keys
-- **Pro (Tier 3)**: 50 keys
-- **Enterprise (Tier 4)**: 100 keys
-
-## Validation Rules
-
-<Warning>
-**Credit Allocation**: The `allocated_ammount` cannot exceed \$10,000. Proxy keys support daily, weekly, or monthly limit types.
-</Warning>
-
-<Warning>
-**IP Format**: IP addresses must be valid IPv4/IPv6 addresses or CIDR notation (e.g., `192.168.1.0/24`).
-</Warning>
-
-<Warning>
-**Expiration**: If set, `expires_at` must be in the future. Use `-1` for keys that never expire.
-</Warning>
-
-## Use Cases
-
-<CardGroup cols={2}>
-  <Card title="Team Collaboration" icon="users">
-    Create separate keys for team members with different access levels
-  </Card>
-  <Card title="Environment Isolation" icon="server">
-    Use different keys for development, staging, and production
-  </Card>
-  <Card title="Budget Control" icon="dollar-sign">
-    Set spending limits per application or project
-  </Card>
-  <Card title="Security Compliance" icon="shield">
-    Restrict access by IP address and model selection
-  </Card>
-</CardGroup>
-
-## Error Codes
-
-<ResponseField name="400" type="error">
-  **Bad Request** - Invalid input data (see error message for details)
-</ResponseField>
-
-<ResponseField name="401" type="error">
-  **Unauthorized** - Invalid or missing API key
-</ResponseField>
-
-<ResponseField name="403" type="error">
-  **Forbidden** - Exceeded proxy key limit for your tier
-</ResponseField>
-
-<ResponseField name="429" type="error">
-  **Rate Limited** - Too many requests, please slow down
-</ResponseField> 

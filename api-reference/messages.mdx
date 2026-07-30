@@ -1,134 +1,261 @@
 ---
 title: 'Messages API'
 openapi: 'POST /messages'
-description: 'Anthropic-compatible Messages API for Claude Code and Anthropic SDKs'
+description: 'Create a message with the Anthropic Messages format'
 ---
 
-Anthropic-style message creation at `POST /v1/messages`. Compatible with Anthropic SDKs and Claude Code (`ANTHROPIC_BASE_URL=https://api.electronhub.ai`).
+Send a structured conversation to a model and receive an assistant message. Models trained for alternating turns expect `user` and `assistant` messages; a top-level `system` field sets standing instructions.
 
-## Create Message
+## Create a message
 
 `POST /v1/messages`
 
-### Request Body
+### Headers
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes* | `Bearer <api_key>` |
+| `x-api-key` | Yes* | Alternative to `Authorization` |
+| `Content-Type` | Yes | `application/json` |
+| `anthropic-version` | No | Accepted when present (for example `2023-06-01`) |
+
+\*Provide one of `Authorization` or `x-api-key`.
+
+### Body parameters
 
 <ParamField body="model" type="string" required>
-  Model ID (for example `claude-sonnet-4-5-20250929`, or Coding Plan models like `kimi-k2.6:dev`)
+  Model ID. Examples: `claude-sonnet-4-5-20250929`, `kimi-k2.6:dev`.
 </ParamField>
 
 <ParamField body="messages" type="array" required>
-  Conversation turns. Roles: `user`, `assistant`, or mid-conversation `system`.
+  Input turns. Each item has `role` and `content`.
+
+  - `role`: `user`, `assistant`, or `system` (mid-conversation system instruction; cannot be the first entry)
+  - `content`: string, or an array of content blocks (see below)
+
+  Consecutive same-role turns may be merged by the model. If the last message is `assistant`, generation continues from that partial reply.
 </ParamField>
 
 <ParamField body="max_tokens" type="integer">
-  Maximum tokens to generate
+  Maximum number of tokens to generate before stopping. Required by many Anthropic clients; omit only when the client supplies a default.
 </ParamField>
 
 <ParamField body="system" type="string | array">
-  Top-level system prompt. Prefer an array of text blocks when using prompt caching or Claude Code.
+  Standing system prompt for the whole conversation.
+
+  - string: plain text
+  - array: list of `{ "type": "text", "text": "...", "cache_control"?: { "type": "ephemeral", "ttl"?: "5m" \| "1h" } }` blocks
+
+  Keep the array shape when using prompt caching breakpoints. Do not put the initial system prompt as `messages[0].role = "system"`; use this field instead.
 </ParamField>
 
 <ParamField body="thinking" type="object">
-  Extended thinking config: `{ "type": "enabled", "budget_tokens": N }`, `{ "type": "adaptive" }`, or `{ "type": "disabled" }`. Optional `display`: `"summarized"` or `"omitted"`.
+  Extended thinking configuration.
+
+  | `type` | Fields |
+  |---|---|
+  | `enabled` | `budget_tokens` (required), optional `display` |
+  | `adaptive` | optional `budget_tokens`, optional `display` |
+  | `disabled` | none |
+
+  `display` is `"summarized"` or `"omitted"`. When thinking is enabled, assistant `content` may include `thinking` blocks (with `signature`) before `text` / `tool_use`.
 </ParamField>
 
 <ParamField body="tools" type="array">
-  Tool definitions (`name`, `description`, `input_schema`). Built-in Anthropic tool `type` values are accepted. Optional: `strict`, `defer_loading`, `eager_input_streaming`.
+  Tools the model may call. Each custom tool:
+
+  - `name` (string, required)
+  - `description` (string)
+  - `input_schema` (JSON Schema object)
+  - optional: `cache_control`, `strict`, `defer_loading`, `eager_input_streaming`, `allowed_callers`, `input_examples`
+
+  Anthropic built-in tools may set `type` (for example `bash_20250124`) and omit `input_schema`.
 </ParamField>
 
 <ParamField body="tool_choice" type="object">
-  `{ "type": "auto" | "any" | "tool" | "none" }`
+  How the model should use tools:
+
+  - `{ "type": "auto" }`
+  - `{ "type": "any" }`
+  - `{ "type": "tool", "name": "<tool_name>" }`
+  - `{ "type": "none" }`
 </ParamField>
 
 <ParamField body="temperature" type="number">
-  Sampling temperature
+  Sampling temperature. Range depends on the upstream model (commonly 0 to 1).
+</ParamField>
+
+<ParamField body="top_p" type="number">
+  Nucleus sampling. `0` is ignored.
+</ParamField>
+
+<ParamField body="top_k" type="integer">
+  Top-k sampling. `0` is ignored.
+</ParamField>
+
+<ParamField body="stop_sequences" type="array">
+  Custom strings that stop generation when emitted.
 </ParamField>
 
 <ParamField body="stream" type="boolean">
-  Stream SSE events when `true`
+  If `true`, respond with server-sent events. Default `false`.
 </ParamField>
 
-Optional Claude Code / gateway fields are accepted and ignored by non-Anthropic upstreams: `betas`, `context_management`, `output_config`, `metadata`.
+<ParamField body="metadata" type="object">
+  Optional `{ "user_id": string }` for abuse tracking. Opaque ID only; do not put PII.
+</ParamField>
+
+<ParamField body="betas" type="array">
+  Anthropic beta feature flags. Accepted and forwarded when relevant.
+</ParamField>
+
+<ParamField body="context_management" type="object">
+  Server-side context edits, for example:
+
+  ```json
+  {
+    "edits": [
+      { "type": "clear_thinking_20251015", "keep": "all" }
+    ]
+  }
+  ```
+</ParamField>
+
+<ParamField body="output_config" type="object">
+  Output controls such as `{ "effort": "low" | "medium" | "high" }`.
+</ParamField>
 
 ### Content blocks
 
-| Role | Supported `content` block types |
-|---|---|
-| `user` / `system` | `text`, `image` (base64 or url), `document`, `tool_result`, `mid_conv_system`, `tool_addition`, `tool_removal`, plus passthrough server-tool result types |
-| `assistant` | `text`, `tool_use`, `server_tool_use`, `thinking` (with `signature`), `redacted_thinking` |
+`content` may be a string (shorthand for one `text` block) or an array of blocks.
 
-Multi-turn clients (including Claude Code) must echo prior assistant `thinking` / `redacted_thinking` blocks unchanged.
+#### User / mid-conversation system
 
-### Auth
+| `type` | Fields | Notes |
+|---|---|---|
+| `text` | `text`, optional `cache_control` | Primary text |
+| `image` | `source` | `source.type`: `base64` (`media_type`, `data`) or `url` (`url`) |
+| `document` | `source`, optional `title`, `context` | PDF / text document input |
+| `tool_result` | `tool_use_id`, `content`, optional `is_error`, `cache_control` | Reply to a prior `tool_use` |
+| `mid_conv_system` | `content` (text blocks) | Structured mid-conversation system payload |
+| `tool_addition` / `tool_removal` | `tool` | Mid-conversation tool availability changes |
 
-`Authorization: Bearer <api_key>` or `x-api-key: <api_key>`.
+Server tool result types (for example `web_search_tool_result`) are accepted as passthrough blocks.
+
+#### Assistant
+
+| `type` | Fields | Notes |
+|---|---|---|
+| `text` | `text`, optional `cache_control` | Visible reply |
+| `tool_use` | `id`, `name`, `input`, optional `cache_control` | Client tool call |
+| `server_tool_use` | `id`, `name`, `input` | Server-executed tool call |
+| `thinking` | `thinking`, `signature` | Prior-turn reasoning; echo unchanged on the next request |
+| `redacted_thinking` | `data` | Encrypted thinking; echo unchanged |
+
+On multi-turn requests, include the full previous assistant `content` array (including thinking blocks) so reasoning continuity is preserved.
 
 ### Response
 
-Anthropic message object (`id`, `role`, `content`, `stop_reason`, `usage`). Errors use `{"type":"error","error":{...}}`.
+Non-streaming responses are Anthropic message objects:
+
+```json
+{
+  "id": "msg_...",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-sonnet-4-5-20250929",
+  "content": [
+    { "type": "text", "text": "..." }
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 20
+  }
+}
+```
+
+`stop_reason` is typically `end_turn`, `max_tokens`, `stop_sequence`, or `tool_use`.
+
+Errors use Anthropic's envelope:
+
+```json
+{
+  "type": "error",
+  "error": {
+    "type": "invalid_request_error",
+    "message": "..."
+  }
+}
+```
 
 ### Example
 
 <CodeGroup>
 
-```javascript Node.js
-const response = await fetch('https://api.electronhub.ai/v1/messages', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    model: 'claude-sonnet-4-5-20250929',
-    max_tokens: 1000,
-    messages: [
-      { role: 'user', content: 'Hello!' }
-    ]
-  })
-});
-
-const data = await response.json();
-console.log(data);
-```
-
-```python Python
-import requests
-
-response = requests.post(
-    'https://api.electronhub.ai/v1/messages',
-    headers={
-        'Authorization': 'Bearer YOUR_API_KEY',
-        'Content-Type': 'application/json'
-    },
-    json={
-        'model': 'claude-sonnet-4-5-20250929',
-        'max_tokens': 1000,
-        'messages': [
-            {'role': 'user', 'content': 'Hello!'}
-        ]
-    }
-)
-
-print(response.json())
-```
-
 ```bash cURL
-curl -X POST "https://api.electronhub.ai/v1/messages" \
+curl https://api.electronhub.ai/v1/messages \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "claude-sonnet-4-5-20250929",
-    "max_tokens": 1000,
+    "max_tokens": 1024,
     "messages": [
-      {"role": "user", "content": "Hello!"}
+      {"role": "user", "content": "Hello"}
     ]
   }'
 ```
 
+```python Python
+import anthropic
+
+client = anthropic.Anthropic(
+    api_key="YOUR_API_KEY",
+    base_url="https://api.electronhub.ai/v1",
+)
+
+message = client.messages.create(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(message.content)
+```
+
+```javascript Node.js
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+  apiKey: "YOUR_API_KEY",
+  baseURL: "https://api.electronhub.ai/v1",
+});
+
+const message = await client.messages.create({
+  model: "claude-sonnet-4-5-20250929",
+  max_tokens: 1024,
+  messages: [{ role: "user", content: "Hello" }],
+});
+
+console.log(message.content);
+```
+
 </CodeGroup>
 
-## Count Tokens
+## Count tokens
 
 `POST /v1/messages/count_tokens`
 
-Estimates input tokens for a Messages-shaped payload (same body fields as create). Returns `{ "input_tokens": number }`. Used by Claude Code when available; otherwise Claude Code estimates locally.
+Estimate input tokens for a Messages request without running inference.
+
+### Body
+
+Same shape as [Create a message](#create-a-message): at least `model` and `messages`. `system`, `tools`, and related fields are included in the estimate when present.
+
+### Response
+
+```json
+{
+  "input_tokens": 1234
+}
+```

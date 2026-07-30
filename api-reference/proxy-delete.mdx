@@ -5,9 +5,7 @@ description: "Delete a specific proxy key you own"
 openapi: "POST /auth/proxy/remove"
 ---
 
-Permanently delete a single proxy key you own. The proxy key is identified by the `proxy_key` field in the request body so the URL is static and can be exact-matched at the edge (Cloudflare, etc.), making it immune to path-traversal-append DDoS abuse.
-
-The legacy `DELETE /v1/auth/proxy/delete/{proxy_key}` still works for backward compatibility but is discouraged for new integrations. (Note: prior to the 2026-05-23 release, that legacy endpoint had no auth or ownership check &mdash; if your code relied on that, you must now send a valid API key for the account that owns the key.)
+Permanent delete. Identify the key with body field proxy_key. Legacy DELETE /v1/auth/proxy/delete/{proxy_key} still works but is discouraged.
 
 <RequestExample>
 
@@ -65,84 +63,3 @@ console.log(`Delete result: ${result.message}`);
 ```
 
 </ResponseExample>
-
-## Request Body
-
-<ParamField body="proxy_key" type="string" required>
-  The proxy key to delete (starts with `ek-proxy-`). Must be a string between 1 and 256 characters and must be a proxy key you own &mdash; cross-account deletes return `403 Forbidden`.
-</ParamField>
-
-## Important Considerations
-
-<Warning>
-**Immediate Effect**: The proxy key stops working immediately after deletion. Any applications using this key will start receiving authentication errors.
-</Warning>
-
-<Warning>
-**Irreversible**: Deletion is permanent. You cannot recover a deleted proxy key &mdash; you'll need to create a new one.
-</Warning>
-
-<Info>
-**Credit Recovery**: Any unused credits allocated to the proxy key are returned to your main account balance.
-</Info>
-
-## Before Deleting
-
-Make sure to:
-
-1. **Update Applications** &mdash; remove or replace the proxy key in any applications that use it.
-2. **Check Dependencies** &mdash; verify no critical services depend on this specific key.
-3. **Document Changes** &mdash; record the deletion for audit purposes.
-4. **Backup Configuration** &mdash; save the key's settings if you might need to recreate it later.
-
-## Bulk Operations
-
-To delete all proxy keys at once, use the [Delete All Proxy Keys](/api-reference/proxy-delete-all) endpoint instead.
-
-## Use Cases
-
-<CardGroup cols={2}>
-  <Card title="Security Incident" icon="shield-exclamation">
-    Quickly revoke access when a key is compromised.
-  </Card>
-  <Card title="Project Completion" icon="check-circle">
-    Clean up keys when projects are finished.
-  </Card>
-  <Card title="Team Changes" icon="user-minus">
-    Remove access when team members leave.
-  </Card>
-  <Card title="Key Rotation" icon="refresh">
-    Delete old keys as part of regular security practices.
-  </Card>
-</CardGroup>
-
-## Error Codes
-
-<ResponseField name="401" type="error">
-  **Unauthorized** &mdash; missing, malformed, or invalid `Authorization` header. JWT tokens are not accepted on this endpoint.
-</ResponseField>
-
-<ResponseField name="403" type="error">
-  **Forbidden** &mdash; the proxy key exists but is owned by a different account.
-</ResponseField>
-
-<ResponseField name="404" type="error">
-  **Not Found** &mdash; no proxy key with that value exists (or was already deleted).
-</ResponseField>
-
-<ResponseField name="400" type="error">
-  **Bad Request** &mdash; the request body is missing `proxy_key` or violates the length constraint (`1 <= len <= 256`). Returned as the standard [error envelope](/getting-started/errors) (`{"error": {...}}`).
-</ResponseField>
-
-<ResponseField name="429" type="error">
-  **Rate Limited** &mdash; too many requests, please slow down.
-</ResponseField>
-
-## Notes
-
-- Requires an **API key** (`ek-...`) in the `Authorization` header. JWT tokens are intentionally rejected.
-- Proxy keys themselves (`ek-proxy-...`) cannot call this endpoint &mdash; only the parent account that owns the proxy key can delete it.
-
-## Alternative: Toggle Status
-
-If you want to temporarily disable a proxy key instead of permanently deleting it, consider using the [Toggle Proxy Key Status](/api-reference/proxy-toggle) endpoint instead. This allows you to disable and re-enable keys as needed.

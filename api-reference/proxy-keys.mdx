@@ -5,8 +5,6 @@ description: "Retrieve all proxy keys for the authenticated user"
 openapi: "GET /auth/proxy"
 ---
 
-
-
 <RequestExample>
 
 ```bash cURL
@@ -75,70 +73,3 @@ console.log(`Found ${proxyKeys.length} proxy keys`);
 ```
 
 </ResponseExample>
-
-## Overview
-
-The List Proxy Keys endpoint allows you to retrieve all proxy keys associated with your account. Proxy keys are sub-keys that allow you to share access to the API with specific limitations and restrictions.
-
-## Use Cases
-
-- **Team Management**: Create separate keys for different team members with specific access controls
-- **Application Isolation**: Use different keys for different applications or environments
-- **Budget Control**: Set spending limits per key to control costs
-- **Security**: Restrict access by IP address and model selection
-
-## Response Fields
-
-<ResponseField name="name" type="string">
-  The human-readable name of the proxy key
-</ResponseField>
-
-<ResponseField name="key" type="string">
-  The actual proxy key value (starts with `ek-proxy-`)
-</ResponseField>
-
-<ResponseField name="expires_at" type="integer">
-  Expiration timestamp in seconds since Unix epoch. `-1` means no expiration
-</ResponseField>
-
-<ResponseField name="allocated_ammount" type="number">
-  Total credit amount allocated to this proxy key
-</ResponseField>
-
-<ResponseField name="used_ammount" type="number">
-  Amount of credits already used by this proxy key
-</ResponseField>
-
-<ResponseField name="is_active" type="boolean">
-  Whether the proxy key is currently active and can be used
-</ResponseField>
-
-<ResponseField name="model_whitelist" type="array">
-  List of model IDs this key can access. Empty array means all models are allowed
-</ResponseField>
-
-<ResponseField name="ip_whitelist" type="array">
-  List of IP addresses or CIDR blocks allowed to use this key. Empty array means all IPs are allowed
-</ResponseField>
-
-<ResponseField name="created_at" type="integer">
-  Timestamp when the proxy key was created
-</ResponseField>
-
-<ResponseField name="last_used" type="integer">
-  Timestamp when the proxy key was last used for an API request
-</ResponseField>
-
-## Error Handling
-
-<ResponseField name="401" type="error">
-  **Unauthorized** - Invalid or missing API key
-</ResponseField>
-
-<ResponseField name="403" type="error">
-  **Forbidden** - API key doesn't have permission to access proxy keys
-</ResponseField>
-
-<ResponseField name="429" type="error">
-  **Rate Limited** - Too many requests, please slow down
-</ResponseField> 

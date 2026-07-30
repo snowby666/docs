@@ -8,18 +8,20 @@ Use Electron Hub with the official Anthropic SDKs by simply changing the base UR
 
 ## Claude Code
 
-Point Claude Code at Electron Hub:
-
 ```json
 {
   "env": {
     "ANTHROPIC_BASE_URL": "https://api.electronhub.ai",
-    "ANTHROPIC_AUTH_TOKEN": "ek-your-api-key-here"
+    "ANTHROPIC_AUTH_TOKEN": "ek-your-api-key-here",
+    "ANTHROPIC_MODEL": "kimi-k2.6:dev",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "kimi-k2.6:dev",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "kimi-k2.7-code:dev",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash:dev"
   }
 }
 ```
 
-Use base URL `https://api.electronhub.ai` (no `/v1` or `/v1/messages`). Coding Plan keys only allow `:dev` models; set `ANTHROPIC_MODEL` (and the `ANTHROPIC_DEFAULT_*_MODEL` overrides) to a Coding Plan model such as `kimi-k2.6:dev`. See [Messages API](/api-reference/messages).
+Base URL is the host only (Claude Code appends `/v1/messages`). Coding Plan keys require `:dev` model IDs.
 
 ## JavaScript/TypeScript SDK
 

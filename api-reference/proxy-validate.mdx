@@ -5,7 +5,7 @@ description: "Validate if a proxy key can access a specific model from the curre
 openapi: "POST /auth/proxy/validate"
 ---
 
-
+Authorize with the proxy key itself (Bearer ek-proxy-...). Optional model checks model whitelist against the caller IP.
 
 <RequestExample>
 
@@ -98,58 +98,3 @@ if (result.valid) {
 ```
 
 </ResponseExample>
-
-## Overview
-
-Validate whether a proxy key can access a specific model from the current IP address. This endpoint is useful for pre-flight checks before making API requests, especially in applications that need to handle access restrictions gracefully.
-
-<Info>
-**Proxy Key Only**: This endpoint only works with proxy keys (starting with `ek-proxy-`). Regular API keys will receive a 400 error.
-</Info>
-
-## Request Body
-
-<ParamField body="model" type="string" optional>
-  The model ID to validate access for. If omitted, validates general proxy key access without model-specific checks.
-</ParamField>
-
-## Response Fields
-
-<ResponseField name="valid" type="boolean">
-  Whether the proxy key has valid access (`true`) or is restricted (`false`)
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable explanation of the validation result
-</ResponseField>
-
-## Use Cases
-
-<CardGroup cols={2}>
-  <Card title="Pre-flight Checks" icon="plane-departure">
-    Validate access before making expensive API calls
-  </Card>
-  <Card title="User Experience" icon="user-check">
-    Show users which models they can access
-  </Card>
-  <Card title="Error Prevention" icon="shield-check">
-    Avoid authentication errors in production workflows
-  </Card>
-  <Card title="Access Auditing" icon="clipboard-list">
-    Log and monitor access patterns and restrictions
-  </Card>
-</CardGroup>
-
-## Error Codes
-
-<ResponseField name="400" type="error">
-  **Bad Request** - Not a proxy key or invalid request format
-</ResponseField>
-
-<ResponseField name="401" type="error">
-  **Unauthorized** - Invalid proxy key
-</ResponseField>
-
-<ResponseField name="429" type="error">
-  **Rate Limited** - Too many validation requests
-</ResponseField> 
