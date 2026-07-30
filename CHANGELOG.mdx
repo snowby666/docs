@@ -5,6 +5,17 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-07-30] - Messages API: Claude Code compatibility
+
+`/v1/messages` accepts the Claude Code / Anthropic gateway request shape used by multi-turn agent clients.
+
+- Echo prior-turn `thinking` / `redacted_thinking` blocks on assistant messages.
+- Mid-conversation `system` role, `document` / image URL blocks, `server_tool_use`, and related tool-result types.
+- `thinking` configs: `enabled`, `adaptive`, `disabled` (optional `display`).
+- Optional body fields: `betas`, `context_management`, `output_config`.
+- New: `POST /v1/messages/count_tokens`.
+- See [Messages API](/api-reference/messages)
+
 ## [2026-07-28] - DevPass: official pricing, new models, larger glm-5.2 context
 
 Coding Plan (DevPass) exits beta pricing and expands the `:dev` catalog.

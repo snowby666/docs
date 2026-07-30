@@ -6,6 +6,21 @@ icon: 'robot'
 
 Use Electron Hub with the official Anthropic SDKs by simply changing the base URL. This allows you to access Claude models and 450+ other AI models through familiar Anthropic interfaces.
 
+## Claude Code
+
+Point Claude Code at Electron Hub:
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://api.electronhub.ai",
+    "ANTHROPIC_AUTH_TOKEN": "ek-your-api-key-here"
+  }
+}
+```
+
+Use base URL `https://api.electronhub.ai` (no `/v1` or `/v1/messages`). Coding Plan keys only allow `:dev` models; set `ANTHROPIC_MODEL` (and the `ANTHROPIC_DEFAULT_*_MODEL` overrides) to a Coding Plan model such as `kimi-k2.6:dev`. See [Messages API](/api-reference/messages).
+
 ## JavaScript/TypeScript SDK
 
 Install the Anthropic SDK:
