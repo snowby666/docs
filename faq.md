@@ -131,6 +131,7 @@ Currently, Electron Hub accepts:
 - **PayPal** - for purchasing permanent credits
 - **Cryptocurrency** - for purchasing permanent credits
 - **Creem** - for subscriptions (recommended)
+- **lava.top** - for subscriptions (USD, EUR, or RUB)
 - **Ko-fi** - for subscriptions
 
 **Payment Limits:**
@@ -158,7 +159,7 @@ Yes, there are limits to prevent abuse:
 **Refund Policy:**
 
 - **Permanent Credits Purchases**: Refunds are available within 30 days of purchase if you haven't used the credits. Once credits have been used, refunds are not available except in cases of technical errors or service issues.
-- **Subscription Refunds**: Subscriptions are managed through **Creem** or **Ko-fi**, depending on which you subscribed with. Creem subscribers can cancel anytime via the Manage billing portal; refund requests should go through Creem support. Ko-fi refund requests should be made through Ko-fi's refund system.
+- **Subscription Refunds**: Subscriptions are managed through **Creem**, **lava.top**, or **Ko-fi**, depending on which you subscribed with. Creem subscribers can cancel anytime via the Manage billing portal. lava.top subscribers cancel from Billing → Subscription (period-end only). Refund requests should go through the provider you paid with.
 - **Failed Requests**: Credits are **not charged** for failed requests (only successful and cancelled requests are charged). If you believe you were incorrectly charged for a failed request, contact support with your request ID.
 - **Technical Issues**: If you experience technical issues that prevent you from using the service, contact support for assistance. Refunds may be provided on a case-by-case basis.
 
@@ -175,7 +176,7 @@ For complete refund terms, please review our [Terms of Service](https://tos.elec
 
 ### What subscription tiers are available?
 
-Electron Hub offers several monthly subscription tiers, available through **Creem** or **Ko-fi**:
+Electron Hub offers several monthly subscription tiers, available through **Creem**, **lava.top**, or **Ko-fi**:
 
 | Tier | Name | Weekly Credits | Max Bots | Studio Credits |
 |------|------|----------------|----------|----------------|
@@ -201,11 +202,11 @@ Enterprise is the highest subscription tier:
 - **$200/week** credits
 - 200 max bots
 - 500 studio credits
-- **$249+/month** on Creem or Ko-fi (**$2,390/year** on Creem)
+- **$249+/month** (**$2,390/year** on Creem)
 
 ### How do I subscribe?
 
-You can subscribe with **Creem** (recommended) or **Ko-fi**. Both grant the same tier benefits, and you can only have one active subscription at a time.
+You can subscribe with **Creem** (recommended), **lava.top**, or **Ko-fi**. All three grant the same tier benefits, and you can only have one active subscription at a time.
 
 **Creem:**
 1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai) → **Console** → **Billing** → **Subscription**
@@ -214,6 +215,14 @@ You can subscribe with **Creem** (recommended) or **Ko-fi**. Both grant the same
 4. Once Creem confirms the payment (usually within a few seconds), your subscription benefits are applied automatically
 
 Creem subscribers also get a **Manage billing** button and a **Cancel** option on the Billing → Subscription page.
+
+**lava.top:**
+1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai) → **Console** → **Billing** → **Subscription**
+2. Choose your plan, billing period, and currency (**USD**, **EUR**, or **RUB**), then start checkout
+3. Complete payment on lava.top
+4. Once lava.top confirms the payment (usually within a minute or two), your subscription benefits are applied automatically
+
+lava.top has no billing portal and no in-place plan change. Cancel from Billing → Subscription (access continues until the paid period ends). To change plan, cancel first, then subscribe again.
 
 **Ko-fi:**
 1. Go to the [Electron Hub Dashboard](https://app.electronhub.ai) → **Console** → **Billing** → **Subscription** and verify your account email
@@ -226,7 +235,7 @@ Creem subscribers also get a **Manage billing** button and a **Cancel** option o
 
 ### When do subscriptions renew?
 
-**Creem** (monthly and annual) and **Ko-fi monthly memberships** renew automatically. **Ko-fi annual** plans are one-time purchases for 12 months and do not auto-renew. Your expiry date is shown on the Billing → Subscription page.
+**Creem**, **lava.top**, and **Ko-fi monthly** memberships renew automatically. **Ko-fi annual** plans are one-time purchases for 12 months and do not auto-renew. Your expiry date is shown on the Billing → Subscription page.
 
 ### What happens if my subscription expires?
 
@@ -424,7 +433,7 @@ You can enable **low balance alerts** for permanent credits:
 
 ### Why can't I use a premium model?
 
-**Premium models** require a **Starter tier or higher** subscription, or permanent credits on the free tier. **Ultimate models** require a **Pro tier or higher** subscription. Check your tier in the dashboard, or upgrade via **Console → Billing → Subscription** (Creem or Ko-fi).
+**Premium models** require a **Starter tier or higher** subscription, or permanent credits on the free tier. **Ultimate models** require a **Pro tier or higher** subscription. Check your tier in the dashboard, or upgrade via **Console → Billing → Subscription** (Creem, lava.top, or Ko-fi).
 
 ### My credits didn't refill on Sunday at 21:00 UTC
 
@@ -536,7 +545,7 @@ To comply with our AI provider content policies and legal requirements, we apply
 ### Payment
 - **Permanent Credits**: PayPal or Cryptocurrency — \$1 = 2 credits
 - **Volume Discount**: 5% per \$500, max 20% at \$2,000+
-- **Subscriptions**: Creem or Ko-fi (one active provider at a time)
+- **Subscriptions**: Creem, lava.top, or Ko-fi (one active provider at a time)
 
 ### Support
 For additional help, contact support through the dashboard or visit the documentation.
