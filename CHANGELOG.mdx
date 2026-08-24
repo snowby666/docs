@@ -5,6 +5,14 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-08-24] - DevPass: Qwen3.8 27B replaces GLM 4.7 Flash
+
+Coding Plan swaps the GLM Flash `:dev` hop for Verboo Qwen3.8 27B.
+
+- **New model:** `qwen3.8-27b:dev` (Standard, 1×) — Verboo `pro/qwen3.8-27b`, **262K** context, vision, native tools, thinking deltas, prompt `cached_tokens`.
+- **Removed:** `glm-4.7-flash:dev` (and the unpublished `cglm-4.7-flash:dev` catalog typo).
+- See [Coding Plan (DevPass)](/billing/coding-plan)
+
 ## [2026-08-14] - DevPass: DeepSeek V4 Flash 0731
 
 Coding Plan adds the official DeepSeek-V4-Flash GA checkpoint.
@@ -38,7 +46,7 @@ lava.top is available as a third subscription processor alongside Creem and Ko-f
 Coding Plan (DevPass) exits beta pricing and expands the `:dev` catalog.
 
 - **Official pricing:** Lite **$10**/month, Turbo **$40**/month. Founding / beta subscribers keep their launch rate while the subscription stays active.
-- **New models:** `glm-4.7-flash:dev` (Flash, 0.5×) and `kimi-k2.7-code:dev` (Heavy, 2×).
+- **New models:** `kimi-k2.7-code:dev` (Heavy, 2×). (`glm-4.7-flash:dev` shipped here and was sunset on 2026-08-24.)
 - **Context:** `glm-5.2:dev` context raised to **262K**.
 - **Removed:** deprecated `hy3:dev` / `chy3:dev` from the Coding Plan list.
 - See [Coding Plan (DevPass)](/billing/coding-plan)
