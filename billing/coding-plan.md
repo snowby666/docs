@@ -31,7 +31,7 @@ Launch seats are capped per tier. If a tier is sold out, join the waitlist on th
 | Standard · 1x | `minimax-m2.7:dev` | Text | 180K · FP8 | Agentic productivity and multi-agent work. |
 | Standard · 1x | `kimi-k2.6:dev` | Text | 240K · INT4 (MoE) + BF16 | Long-horizon coding, UI/UX, agent swarms. |
 | Heavy · 2x | `kimi-k2.7-code:dev` | Text | 262K · INT4 (MoE) + BF16 | Long-horizon coding agents. |
-| Heavy · 2x | `glm-5.3:dev` | Text | 1M · FP8 | 744B-A40B. Text-only. Same GLM-5.2 base, post-trained. Reasoning always on (`low` / `high` / `max`). |
+| Heavy · 2x | `glm-5.3:dev` | Text | 1M · FP8 | 744B-A40B. Text-only. Same GLM-5.2 base, post-trained. Stronger complex coding and long-horizon agents. |
 
 All models support function calling on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
 
