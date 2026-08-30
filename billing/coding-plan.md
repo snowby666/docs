@@ -1,0 +1,149 @@
+# Coding Plan (DevPass)
+
+> Unlimited token usage for coding agents. Flat monthly price. No credits and no per-token billing.
+
+The Electron Hub Coding Plan (DevPass) is for coding agents and CLI tools (Claude Code, Cline, Roo Code, Cursor, and anything OpenAI- or Anthropic-compatible).
+
+You get a dedicated `ek-dev-` API key. It is independent of any other Electron Hub plan and never spends credits.
+
+## Tiers
+
+| | Lite | Turbo |
+| --- | --- | --- |
+| Price | $10/month | $40/month |
+| Token usage | Unlimited | Unlimited |
+| Parallel requests | 2 | 5 |
+| Priority when busy | Standard | High |
+| Full-speed soft headroom | Generous | 6x Lite |
+
+Launch seats are capped per tier. If a tier is sold out, join the waitlist on the dashboard. You are notified when a seat opens (first come, first served).
+
+## Included models
+
+| Series | Model ID | Input | Context · quant | Notes |
+| --- | --- | --- | --- | --- |
+| Flash · 0.5x | `glm-5.3-flash:dev` | Text, image | 1M · FP8 | 320B-A18B. Native multimodal (text, image, video). Hybrid sparse and linear attention. |
+| Flash · 0.5x | `deepseek-v4-flash:dev` | Text | 1M · NVFP4 (FP4 MoE + FP8 attn) | Preview Flash. High-throughput coding. |
+| Flash · 0.5x | `deepseek-v4-flash-0731:dev` | Text | 400K · FP8 + FP4 (MXFP4 MoE) | V4 Flash GA. 13B active. Stronger agent and coding work. |
+| Flash · 0.5x | `mimo-v2.5:dev` | Text, image | 1M · FP8 | Omnimodal agentic coding. |
+| Standard · 1x | `qwen3.6-27b:dev` | Text, image | 262K · BF16 | Repo-level coding. |
+| Standard · 1x | `qwen3.8-27b:dev` | Text, image | 262K · BF16 | Multimodal agentic coding. |
+| Standard · 1x | `minimax-m2.7:dev` | Text | 180K · FP8 | Agentic productivity and multi-agent work. |
+| Standard · 1x | `kimi-k2.6:dev` | Text | 240K · INT4 (MoE) + BF16 | Long-horizon coding, UI/UX, agent swarms. |
+| Heavy · 2x | `kimi-k2.7-code:dev` | Text | 262K · INT4 (MoE) + BF16 | Long-horizon coding agents. |
+| Heavy · 2x | `glm-5.3:dev` | Text | 1M · FP8 | 744B-A40B. Text-only. Same GLM-5.2 base, post-trained. Reasoning always on (`low` / `high` / `max`). |
+
+All models support function calling on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
+
+Series weight (0.5x / 1x / 2x) only affects soft full-speed headroom (`ceil(raw × weight)`). It does not stop you from using the plan. Dashboard per-model stats stay raw.
+
+`:dev` models accept only `ek-dev-` keys. DevPass keys can call only `:dev` models. Keep your master key configured if you need the rest of the catalog.
+
+## Quickstart
+
+1. Subscribe at Dashboard → Console → Coding Plan.
+2. Your `ek-dev-...` key is provisioned within seconds. It is always retrievable from the Coding Plan tab. Regenerating it immediately invalidates the old key.
+3. Use it as a Bearer token:
+
+```bash
+curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
+  -H "Authorization: Bearer ek-dev-YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "glm-5.3:dev",
+    "messages": [{"role": "user", "content": "Refactor this function..."}],
+    "stream": true
+  }'
+```
+
+## Fair use
+
+One person, one seat. Lite and Turbo are alternative tiers, not stackable. If two parallel slots are not enough, upgrade. Do not open another account, email, or payment method to hold a second seat.
+
+The `ek-dev-` key may run on machines you personally use (home, work, laptop, CI, VPN). All of that usage counts against the same seat.
+
+The plan is for interactive coding by that one person. These are violations and lead to suspension:
+
+- a second seat under any identity you control
+- sharing the key with anyone else
+- pooling keys or seats to raise throughput
+- resale, subletting, or access-as-a-service
+- a deployed app or backend that serves other people
+- unattended or multi-user production traffic
+
+We treat extra seats, shared keys, and resale as the same violation. Chargebacks are account-level violations.
+
+High-duty-cycle or multi-user traffic belongs on a regular Electron Hub API key billed on credits.
+
+## Parallel requests
+
+Each plan allows a set number of requests at the same time (2 on Lite, 5 on Turbo). There is no requests-per-minute limit. If all slots are busy, you get a `429` with `Retry-After`. Wait for a slot, then retry. Coding agents handle this automatically.
+
+## Full-speed soft headroom (daily)
+
+Each plan includes full-speed headroom that resets at 21:00 UTC. Going past it never blocks you. Requests continue with reduced concurrency and paced admission (consumption-scaled spacing, up to about a minute when far into overage) until the reset. The dashboard shows how close you are to full-speed headroom.
+
+## Full-speed soft headroom (weekly)
+
+A rolling weekly soft headroom sits above the daily one. Past it, the same slow lane applies (lower concurrency and paced admission). This is not a hard stop. It keeps sustained 24/7 grinders from crowding out interactive work across the week.
+
+## Sudden spikes
+
+Starting a very large number of requests within a few seconds may get a brief `429`. Normal coding-agent workloads fit comfortably.
+
+## Temporary pause after concurrency hammering
+
+Repeatedly hitting the parallel-slot limit (hundreds of concurrency `429`s in a usage day) can pause admission for a few hours. While paused, requests return `403`. Your key stays valid. Service resumes automatically at the time shown on the dashboard. Regenerating the key clears an automatic concurrency pause.
+
+### Low-interactivity mode
+
+Plans are sized for a person coding, even intensively, all day. When an account shows a usage pattern far beyond typical interactive work, the plan enters low-interactivity mode for about 24 hours:
+
+- Under light load, behavior is unchanged.
+- When the platform is busy, requests may be queued behind interactive sessions and may need a retry.
+- Nothing is blocked. Your plan, models, and answer quality stay the same.
+- Interactive mode resumes automatically at the time shown on the Coding Plan tab. No action is required.
+
+Low-interactivity mode is a temporary fairness control so interactive subscribers keep responsive access during busy periods. It is not a suspension.
+
+If this surprises you, check for a runaway automation first, then ask on Discord.
+
+## Errors
+
+| Status | Meaning | What to do |
+| --- | --- | --- |
+| `429` | All parallel slots busy, or too many requests at once | Honor `Retry-After`, then retry |
+| `404` model error | Model not in the Coding Plan list | Use a `:dev` model from the table above |
+| `403` | Temporarily paused after concurrency hammering | Wait for the resume time on the dashboard, or regenerate your key to clear the pause |
+| `403` | Subscription suspended or ended | Check payment, or resubscribe. A second seat or shared use can also cause this. |
+
+## Terms
+
+- Monthly billing via Creem, auto-renewing, non-refundable. Cancel any time. Your key stays active until the period ends.
+- Fair use is binding. Extra seats, shared keys, pooling, and resale are suspended. Chargebacks are account-level violations.
+
+## FAQ
+
+### Is token usage really unlimited?
+
+Yes. There is no hard token cap and no per-token charge. Soft full-speed headroom only affects concurrency and latency when you are far past typical interactive use. Requests are never blocked for burning tokens.
+
+### I bought during beta. Do I keep the old price?
+
+Yes. Founding and beta subscribers who purchased at the launch rate keep that price for as long as the subscription stays active. If you cancel and subscribe again later, the current public price applies.
+
+### Can I buy a second Coding Plan seat?
+
+No. See [Fair use](#fair-use). One person, one seat. Upgrade Lite to Turbo if you need more parallel slots.
+
+### Can I upgrade Lite to Turbo?
+
+Yes. Change plans in the Creem billing portal. Your existing key picks up Turbo limits automatically.
+
+### What happens when my subscription ends?
+
+Your `ek-dev-` key is deactivated. Resubscribe any time to restore it.
+
+### What does the Low-interactivity mode banner mean?
+
+See [Low-interactivity mode](#low-interactivity-mode). Requests remain available. Under load they may queue behind interactive sessions until interactive mode resumes automatically.
