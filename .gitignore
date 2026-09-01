@@ -1,0 +1,24 @@
+# Internal provider/runtime plans — not public API docs
+/superpowers/
+
+# Payment-processor ops (webhook URLs, secrets.json layout, dashboard steps)
+/crypto_webhook_setup.md
+/paypal_webhook_setup.md
+
+# Mintlify starter leftovers (not in mint.json navigation)
+/essentials/
+/snippets/
+/development.mdx
+/TODO.mdx
+/README.md
+
+# Internal index and unpublished duplicates of billing pages
+/INDEX.md
+/faq.md
+/billing/coding-plan.md
+
+# Local Mintlify / tooling
+.mintlify/
+node_modules/
+.DS_Store
+*.log
