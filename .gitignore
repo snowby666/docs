@@ -12,10 +12,9 @@
 /TODO.mdx
 /README.md
 
-# Internal index and unpublished duplicates of billing pages
+# Internal index and unpublished billing FAQ dump
 /INDEX.md
 /faq.md
-/billing/coding-plan.md
 
 # Local Mintlify / tooling
 .mintlify/
