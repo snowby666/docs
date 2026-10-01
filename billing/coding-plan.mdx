@@ -14,7 +14,8 @@ A dedicated `ek-dev-` key. Unlimited tokens. No credits. Independent of every ot
 |---|---|---|
 | Price | **$10**/month | **$40**/month |
 | Token usage | **Unlimited** | **Unlimited** |
-| Parallel requests | 2 | 5 |
+| Concurrency slots | 2 | 5 |
+| Requests per minute | 8 (burst 4) | 20 (burst 8) |
 | Priority when busy | Standard | High |
 | Full-speed soft headroom | Generous | 6× Lite |
 
@@ -33,11 +34,13 @@ A dedicated `ek-dev-` key. Unlimited tokens. No credits. Independent of every ot
 | Standard · 1× | `deepseek-v4.1-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 1M · FP8 + FP4 (FP4 experts) | 552B backbone. 8B prefill / 16B decode active. Native vision. |
 | Standard · 1× | `qwen3.8-27b:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · BF16 | Multimodal agentic coding. |
 | Standard · 1× | `minimax-m2.7:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 180K · FP8 | Agentic productivity and multi-agent work. |
-| Heavy · 2× | `glm-5.3:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · FP8 | 744B-A40B. Text-only. Same GLM-5.2 base, post-trained. Stronger complex coding and long-horizon agents. |
+| Heavy · 2× | `glm-5.3:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · FP8 | 744B-A40B. Text-only. Same GLM-5.2 base, post-trained. Stronger complex coding and long-horizon agents. Uses 2 concurrency slots per request. |
 
 All models support function calling on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
 
-Series weight (0.5× / 1× / 2×) only affects soft full-speed headroom (`ceil(raw × weight)`). It does not stop you from using the plan. Dashboard per-model stats stay raw.
+Series weight (0.5× / 1× / 2×) affects soft full-speed headroom (`ceil(raw × weight)`). It does not stop you from using the plan. Dashboard per-model stats stay raw.
+
+Heavy models also hold **2 concurrency slots** per request; Flash and Standard models hold 1. See [Concurrency slots](#fair-use).
 
 <Note>
   `:dev` models accept only `ek-dev-` keys. DevPass keys can call only `:dev` models. Keep your master key configured if you need the rest of the catalog.
@@ -62,7 +65,7 @@ curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
 
 ## Fair use
 
-One person, one seat. Lite and Turbo are alternative tiers, not stackable. If two parallel slots are not enough, upgrade. Do not open another account, email, or payment method to hold a second seat.
+One person, one seat. Lite and Turbo are alternative tiers, not stackable. If two concurrency slots are not enough, upgrade. Do not open another account, email, or payment method to hold a second seat.
 
 The `ek-dev-` key may run on machines you personally use (home, work, laptop, CI, VPN). All of that usage counts against the same seat.
 
@@ -80,8 +83,17 @@ We treat extra seats, shared keys, and resale as the same violation. Chargebacks
 High-duty-cycle or multi-user traffic belongs on a regular Electron Hub API key billed on credits.
 
 <AccordionGroup>
-  <Accordion title="Parallel requests" icon="layer-group">
-    Each plan allows a set number of requests at the same time (2 on Lite, 5 on Turbo). There is no requests-per-minute limit. If all slots are busy, you get a `429` with `Retry-After`. Wait for a slot, then retry. Coding agents handle this automatically.
+  <Accordion title="Concurrency slots" icon="layer-group">
+    Each plan has a fixed number of concurrency slots: **2 on Lite, 5 on Turbo**. A request holds its slots until it finishes. Request starts are limited separately (see [Requests per minute](#fair-use)).
+
+    | Series | Slots per request | Lite (2 slots) | Turbo (5 slots) |
+    |---|---|---|---|
+    | Flash · Standard | 1 | 2 requests | 5 requests |
+    | Heavy (`glm-5.3:dev`) | 2 | 1 request | 2 requests, plus 1 Flash or Standard request |
+
+    Series can be mixed in any combination that fits the slot total. If the slots a request needs are not free, you get a `429` with `Retry-After`. Wait for a request to finish, then retry. Coding agents handle this automatically.
+
+    To keep parallel work moving on Lite, route subagents and background tasks to a Flash model and reserve the Heavy model for the main session. While the plan is temporarily reduced to one slot, a Heavy request uses that single slot.
   </Accordion>
   <Accordion title="Full-speed soft headroom (daily)" icon="gauge">
     Each plan includes full-speed headroom that resets at **21:00 UTC**. Going past it never blocks you. Requests continue with reduced concurrency and paced admission (consumption-scaled spacing, up to about a minute when far into overage) until the reset. The dashboard shows how close you are to full-speed headroom.
@@ -89,8 +101,10 @@ High-duty-cycle or multi-user traffic belongs on a regular Electron Hub API key 
   <Accordion title="Full-speed soft headroom (weekly)" icon="calendar-week">
     A rolling weekly soft headroom sits above the daily one. Past it, the same slow lane applies (lower concurrency and paced admission). This is not a hard stop. It keeps sustained 24/7 grinders from crowding out interactive work across the week.
   </Accordion>
-  <Accordion title="Sudden spikes" icon="wave-sine">
-    Starting a very large number of requests within a few seconds may get a brief `429`. Normal coding-agent workloads fit comfortably.
+  <Accordion title="Requests per minute" icon="wave-sine">
+    Request starts refill continuously at **8 per minute on Lite** and **20 per minute on Turbo**. Up to **4** (Lite) or **8** (Turbo) can start back-to-back after a quiet moment. Every request counts as one start, Heavy included. In the slow lane (past full-speed headroom, or in low-interactivity mode) it is 3 per minute (burst 2).
+
+    Past the limit you get a `429` with an exact `Retry-After` (Lite: about 8 seconds per start). `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` report this budget on every response. These `429`s never count toward the temporary pause.
   </Accordion>
   <Accordion title="Temporary pause after concurrency hammering" icon="pause">
     Repeatedly hitting the parallel-slot limit (hundreds of concurrency `429`s in a usage day) can pause admission for a few hours. While paused, requests return **`403`**. Your key stays valid. Service resumes automatically at the time shown on the dashboard. Regenerating the key clears an automatic concurrency pause.
@@ -114,7 +128,7 @@ If this surprises you, check for a runaway automation first, then ask on [Discor
 
 | Status | Meaning | What to do |
 |---|---|---|
-| `429` | All parallel slots busy, or too many requests at once | Honor `Retry-After`, then retry |
+| `429` | Not enough free concurrency slots (Heavy requests need 2), or the per-minute request limit was reached | Honor `Retry-After`, then retry |
 | `404` model error | Model not in the Coding Plan list | Use a `:dev` model from the table above |
 | `403` | Temporarily paused after concurrency hammering | Wait for the resume time on the dashboard, or regenerate your key to clear the pause |
 | `403` | Subscription suspended or ended | Check payment, or resubscribe. A second seat or shared use can also cause this. |

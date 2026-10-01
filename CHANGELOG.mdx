@@ -5,6 +5,17 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-10-01] - DevPass: concurrency restored, Heavy slot weighting, RPM limit
+
+Coding Plan concurrency returns to its launch levels, Heavy-series requests are now weighted, and request starts get a per-minute limit.
+
+- **Concurrency slots:** Lite **1 → 2**, Turbo **3 → 5**. Existing keys pick up the new limits automatically.
+- **Heavy weighting:** each `glm-5.3:dev` request holds **2** slots for its full duration. Flash and Standard models hold 1. On Lite, one Heavy request uses the whole allowance. On Turbo, two Heavy requests run alongside one Flash or Standard request.
+- A plan temporarily reduced to one slot can still run a Heavy request in that slot.
+- **Requests per minute:** Lite **8** (burst 4), Turbo **20** (burst 8); 3 (burst 2) in the slow lane. Every request is one start. Over the limit returns `429` with an exact `Retry-After`. These `429`s never count toward the temporary pause.
+- `X-RateLimit-Limit` / `-Remaining` / `-Reset` on `ek-dev-` responses now report the RPM budget, matching master keys.
+- See [Coding Plan (DevPass)](/billing/coding-plan)
+
 ## [2026-09-24] - DevPass: DeepSeek V4.1 Flash
 
 Coding Plan adds DeepSeek-V4.1-Flash via Verboo.

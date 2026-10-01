@@ -23,6 +23,8 @@ Use Electron Hub with the official Anthropic SDKs by simply changing the base UR
 
 Base URL is the host only (Claude Code appends `/v1/messages`). Coding Plan keys require `:dev` model IDs.
 
+`glm-5.3:dev` is a Heavy model and holds 2 [concurrency slots](/billing/coding-plan#fair-use) per request. Keeping the Haiku slot on a Flash model lets background tasks run alongside it.
+
 ## JavaScript/TypeScript SDK
 
 Install the Anthropic SDK:
