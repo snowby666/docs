@@ -335,6 +335,103 @@
         }
       }
     },
+    "/systemone": {
+      "post": {
+        "summary": "Create Decision",
+        "description": "Ask Jev structured questions about `state`. `POST /decisions` is an alias. Unknown body fields are ignored.",
+        "operationId": "createDecision",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DecisionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Describe Decisions",
+        "description": "Model, context length, question types, and pricing for the decisions endpoint.",
+        "operationId": "describeDecisions",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/me": {
       "get": {
         "summary": "Get Usage",
@@ -2611,6 +2708,184 @@
                 "type": "number"
               }
             }
+          }
+        }
+      },
+      "DecisionRequest": {
+        "type": "object",
+        "required": [
+          "state",
+          "questions"
+        ],
+        "properties": {
+          "model": {
+            "type": "string",
+            "default": "jev",
+            "example": "jev",
+            "description": "Use `jev`. `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are aliases. Version pins are rejected."
+          },
+          "state": {
+            "description": "The facts needed to answer. May be empty.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              },
+              {
+                "type": "array",
+                "items": {}
+              }
+            ]
+          },
+          "questions": {
+            "type": "object",
+            "description": "Non-empty map of question IDs to question definitions. IDs must be non-empty and cannot be `__proto__`.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DecisionQuestion"
+            },
+            "minProperties": 1
+          }
+        }
+      },
+      "DecisionQuestion": {
+        "type": "object",
+        "required": [
+          "type",
+          "instructions"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "choice",
+              "score",
+              "noul"
+            ],
+            "description": "Case-sensitive."
+          },
+          "instructions": {
+            "description": "The question to answer.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              },
+              {
+                "type": "array",
+                "items": {}
+              }
+            ]
+          },
+          "criteria": {
+            "description": "choice (required): object of option ID to description, 1 to 255 options; a description may also be null. score (required): array of level descriptions, lowest first, 1 to 10 levels; an object keyed \"0\", \"1\", ... with no gaps is also accepted. noul (optional): object with exactly the keys `true` and `false`. Descriptions may be strings, objects, or arrays.",
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": {}
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 10,
+                "items": {}
+              }
+            ]
+          }
+        }
+      },
+      "DecisionResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "model",
+          "answers",
+          "usage"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "example": "decision"
+          },
+          "model": {
+            "type": "string",
+            "example": "jev"
+          },
+          "answers": {
+            "type": "object",
+            "description": "One answer per question ID.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DecisionAnswer"
+            }
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "input_tokens": {
+                "type": "integer"
+              },
+              "output_tokens": {
+                "type": "integer"
+              },
+              "total_tokens": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "DecisionAnswer": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "choice",
+              "score",
+              "noul"
+            ]
+          },
+          "choice": {
+            "type": "string",
+            "description": "choice: the selected option ID."
+          },
+          "score": {
+            "type": "number",
+            "description": "score: expected level on the 0-based scale, as a decimal."
+          },
+          "legend": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "score: level index to the description sent in `criteria`."
+          },
+          "noul": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "noul: probability of yes. Near 0.5 is uncertain."
+          },
+          "probabilities": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "choice and score: option ID or level index to probability, rounded to two decimals."
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "choice and score: certainty signal. Not the largest probability. May be omitted."
           }
         }
       },

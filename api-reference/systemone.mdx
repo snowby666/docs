@@ -1,0 +1,231 @@
+---
+title: 'Decisions (Jev)'
+openapi: 'POST /systemone'
+description: 'Get structured judgments your code can act on'
+---
+
+Jev is a decision model, not a chat model. Send the facts in `state` and the judgments you need in `questions`. Jev returns structured answers: a pick from a set, a score on a scale, or a yes/no measure. It does not write chat text, so do not send `jev` to `/v1/chat/completions`.
+
+Jev is free. Requests still need a valid API key and count toward your normal rate limits.
+
+## Create Decision
+
+`POST /systemone`
+
+`POST /decisions` is the same endpoint.
+
+### Request Body
+
+<ParamField body="model" type="string" default="jev">
+  Use `jev`. `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are accepted as aliases. Version pins such as `typesafe/jev-1.13` are rejected because only the current version is served. Proxy keys must send `model`.
+</ParamField>
+
+<ParamField body="state" type="string | object | array" required>
+  The facts needed to answer: the ticket, records, conversation, or policy. Any JSON string, object, or array is accepted, including an empty one. Numbers, booleans, and `null` are rejected.
+</ParamField>
+
+<ParamField body="questions" type="object" required>
+  A non-empty map of question IDs to question definitions. Answers use the same IDs. IDs must be non-empty and cannot be `__proto__`.
+</ParamField>
+
+Each question has:
+
+<ParamField body="questions.{id}.type" type="string" required>
+  `choice`, `score`, or `noul`. Case-sensitive.
+</ParamField>
+
+<ParamField body="questions.{id}.instructions" type="string | object | array" required>
+  The question to answer. The question ID only labels the answer; it is not read as the question.
+</ParamField>
+
+<ParamField body="questions.{id}.criteria" type="object | array">
+  What each option or level means. Required for `choice` and `score`, optional for `noul`. See [Question types](#question-types).
+</ParamField>
+
+Every question sees the same `state`. Send independent questions together in one call and keep each one focused on a single judgment. The combined `state` and `questions` can be up to 32,000 tokens. Other body fields, such as `user` or `session_id`, are ignored.
+
+### Question types
+
+| Type | `criteria` | Answer fields |
+| --- | --- | --- |
+| `choice` | Object of option ID to description. 1 to 255 options. | `choice`, `probabilities`, `confidence` |
+| `score` | Array of level descriptions, lowest first. 1 to 10 levels. An object keyed `"0"`, `"1"`, ... with no gaps is also accepted. | `score`, `legend`, `probabilities`, `confidence` |
+| `noul` | Optional. If sent, an object with both `true` and `false` keys and no others. | `noul` |
+
+Descriptions may be strings, objects, or arrays, and may be empty. A `choice` description may also be `null`. Numbers and booleans are rejected.
+
+### Reading answers
+
+- `choice`: the selected option ID. `probabilities` maps every option ID to a probability.
+- `score`: the expected level on the 0-based scale, as a decimal (for example `2.82` of 0 to 3). `legend` maps each level index to the description you sent. `probabilities` maps each level index to a probability.
+- `noul`: the probability of yes, from 0 to 1. Near 0.5 means uncertain. There is no `confidence` field.
+- `confidence`: a separate certainty signal from 0 to 1. It is not the largest probability and may be omitted; treat a missing value as unknown.
+
+Probabilities are rounded to two decimals. Identical requests can differ by about 0.02, so compare against thresholds rather than exact values.
+
+### Example
+
+<CodeGroup>
+
+```bash cURL
+curl -X POST "https://api.electronhub.ai/v1/systemone" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "jev",
+    "state": "My card was charged twice. Please help ASAP.",
+    "questions": {
+      "team": {
+        "type": "choice",
+        "instructions": "Which team should handle this?",
+        "criteria": {
+          "billing": "Payments and refunds",
+          "technical": "Bugs and integrations",
+          "sales": "Pricing and new accounts"
+        }
+      },
+      "severity": {
+        "type": "score",
+        "instructions": "How severe is this request?",
+        "criteria": [
+          "No impact",
+          "Minor inconvenience",
+          "The customer is blocked",
+          "Money or data is at risk"
+        ]
+      },
+      "urgent": {
+        "type": "noul",
+        "instructions": "Does this need a response today?",
+        "criteria": {
+          "true": "The customer is blocked or money is at risk",
+          "false": "It can wait"
+        }
+      }
+    }
+  }'
+```
+
+```javascript Node.js
+const response = await fetch('https://api.electronhub.ai/v1/systemone', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'jev',
+    state: 'My card was charged twice. Please help ASAP.',
+    questions: {
+      team: {
+        type: 'choice',
+        instructions: 'Which team should handle this?',
+        criteria: {
+          billing: 'Payments and refunds',
+          technical: 'Bugs and integrations',
+          sales: 'Pricing and new accounts'
+        }
+      }
+    }
+  })
+});
+
+const { answers } = await response.json();
+console.log(answers.team.choice);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.electronhub.ai/v1/systemone',
+    headers={'Authorization': 'Bearer YOUR_API_KEY'},
+    json={
+        'model': 'jev',
+        'state': 'My card was charged twice. Please help ASAP.',
+        'questions': {
+            'team': {
+                'type': 'choice',
+                'instructions': 'Which team should handle this?',
+                'criteria': {
+                    'billing': 'Payments and refunds',
+                    'technical': 'Bugs and integrations',
+                    'sales': 'Pricing and new accounts',
+                },
+            }
+        },
+    },
+    timeout=60,
+)
+
+print(response.json()['answers']['team']['choice'])
+```
+
+</CodeGroup>
+
+### Response
+
+```json
+{
+  "id": "gen-dec-1791097042-2ZZZZefJjFbJsulpQa5T",
+  "object": "decision",
+  "model": "jev",
+  "answers": {
+    "team": {
+      "type": "choice",
+      "choice": "billing",
+      "probabilities": { "billing": 1, "sales": 0, "technical": 0 },
+      "confidence": 1
+    },
+    "severity": {
+      "type": "score",
+      "score": 2.82,
+      "legend": {
+        "0": "No impact",
+        "1": "Minor inconvenience",
+        "2": "The customer is blocked",
+        "3": "Money or data is at risk"
+      },
+      "probabilities": { "0": 0, "1": 0.08, "2": 0.01, "3": 0.91 },
+      "confidence": 0.82
+    },
+    "urgent": {
+      "type": "noul",
+      "noul": 0.88
+    }
+  },
+  "usage": {
+    "input_tokens": 434,
+    "output_tokens": 68,
+    "total_tokens": 502
+  }
+}
+```
+
+Read each answer by its question ID, then apply your own rules. Validate thresholds on your own examples.
+
+```javascript
+const { team } = data.answers;
+
+if ((team.confidence ?? 0) < 0.8) {
+  queueForReview(ticket);
+} else {
+  routeTicket(ticket, team.choice);
+}
+```
+
+## Describe the endpoint
+
+`GET /systemone` (or `GET /decisions`) returns the model, context length, supported question types, and pricing. No API key is needed.
+
+## Errors
+
+| Status | Meaning |
+| --- | --- |
+| 400 | Invalid body, such as a missing `instructions`, an unknown `type`, or invalid `criteria`. `param` names the field. Also returned for a version-pinned or unsupported model, and when the request exceeds 32,000 tokens. |
+| 401 | Missing or invalid API key. |
+| 402 | Insufficient balance. |
+| 429 | Your rate limit was reached, or Jev is busy. Wait for `Retry-After` when present, then retry with backoff. |
+| 503 | Jev is temporarily unavailable. Retry with backoff. |
+
+Failed requests are not charged.

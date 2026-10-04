@@ -99,6 +99,7 @@
           ]
         },
         "api-reference/moderations",
+        "api-reference/systemone",
         "api-reference/embeddings",
         {
           "group": "User",
