@@ -11,7 +11,7 @@ New `POST /v1/systemone` endpoint for structured decisions, with the `jev` model
 
 - **New endpoint:** `POST /v1/systemone` (alias `POST /v1/decisions`). Send `state` and a `questions` map; get `answers` your code can act on. No chat text, no streaming.
 - **Question types:** `choice` (pick one of 1 to 255 options), `score` (ordered scale of 1 to 10 levels), `noul` (probability of yes, 0 to 1). Every question requires `instructions`.
-- **New model:** `jev`, **32K** context, free. `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are accepted as aliases; version pins are rejected.
+- **New model:** `jev` by TypeSafe, **32K** context, $0.042 per million input tokens, output free. `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are accepted as aliases; version pins are rejected.
 - `score.criteria` takes an array of levels; an object keyed `"0"`, `"1"`, ... is also accepted.
 - Invalid questions are rejected with a 400 that names the field in `param`.
 - `GET /v1/systemone` describes the model, context length, question types, and pricing.
