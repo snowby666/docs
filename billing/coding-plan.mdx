@@ -40,7 +40,7 @@ All models support function calling on `/v1/chat/completions`, `/v1/messages`, a
 
 Series weight (0.5× / 1× / 2×) affects soft full-speed headroom (`ceil(raw × weight)`). It does not stop you from using the plan. Dashboard per-model stats stay raw.
 
-Heavy models also hold **2 concurrency slots** per request; Flash and Standard models hold 1. See [Concurrency slots](#fair-use).
+Heavy models also hold **2 concurrency slots** per request; Flash and Standard models hold 1. See [Concurrency slots](#concurrency-slots).
 
 <Note>
   `:dev` models accept only `ek-dev-` keys. DevPass keys can call only `:dev` models. Keep your master key configured if you need the rest of the catalog.
@@ -84,7 +84,7 @@ High-duty-cycle or multi-user traffic belongs on a regular Electron Hub API key 
 
 <AccordionGroup>
   <Accordion title="Concurrency slots" icon="layer-group">
-    Each plan has a fixed number of concurrency slots: **2 on Lite, 5 on Turbo**. A request holds its slots until it finishes. Request starts are limited separately (see [Requests per minute](#fair-use)).
+    Each plan has a fixed number of concurrency slots: **2 on Lite, 5 on Turbo**. A request holds its slots until it finishes. Request starts are limited separately (see [Requests per minute](#requests-per-minute)).
 
     | Series | Slots per request | Lite (2 slots) | Turbo (5 slots) |
     |---|---|---|---|
