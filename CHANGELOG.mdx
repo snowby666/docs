@@ -5,6 +5,15 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-10-20] - DevPass: drop DeepSeek V4 Flash, add MiMo V2.6 Flash
+
+Verboo no longer serves DeepSeek V4 Flash or the 0731 checkpoint. Coding Plan follows that list.
+
+- **Removed from the plan:** `deepseek-v4-flash:dev`, `deepseek-v4-flash-0731:dev`, `mimo-v2.5:dev`. The free alias `deepseek-v4-flash:free` is removed with them (it was Verboo-only).
+- **New model:** `mimo-v2.6-flash:dev` (Flash, 0.5×) — Verboo `pro/mimo-v2.6-flash`, **1M** context, text only, native tools. 309B total, 15B active.
+- Credit-billed `deepseek-v4-flash` is unchanged (Gonka, Dahl, Jewproxy). Public `mimo-v2.5` and `mimo-v2.5-pro` now route through InferHub.
+- See [Coding Plan (DevPass)](/billing/coding-plan)
+
 ## [2026-10-04] - Decisions endpoint and Jev
 
 New `POST /v1/systemone` endpoint for structured decisions, with the `jev` model.
