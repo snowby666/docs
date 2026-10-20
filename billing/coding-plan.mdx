@@ -28,7 +28,7 @@ A dedicated `ek-dev-` key. Unlimited tokens. No credits. Independent of every ot
 | Series | Model ID | Input | Context · Quant | Notes |
 |---|---|---|---|---|
 | Flash · 0.5× | `glm-5.3-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 1M · FP8 | 320B-A18B. Native multimodal (text, image, video). Hybrid sparse and linear attention. |
-| Flash · 0.5× | `mimo-v2.6-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 1M | 309B total, 15B active. Hybrid attention. Text only. |
+| Flash · 0.5× | `mimo-v2.6-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 1M | 309B-A15B MoE (256 experts, 8 active). Hybrid sliding-window and global attention. Native vision. |
 | Standard · 1× | `deepseek-v4.1-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 1M · FP8 + FP4 (FP4 experts) | 552B backbone. 8B prefill / 16B decode active. Native vision. |
 | Standard · 1× | `qwen3.8-27b:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · BF16 | Multimodal agentic coding. |
 | Standard · 1× | `minimax-m2.7:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 180K · FP8 | Agentic productivity and multi-agent work. |
