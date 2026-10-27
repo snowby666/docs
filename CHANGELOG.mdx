@@ -5,6 +5,14 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-10-26] - Decisions: images in state
+
+`POST /v1/systemone` reads images placed in `state`.
+
+- An image is an `image_url` part anywhere in `state`: `{ "type": "image_url", "image_url": { "url": "data:image/png;base64,..." } }`. PNG and JPEG data URLs. Remote URLs are not fetched.
+- The image is input tokens and shares the 32,000 token limit. Question types stay `choice`, `score`, and `noul`.
+- See [Decisions (Jev)](/api-reference/systemone)
+
 ## [2026-10-20] - DevPass: drop DeepSeek V4 Flash, add MiMo V2.6 Flash
 
 Verboo no longer serves DeepSeek V4 Flash or the 0731 checkpoint. Coding Plan follows that list.

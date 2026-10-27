@@ -4,7 +4,7 @@ openapi: 'POST /systemone'
 description: 'Get structured judgments your code can act on'
 ---
 
-Jev is a decision model, not a chat model. Send the facts in `state` and the judgments you need in `questions`. Jev returns structured answers: a pick from a set, a score on a scale, or a yes/no measure. It does not write chat text, so do not send `jev` to `/v1/chat/completions`.
+Jev is a decision model, not a chat model. Send the facts in `state` and the judgments you need in `questions`. Jev returns structured answers: a pick from a set, a score on a scale, or a yes/no measure. `state` may include PNG or JPEG images. It does not write chat text, so do not send `jev` to `/v1/chat/completions`.
 
 Jev is built by TypeSafe. It costs $0.042 per million input tokens; output tokens are free. Requests count toward your normal rate limits.
 
@@ -21,7 +21,7 @@ Jev is built by TypeSafe. It costs $0.042 per million input tokens; output token
 </ParamField>
 
 <ParamField body="state" type="string | object | array" required>
-  The facts needed to answer: the ticket, records, conversation, or policy. Any JSON string, object, or array is accepted, including an empty one. Numbers, booleans, and `null` are rejected.
+  The facts needed to answer: the ticket, records, conversation, policy, or an image. Any JSON string, object, or array is accepted, including an empty one. Numbers, booleans, and `null` are rejected. See [Images](#images).
 </ParamField>
 
 <ParamField body="questions" type="object" required>
@@ -42,7 +42,23 @@ Each question has:
   What each option or level means. Required for `choice` and `score`, optional for `noul`. See [Question types](#question-types).
 </ParamField>
 
-Every question sees the same `state`. Send independent questions together in one call and keep each one focused on a single judgment. The combined `state` and `questions` can be up to 32,000 tokens. Other body fields, such as `user` or `session_id`, are ignored.
+Every question sees the same `state`. Send independent questions together in one call and keep each one focused on a single judgment. The combined `state` and `questions` can be up to 32,000 tokens. Other body fields, such as `user`, `session_id`, or `assets`, are ignored.
+
+### Images
+
+Put each image in `state`. It can be `state` itself, or nested at any depth inside a `state` object or array. Text next to it is a plain string, not a `{ "type": "text" }` part.
+
+```json
+{
+  "type": "image_url",
+  "image_url": { "url": "data:image/png;base64,iVBORw0KGgo..." }
+}
+```
+
+- `url` must be a base64 data URL: `data:image/png;base64,...` or `data:image/jpeg;base64,...`. Remote `http` and `https` URLs are not fetched.
+- The image is billed as input tokens and counts toward the 32,000 token limit.
+- An image part inside `instructions` or `criteria` is not read as an image. Put it in `state`.
+- There is no `box` question type. Ask a `choice`, `score`, or `noul` about what the image shows.
 
 ### Question types
 
