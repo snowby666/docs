@@ -4,7 +4,7 @@ openapi: 'POST /systemone'
 description: 'Get structured judgments your code can act on'
 ---
 
-Jev is a decision model, not a chat model. Send the facts in `state` and the judgments you need in `questions`. Jev returns structured answers: a pick from a set, a score on a scale, or a yes/no measure. `state` may include PNG or JPEG images. It does not write chat text, so do not send `jev` to `/v1/chat/completions`.
+Jev is a decision model, not a chat model. Send the facts in `state` and the judgments you need in `questions`. Jev returns structured answers: a pick from a set, a score on a scale, or a yes/no measure. `state` is text or JSON. Jev does not read images. It does not write chat text, so do not send `jev` to `/v1/chat/completions`.
 
 Jev is built by TypeSafe. It costs $0.042 per million input tokens; output tokens are free. Requests count toward your normal rate limits.
 
@@ -21,7 +21,7 @@ Jev is built by TypeSafe. It costs $0.042 per million input tokens; output token
 </ParamField>
 
 <ParamField body="state" type="string | object | array" required>
-  The facts needed to answer: the ticket, records, conversation, policy, or an image. Any JSON string, object, or array is accepted, including an empty one. Numbers, booleans, and `null` are rejected. See [Images](#images).
+  The facts needed to answer: the ticket, records, conversation, or policy. A string, object, or array, including an empty one. Numbers, booleans, and `null` are rejected. Image parts and data-URL images are rejected. See [Images](#images).
 </ParamField>
 
 <ParamField body="questions" type="object" required>
@@ -46,19 +46,23 @@ Every question sees the same `state`. Send independent questions together in one
 
 ### Images
 
-Put each image in `state`. It can be `state` itself, or nested at any depth inside a `state` object or array. Text next to it is a plain string, not a `{ "type": "text" }` part.
+Jev does not read image bytes. An image part in `state` (`image_url`, `image`, or `input_image`), or any `data:image/` URL, is rejected with `400` and `param` set to `state`. Describe the image with a vision model such as `gemini-2.5-flash`, then put that description in `state`.
 
-```json
-{
-  "type": "image_url",
-  "image_url": { "url": "data:image/png;base64,iVBORw0KGgo..." }
-}
+```python
+auth = {"Authorization": "Bearer YOUR_API_KEY"}
+text = requests.post("https://api.electronhub.ai/v1/chat/completions", headers=auth, json={
+    "model": "gemini-2.5-flash",
+    "messages": [{"role": "user", "content": [
+        {"type": "text", "text": "Describe this image."},
+        {"type": "image_url", "image_url": {"url": data_url}}]}],
+}).json()["choices"][0]["message"]["content"]
+answer = requests.post("https://api.electronhub.ai/v1/decisions", headers=auth, json={
+    "model": "jev", "state": text,
+    "questions": {"colour": {"type": "choice", "instructions": "Dominant colour?",
+        "criteria": {"red": "red", "green": "green", "blue": "blue"}}}}).json()
 ```
 
-- `url` must be a base64 data URL: `data:image/png;base64,...` or `data:image/jpeg;base64,...`. Remote `http` and `https` URLs are not fetched.
-- The image is billed as input tokens and counts toward the 32,000 token limit.
-- An image part inside `instructions` or `criteria` is not read as an image. Put it in `state`.
-- There is no `box` question type. Ask a `choice`, `score`, or `noul` about what the image shows.
+A written description is ordinary text, including one stored under a field named `image`. There is no `box` question type. Ask a `choice`, `score`, or `noul` about the description.
 
 ### Question types
 
@@ -238,7 +242,7 @@ if ((team.confidence ?? 0) < 0.8) {
 
 | Status | Meaning |
 | --- | --- |
-| 400 | Invalid body, such as a missing `instructions`, an unknown `type`, or invalid `criteria`. `param` names the field. Also returned for a version-pinned or unsupported model, and when the request exceeds 32,000 tokens. |
+| 400 | Invalid body, such as a missing `instructions`, an unknown `type`, invalid `criteria`, or image content in `state`. `param` names the field. Also returned for a version-pinned or unsupported model, and when the request exceeds 32,000 tokens. |
 | 401 | Missing or invalid API key. |
 | 402 | Insufficient balance. |
 | 429 | Your rate limit was reached, or Jev is busy. Wait for `Retry-After` when present, then retry with backoff. |

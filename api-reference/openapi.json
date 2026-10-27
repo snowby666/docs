@@ -338,7 +338,7 @@
     "/systemone": {
       "post": {
         "summary": "Create Decision",
-        "description": "Ask Jev structured questions about `state`. `state` may include `image_url` parts (PNG or JPEG data URLs). `POST /decisions` is an alias. Unknown body fields are ignored.",
+        "description": "Ask Jev structured questions about `state`. `state` is text or JSON. Image parts and data-URL images are rejected. `POST /decisions` is an alias. Unknown body fields are ignored.",
         "operationId": "createDecision",
         "requestBody": {
           "required": true,
@@ -2725,7 +2725,7 @@
             "description": "Use `jev`. `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are aliases. Version pins are rejected."
           },
           "state": {
-            "description": "The facts needed to answer. A string, object, or array, including empty. An image is an image_url part anywhere in state: { \"type\": \"image_url\", \"image_url\": { \"url\": \"data:image/png;base64,...\" } }. PNG or JPEG data URLs only. Remote http(s) URLs are not fetched. The image counts toward the 32,000 token limit. Image parts in instructions or criteria are not read as images.",
+            "description": "The facts needed to answer. A string, object, or array, including empty. Image parts (image_url, image, input_image) and data-URL images are rejected with param state. Describe the image with a vision model and put that text here.",
             "oneOf": [
               {
                 "type": "string"

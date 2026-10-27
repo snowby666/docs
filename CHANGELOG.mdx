@@ -5,12 +5,11 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
-## [2026-10-26] - Decisions: images in state
+## [2026-10-26] - Decisions: images are rejected
 
-`POST /v1/systemone` reads images placed in `state`.
+`POST /v1/systemone` does not read image bytes. An image part or a `data:image/` URL in `state` returns `400` with `param: "state"`. Describe the image with a vision model and send that text.
 
-- An image is an `image_url` part anywhere in `state`: `{ "type": "image_url", "image_url": { "url": "data:image/png;base64,..." } }`. PNG and JPEG data URLs. Remote URLs are not fetched.
-- The image is input tokens and shares the 32,000 token limit. Question types stay `choice`, `score`, and `noul`.
+- `GET /v1/models` lists `input_modalities: ["text"]` on `jev`.
 - See [Decisions (Jev)](/api-reference/systemone)
 
 ## [2026-10-20] - DevPass: drop DeepSeek V4 Flash, add MiMo V2.6 Flash
