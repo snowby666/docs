@@ -1,12 +1,12 @@
 ---
-title: 'Decisions (Jev)'
+title: 'Decisions'
 openapi: 'POST /systemone'
 description: 'Get structured judgments your code can act on'
 ---
 
-Jev is a decision model, not a chat model. Send the facts in `state` and the judgments you need in `questions`. Jev returns structured answers: a pick from a set, a score on a scale, or a yes/no measure. `state` is text or JSON. Jev does not read images. It does not write chat text, so do not send `jev` to `/v1/chat/completions`.
+Send the facts in `state` and the judgments you need in `questions`. The answer is a pick from a set, a score on a scale, or a yes/no measure. `state` is text or JSON. These models do not read images, and they do not write chat text.
 
-Jev is built by TypeSafe. It costs $0.042 per million input tokens; output tokens are free. Requests count toward your normal rate limits.
+`jev` is TypeSafe's decision model at $0.042 per million input tokens. `gpt-6-luna-decisions` is OpenAI's, at $0.02 per million input tokens. Output tokens are free on both. Requests count toward your normal rate limits.
 
 ## Create Decision
 
@@ -17,7 +17,7 @@ Jev is built by TypeSafe. It costs $0.042 per million input tokens; output token
 ### Request Body
 
 <ParamField body="model" type="string" default="jev">
-  Use `jev`. `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are accepted as aliases. Version pins such as `typesafe/jev-1.13` are rejected because only the current version is served. Proxy keys must send `model`.
+  `jev` or `gpt-6-luna-decisions`. For `jev`, `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are aliases. Version pins such as `typesafe/jev-1.13` are rejected because only the current Jev is served. Proxy keys must send `model`.
 </ParamField>
 
 <ParamField body="state" type="string | object | array" required>
@@ -46,7 +46,7 @@ Every question sees the same `state`. Send independent questions together in one
 
 ### Images
 
-Jev does not read image bytes. An image part in `state` (`image_url`, `image`, or `input_image`), or any `data:image/` URL, is rejected with `400` and `param` set to `state`. Describe the image with a vision model such as `gemini-2.5-flash`, then put that description in `state`.
+Neither decision model reads image bytes. An image part in `state` (`image_url`, `image`, or `input_image`), or any `data:image/` URL, is rejected with `400` and `param` set to `state`. Describe the image with a vision model such as `gemini-2.5-flash`, then put that description in `state`.
 
 ```python
 auth = {"Authorization": "Bearer YOUR_API_KEY"}
@@ -236,16 +236,16 @@ if ((team.confidence ?? 0) < 0.8) {
 
 ## Describe the endpoint
 
-`GET /systemone` (or `GET /decisions`) returns the model, context length, supported question types, and pricing. No API key is needed.
+`GET /systemone` (or `GET /decisions`) returns the default model (`jev`), its context length and price, the question types, and a `models` list with every decision model. No API key is needed. `jev` allows 32,000 tokens. `gpt-6-luna-decisions` allows 1,050,000.
 
 ## Errors
 
 | Status | Meaning |
 | --- | --- |
-| 400 | Invalid body, such as a missing `instructions`, an unknown `type`, invalid `criteria`, or image content in `state`. `param` names the field. Also returned for a version-pinned or unsupported model, and when the request exceeds 32,000 tokens. |
+| 400 | Invalid body, such as a missing `instructions`, an unknown `type`, invalid `criteria`, or image content in `state`. `param` names the field. Also returned for a version-pinned or unsupported model, and when the request exceeds that model's context limit. |
 | 401 | Missing or invalid API key. |
 | 402 | Insufficient balance. |
-| 429 | Your rate limit was reached, or Jev is busy. Wait for `Retry-After` when present, then retry with backoff. |
-| 503 | Jev is temporarily unavailable. Retry with backoff. |
+| 429 | Your rate limit was reached, or the decision model is busy. Wait for `Retry-After` when present, then retry with backoff. |
+| 503 | The decision model is temporarily unavailable. Retry with backoff. |
 
 Failed requests are not charged.

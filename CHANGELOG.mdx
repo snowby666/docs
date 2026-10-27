@@ -5,12 +5,18 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-10-26] - Decisions: GPT-6 Luna
+
+`gpt-6-luna-decisions` is available on `POST /v1/systemone` and `POST /v1/decisions`. It is $0.02 per million input tokens. Output tokens are free. Text only, same question types as `jev`.
+
+- See [Decisions](/api-reference/systemone)
+
 ## [2026-10-26] - Decisions: images are rejected
 
 `POST /v1/systemone` does not read image bytes. An image part or a `data:image/` URL in `state` returns `400` with `param: "state"`. Describe the image with a vision model and send that text.
 
-- `GET /v1/models` lists `input_modalities: ["text"]` on `jev`.
-- See [Decisions (Jev)](/api-reference/systemone)
+- `GET /v1/models` lists `input_modalities: ["text"]` on decision models.
+- See [Decisions](/api-reference/systemone)
 
 ## [2026-10-20] - DevPass: drop DeepSeek V4 Flash, add MiMo V2.6 Flash
 
@@ -31,7 +37,7 @@ New `POST /v1/systemone` endpoint for structured decisions, with the `jev` model
 - `score.criteria` takes an array of levels; an object keyed `"0"`, `"1"`, ... is also accepted.
 - Invalid questions are rejected with a 400 that names the field in `param`.
 - `GET /v1/systemone` describes the model, context length, question types, and pricing.
-- See [Decisions (Jev)](/api-reference/systemone)
+- See [Decisions](/api-reference/systemone)
 
 ## [2026-10-01] - DevPass: concurrency restored, Heavy slot weighting, RPM limit
 
