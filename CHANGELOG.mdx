@@ -5,12 +5,6 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
-## [2026-10-26] - Decisions: GPT-6 Luna
-
-`gpt-6-luna-decisions` is available on `POST /v1/systemone` and `POST /v1/decisions`. It is $0.02 per million input tokens. Output tokens are free. Text only, same question types as `jev`.
-
-- See [Decisions](/api-reference/systemone)
-
 ## [2026-10-26] - Decisions: images are rejected
 
 `POST /v1/systemone` does not read image bytes. An image part or a `data:image/` URL in `state` returns `400` with `param: "state"`. Describe the image with a vision model and send that text.

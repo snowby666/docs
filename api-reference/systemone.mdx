@@ -4,9 +4,9 @@ openapi: 'POST /systemone'
 description: 'Get structured judgments your code can act on'
 ---
 
-Send the facts in `state` and the judgments you need in `questions`. The answer is a pick from a set, a score on a scale, or a yes/no measure. `state` is text or JSON. These models do not read images, and they do not write chat text.
+Send the facts in `state` and the judgments you need in `questions`. The answer is a pick from a set, a score on a scale, or a yes/no measure. `state` is text or JSON. The model does not read images, and it does not write chat text.
 
-`jev` is TypeSafe's decision model at $0.042 per million input tokens. `gpt-6-luna-decisions` is OpenAI's, at $0.02 per million input tokens. Output tokens are free on both. Requests count toward your normal rate limits.
+`jev` is TypeSafe's decision model at $0.042 per million input tokens. Output tokens are free. Requests count toward your normal rate limits.
 
 ## Create Decision
 
@@ -17,7 +17,7 @@ Send the facts in `state` and the judgments you need in `questions`. The answer 
 ### Request Body
 
 <ParamField body="model" type="string" default="jev">
-  `jev` or `gpt-6-luna-decisions`. For `jev`, `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are aliases. Version pins such as `typesafe/jev-1.13` are rejected because only the current Jev is served. Proxy keys must send `model`.
+  `jev`. `jev-latest`, `typesafe/jev`, and `typesafe/jev-latest` are aliases. Version pins such as `typesafe/jev-1.13` are rejected because only the current Jev is served. Proxy keys must send `model`.
 </ParamField>
 
 <ParamField body="state" type="string | object | array" required>
@@ -46,7 +46,7 @@ Every question sees the same `state`. Send independent questions together in one
 
 ### Images
 
-Neither decision model reads image bytes. An image part in `state` (`image_url`, `image`, or `input_image`), or any `data:image/` URL, is rejected with `400` and `param` set to `state`. Describe the image with a vision model such as `gemini-2.5-flash`, then put that description in `state`.
+Jev does not read image bytes. An image part in `state` (`image_url`, `image`, or `input_image`), or any `data:image/` URL, is rejected with `400` and `param` set to `state`. Describe the image with a vision model such as `gemini-2.5-flash`, then put that description in `state`.
 
 ```python
 auth = {"Authorization": "Bearer YOUR_API_KEY"}
@@ -236,7 +236,7 @@ if ((team.confidence ?? 0) < 0.8) {
 
 ## Describe the endpoint
 
-`GET /systemone` (or `GET /decisions`) returns the default model (`jev`), its context length and price, the question types, and a `models` list with every decision model. No API key is needed. `jev` allows 32,000 tokens. `gpt-6-luna-decisions` allows 1,050,000.
+`GET /systemone` (or `GET /decisions`) returns the default model (`jev`), its context length and price, the question types, and a `models` list with every decision model. No API key is needed. `jev` allows 32,000 tokens.
 
 ## Errors
 
