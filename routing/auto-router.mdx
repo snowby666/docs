@@ -1,0 +1,179 @@
+---
+title: 'Auto Router'
+description: 'Send model "auto" and Electron Hub picks the model and reasoning effort for each request'
+icon: 'wand-magic-sparkles'
+---
+
+Set `model` to `auto` on `/v1/chat/completions`, `/v1/messages`, or `/v1/responses`. Electron Hub reads the request, picks a model and a reasoning effort, and forwards the request to it. Everything else in the body works as with a fixed model.
+
+```bash
+curl https://api.electronhub.ai/v1/chat/completions \
+  -H "Authorization: Bearer $ELECTRONHUB_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "auto",
+    "messages": [{"role": "user", "content": "Write a SQL query that finds duplicate emails."}]
+  }'
+```
+
+The response `model` field and the `X-EH-Routed-Model` header name the model that answered.
+
+## How it works
+
+1. **Narrow the pool.** Models are removed when they cannot take the request: wrong endpoint, not on your plan or key, no provider allowed by your [provider settings](/routing/provider-routing), no image support when you send images, no tool support when you send tools, no `json_schema` support, a context window too small for the input plus `max_tokens`, or a parameter the model recently rejected. Your allowed and excluded model lists apply last.
+2. **Read the request.** A routing model rates the task type, difficulty (trivial to extreme), the professional domain when there is one, and signals such as "speed matters", "a larger model would help", and "the agent is failing". If the routing model is unavailable, built-in rules classify the request instead.
+3. **Rank and pick.** Models are ranked on benchmark quality for the task category and domain, combining Artificial Analysis, ZeroEval, Epoch AI, and EQ-Bench results. Auto picks the cheapest model within a quality band of the best one, then sets the reasoning effort from the difficulty.
+4. **Keep the conversation steady.** On later turns Auto keeps the same model unless the task changes, a model is failing, or the current model falls out of the quality band. See [Sessions](#sessions).
+5. **Apply your guardrails.** Privacy, per-request cost cap, and budget rules from your policy run on the pick.
+6. **Send it.** The request goes through normal [provider routing](/routing/provider-routing). Auto also sets up to two fallback models; if the first one cannot be served, the next one runs.
+
+## Cost tiers
+
+The cost tier sets how far below the best-ranked model a cheaper pick may be. Harder requests narrow the band; trivial ones widen it.
+
+| Tier | Quality band | Use for |
+|---|---|---|
+| `low` | 14% | Bulk and background work |
+| `medium` | 7% | Default |
+| `high` | 3.5% | Work where quality matters more than price |
+| `xhigh` | 1.5% | Near-top quality |
+| `max` | 0% | Always the best-ranked model |
+
+Set the tier per request with `router.cost_tier`, or in a policy.
+
+## The `router` object
+
+Optional. Overrides your default policy for one request. Unknown fields return `400`. If your settings lock overrides, every field except `metadata` is ignored and listed in `router_metadata.overrides_ignored`; `model: "auto/<policy-id>"` still applies.
+
+<ParamField body="router.policy" type="string">
+  Policy id to use instead of your default. Same effect as `model: "auto/<policy-id>"`.
+</ParamField>
+
+<ParamField body="router.cost_tier" type="string">
+  `low`, `medium`, `high`, `xhigh`, or `max`.
+</ParamField>
+
+<ParamField body="router.allowed_models" type="string[]">
+  Model patterns Auto may pick from, for example `["claude-*", "anthropic/*", "gpt-5.1"]`. A pattern matches the model id or `<owner>/<model id>`. Up to 256 patterns. When nothing matches, Auto ignores the list and adds the note `allowed_models_fallback`, unless `strict_allowed` is `true`.
+</ParamField>
+
+<ParamField body="router.excluded_models" type="string[]">
+  Model patterns Auto never picks.
+</ParamField>
+
+<ParamField body="router.strict_allowed" type="boolean">
+  With `true`, a request whose `allowed_models` match nothing fails with `404` instead of falling back. Defaults to the policy's setting.
+</ParamField>
+
+<ParamField body="router.classifier" type="string">
+  `auto` (routing model, default) or `rules` (built-in rules only, no routing fee).
+</ParamField>
+
+<ParamField body="router.metadata" type="boolean">
+  Return `router_metadata` in the response. Same as the header `X-EH-Router-Metadata: enabled`.
+</ParamField>
+
+```json
+{
+  "model": "auto",
+  "router": { "cost_tier": "high", "allowed_models": ["anthropic/*", "openai/*"], "metadata": true },
+  "messages": [{ "role": "user", "content": "Review this contract clause for risks." }]
+}
+```
+
+## Sessions
+
+Auto treats requests from one conversation as a session, so a conversation does not jump between models on every turn. It identifies the conversation from the first of these that is present:
+
+| Source | Example |
+|---|---|
+| Body `session_id` or header `X-Session-Id` | `"session_id": "chat-8812"` (letters, digits, `.`, `_`, `:`, `-`, up to 128) |
+| Claude Code | `X-Claude-Code-Session-Id` header or `metadata.user_id` (sent automatically) |
+| Codex | `session-id` header (sent automatically) |
+| OpenCode | `X-Session-Affinity` header (sent automatically) |
+| `prompt_cache_key` | Combined with the first user message |
+| Fingerprint | Your account, system prompt, and first user message |
+
+Send `session_id` when you can. Two conversations that open with the same system prompt and first message share a fingerprint.
+
+Session behaviour:
+- Tool results go back to the model that called the tool.
+- After repeated failures (failing tool calls, repeated errors), Auto raises the reasoning effort or switches to a stronger model. The new model is kept for the next 8 turns unless the task changes, and the replaced one is not picked again during that time.
+- Sending the identical conversation again (an SDK retry or a regenerate) reuses the same model and effort and does not count as a new turn.
+- A session expires after 1 hour without requests.
+
+When Auto switches models mid-conversation, it adapts the history for the new model (tool call ids, thinking blocks, effort fields) so the request stays valid.
+
+## Response metadata
+
+Send `X-EH-Router-Metadata: enabled` (or `router.metadata: true`) to get a `router_metadata` object:
+
+```json
+{
+  "decision_id": "rdec_3f9c1a2b7d4e5f60718293a4",
+  "requested": "auto",
+  "classifier": { "source": "model", "task": "coding_change", "category": "coding", "difficulty": "medium", "domain": null },
+  "selected": { "model": "deepseek-v4-flash", "effort": "medium", "reason": "Cheapest within 5.3% of best for medium coding (medium tier)." },
+  "cascade": ["qwen3.7-max", "claude-sonnet-5-5"],
+  "session": { "key_source": "session_id", "kept": true, "previous_model": "deepseek-v4-flash", "turn": 3 }
+}
+```
+
+`notes` is added only when something unusual happened, for example `allowed_models_fallback` or `unsupported_param_retry` (the first model rejected a parameter and the next fallback answered).
+
+| Response type | Where `router_metadata` appears |
+|---|---|
+| Non-streaming | Top-level field of the response body |
+| Chat stream | One extra chunk with `"choices": []` right before `data: [DONE]` |
+| Messages stream | On the `message_stop` event |
+| Responses stream | On the `response.completed` event |
+| Router error (`403`, `404`) | Top-level field next to `error` |
+
+Every routed response also has the headers `X-EH-Routed-Model` and `X-EH-Router-Decision-Id`.
+
+## Pricing
+
+You pay the price of the model that answered, plus a routing fee of $0.00005 to $0.001 per request. The fee appears as `usage.router_fee`, in USD. In streams it is on the final usage chunk (Chat needs `stream_options.include_usage: true`).
+
+No fee is charged when:
+- `router.classifier` is `rules`, or the routing model was unavailable.
+- The classification was reused from an identical earlier request, such as a retry.
+- The answer came from the response cache.
+- A guardrail blocked the request.
+
+## Policies
+
+A policy stores your routing defaults: cost tier, allowed and excluded models, custom rules, privacy and budget guardrails, and the response cache. Every account has a `default` policy. Create more and select one per request with `model: "auto/<policy-id>"`.
+
+Manage policies in the Electron Hub app, or with the `/v1/router/*` API using a master API key:
+
+| Endpoint | Purpose |
+|---|---|
+| `GET` / `PATCH /v1/router/settings` | Default policy, overrides lock |
+| `GET` / `POST /v1/router/policies` | List or create policies |
+| `GET` / `PUT` / `PATCH` / `DELETE /v1/router/policies/{id}` | Read, replace, update, delete a policy |
+| `GET /v1/router/decisions` | Recent routing decisions |
+| `GET /v1/router/spend` | Spend against your budget |
+| `GET /v1/router/catalog/ranking` | How Auto ranks models for a category and tier |
+
+Writes accept an optional `expected_version` and return `409` when the stored version has changed since. Writes are limited to 60 per minute. Proxy keys cannot manage routing (`403`).
+
+## Limits
+
+- `auto` works on Chat Completions, Messages, and Responses only. Other endpoints return `400` with code `model_not_supported_for_endpoint`.
+- `auto` is not available on Coding Plan (DevPass) keys.
+- Free (`:free`) and Coding Plan models are never picked.
+- Auto sets the fallback list itself; a `models` array you send with `auto` is replaced.
+- Empty `messages` (or blank Responses `input`) returns `400`.
+
+## Errors
+
+| Status | `error.type` | When |
+|---|---|---|
+| `400` | `router_invalid_request` | Invalid `router` object, `auto` on an unsupported endpoint, empty conversation |
+| `403` | `router_blocked` | A guardrail blocked the request (`code`: `pii`, `cost`, or `budget`). Nothing is charged. |
+| `404` | `router_no_candidates` | No model can serve the request. The message names the reason, such as the context window or image support. |
+| `404` | `router_policy_not_found` | `auto/<policy-id>` does not exist |
+| `503` | `router_unavailable` | Benchmark data is unavailable, so models cannot be ranked. Retry shortly. |
+
+Errors from the model after routing are returned unchanged.

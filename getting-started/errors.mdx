@@ -47,7 +47,7 @@ The Electron Hub API uses standard HTTP status codes to indicate the success or 
 
 **Invalid Model**
 - **Cause:** The specified model is not available or misspelled
-- **Solution:** Check the [models documentation](/models/overview) for available models
+- **Solution:** Check [List Models](/api-reference/models) for available models
 
 **Invalid Parameters**
 - **Cause:** Request parameters are missing or invalid
@@ -66,6 +66,20 @@ The Electron Hub API uses standard HTTP status codes to indicate the success or 
 **Premium Model Access**
 - **Cause:** Attempting to use a premium model without subscription
 - **Solution:** Upgrade to a plan that includes premium model access
+
+### Routing Errors
+
+| Status | `type` or `code` | Cause |
+|--------|------------------|-------|
+| **400** | `unknown_provider` | A provider id in `provider.only` or a provider pin matches no provider |
+| **400** | `no_allowed_provider` | `provider.only` / `provider.ignore` leave no provider for the model |
+| **400** | `router_invalid_request` | Invalid `router` object, `auto` on an unsupported endpoint, or an empty conversation |
+| **403** | `router_blocked` | A guardrail in your Auto Router policy blocked the request |
+| **404** | `router_no_candidates` | No model can serve the `auto` request; the message names the reason |
+| **404** | `router_policy_not_found` | `auto/<policy-id>` does not exist |
+| **503** | `no_available_provider` | Every allowed provider for the model is temporarily unavailable |
+
+See [Provider Routing](/routing/provider-routing) and [Auto Router](/routing/auto-router).
 
 ### 500 - Server Errors
 
@@ -94,10 +108,10 @@ All errors return a consistent JSON envelope with a top-level `error` object:
 }
 ```
 
-- `message` &mdash; human-readable description (always present).
-- `type` &mdash; error category (e.g. `invalid_request_error`).
-- `param` &mdash; the offending parameter, or `null`.
-- `code` &mdash; the HTTP status code, or `null`.
+- `message`: human-readable description (always present).
+- `type`: error category (e.g. `invalid_request_error`, `router_no_candidates`).
+- `param`: the offending parameter, or `null`.
+- `code`: the HTTP status code, a string error code such as `no_allowed_provider`, or `null`.
 
 The Anthropic-compatible `/v1/messages` endpoint instead returns Anthropic's native error shape: `{"type": "error", "error": {"type": "...", "message": "..."}}`.
 

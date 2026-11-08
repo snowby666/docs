@@ -1068,7 +1068,7 @@
         "properties": {
           "model": {
             "type": "string",
-            "description": "Model to use for completion",
+            "description": "Model id, or \"auto\" for the Auto Router. Accepts variants such as :nitro, :floor, :exacto and :<effort>.",
             "example": "gpt-4o"
           },
           "messages": {
@@ -1154,7 +1154,8 @@
               "low",
               "medium",
               "high",
-              "xhigh"
+              "xhigh",
+              "max"
             ],
             "description": "Reasoning effort level. Silently ignored for models that do not support reasoning_effort, so clients can send a single shared request across providers."
           },
@@ -1199,6 +1200,25 @@
           "reasoning_content_compat": {
             "type": "boolean",
             "description": "Shorthand: set to `true` to force the legacy `reasoning_content` field, equivalent to `reasoning.delta_field = \"reasoning_content\"`."
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderPreferences"
+          },
+          "models": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            },
+            "description": "Up to 3 fallback models, tried in order when model cannot serve the request."
+          },
+          "router": {
+            "$ref": "#/components/schemas/RouterOptions"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$",
+            "description": "Conversation id that keeps the Auto Router on one model across turns."
           }
         }
       },
@@ -1550,6 +1570,10 @@
           },
           "total_tokens": {
             "type": "integer"
+          },
+          "router_fee": {
+            "type": "number",
+            "description": "Auto Router fee in USD. Present only when a fee applies."
           }
         }
       },
@@ -1563,7 +1587,7 @@
           "model": {
             "type": "string",
             "example": "claude-sonnet-4-5-20250929",
-            "description": "Model ID"
+            "description": "Model id, or \"auto\" for the Auto Router. Accepts variants such as :nitro, :floor, :exacto and :<effort>."
           },
           "messages": {
             "type": "array",
@@ -1615,7 +1639,8 @@
               "low",
               "medium",
               "high",
-              "xhigh"
+              "xhigh",
+              "max"
             ],
             "description": "Ignored for models that do not support reasoning_effort"
           },
@@ -1633,6 +1658,37 @@
           },
           "metadata": {
             "type": "object"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderPreferences"
+          },
+          "models": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            },
+            "description": "Up to 3 fallback models, tried in order when model cannot serve the request."
+          },
+          "router": {
+            "$ref": "#/components/schemas/RouterOptions"
+          },
+          "fallbacks": {
+            "type": "array",
+            "maxItems": 3,
+            "description": "Anthropic-style fallback list. Cannot be combined with models.",
+            "items": {
+              "type": "object",
+              "required": [
+                "model"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "model": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -1952,7 +2008,8 @@
         "properties": {
           "model": {
             "type": "string",
-            "example": "gpt-4o"
+            "example": "gpt-4o",
+            "description": "Model id, or \"auto\" for the Auto Router. Accepts variants such as :nitro, :floor, :exacto and :<effort>."
           },
           "input": {
             "oneOf": [
@@ -2020,6 +2077,24 @@
             "additionalProperties": {
               "type": "string"
             }
+          },
+          "provider": {
+            "$ref": "#/components/schemas/ProviderPreferences"
+          },
+          "models": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            },
+            "description": "Up to 3 fallback models, tried in order when model cannot serve the request."
+          },
+          "router": {
+            "$ref": "#/components/schemas/RouterOptions"
+          },
+          "prompt_cache_key": {
+            "type": "string",
+            "description": "With model \"auto\", groups requests into one conversation together with the first user message."
           }
         }
       },
@@ -2176,9 +2251,13 @@
           "effort": {
             "type": "string",
             "enum": [
+              "none",
+              "minimal",
               "low",
               "medium",
-              "high"
+              "high",
+              "xhigh",
+              "max"
             ]
           },
           "summary": {
@@ -3583,6 +3662,179 @@
           },
           "data": {
             "type": "string"
+          }
+        }
+      },
+      "ProviderPreferences": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Provider preferences. See https://docs.electronhub.ai/routing/provider-routing",
+        "properties": {
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Provider ids to try first, in this order."
+          },
+          "only": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Allow only these provider ids."
+          },
+          "ignore": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Never use these provider ids."
+          },
+          "allow_fallbacks": {
+            "type": "boolean",
+            "default": true,
+            "description": "false: first-ranked provider only, no retry on another provider."
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "price",
+              "throughput",
+              "latency",
+              "context"
+            ],
+            "description": "Replace the default provider order."
+          },
+          "max_price": {
+            "type": "object",
+            "description": "Ceiling in USD per million tokens.",
+            "properties": {
+              "prompt": {
+                "type": "number"
+              },
+              "completion": {
+                "type": "number"
+              }
+            }
+          },
+          "preferred_min_throughput": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "p50": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "p75": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "p90": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "p99": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "additionalProperties": false
+              }
+            ],
+            "description": "Prefer providers at or above this many output tokens per second (number = p50)."
+          },
+          "preferred_max_latency": {
+            "oneOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "p50": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "p75": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "p90": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "p99": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "additionalProperties": false
+              }
+            ],
+            "description": "Prefer providers at or below this many seconds to the first token (number = p50)."
+          }
+        }
+      },
+      "RouterOptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Auto Router options, used with model \"auto\". See https://docs.electronhub.ai/routing/auto-router",
+        "properties": {
+          "policy": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{1,40}$",
+            "description": "Policy id to use instead of the default."
+          },
+          "cost_tier": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "xhigh",
+              "max"
+            ]
+          },
+          "allowed_models": {
+            "type": "array",
+            "maxItems": 256,
+            "items": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "description": "Model patterns Auto may pick from, e.g. anthropic/*."
+          },
+          "excluded_models": {
+            "type": "array",
+            "maxItems": 256,
+            "items": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "description": "Model patterns Auto never picks."
+          },
+          "strict_allowed": {
+            "type": "boolean",
+            "description": "Fail with 404 when allowed_models match nothing."
+          },
+          "classifier": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "rules"
+            ],
+            "description": "rules: built-in rules only, no routing fee."
+          },
+          "metadata": {
+            "type": "boolean",
+            "description": "Return router_metadata in the response."
           }
         }
       }

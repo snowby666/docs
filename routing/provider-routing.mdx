@@ -1,0 +1,174 @@
+---
+title: 'Provider Routing'
+description: 'Control which providers serve a model, in what order, and at what price'
+icon: 'server'
+---
+
+Most models are served by more than one provider. Each provider has its own price, context window, speed, and uptime. The `provider` object controls which providers may serve a request and how they are ordered. It works on Chat Completions, Messages, and Responses, and with `model: "auto"`.
+
+The response header `X-ElectronHub-Provider` names the provider that served the request.
+
+## Default order
+
+Without a `provider` object, providers are ranked per request:
+
+1. Providers that cannot take the request are skipped: no image support when you send images, a context window smaller than the input plus `max_tokens`, or temporarily unavailable after repeated errors.
+2. The cheapest provider for the request goes first.
+3. A provider that is more than twice as slow as the fastest one (time to first token or tokens per second) has its price scaled up, so a slightly cheaper but much slower provider does not win.
+4. Providers with uptime below 90% go after healthy ones.
+5. Requests with tools prefer providers with stronger tool-calling support.
+
+If the chosen provider fails before sending any output (rate limit, server error, connection failure, or an empty answer), the request moves to the next provider in this order. See [Model Fallbacks](/routing/model-fallbacks#when-the-next-model-runs) for the full list.
+
+## The `provider` object
+
+```json
+{
+  "model": "kimi-k2.6",
+  "messages": [{ "role": "user", "content": "Hello" }],
+  "provider": {
+    "only": ["<provider-id>", "<provider-id>"],
+    "sort": "throughput",
+    "max_price": { "prompt": 1, "completion": 4 }
+  }
+}
+```
+
+| Field | Type | Default | Effect |
+|---|---|---|---|
+| `order` | string[] | none | Try these providers first, in this order. Other providers follow in the default order. |
+| `only` | string[] | none | Allow only these providers. |
+| `ignore` | string[] | none | Never use these providers. |
+| `allow_fallbacks` | boolean | `true` | `false` sends the request to the first-ranked provider only, with no retry on another provider. |
+| `sort` | string | none | `price`, `throughput`, `latency`, or `context`. Replaces the default order. |
+| `max_price` | object | none | Price ceiling in USD per million tokens: `{ "prompt": number, "completion": number }`. |
+| `preferred_min_throughput` | number or object | none | Prefer providers at or above this many output tokens per second. |
+| `preferred_max_latency` | number or object | none | Prefer providers at or below this many seconds to the first token. |
+
+Unknown fields and invalid values return `400` with `param` naming the field.
+
+Provider ids come from [`GET /v1/models/{model}/providers`](#find-provider-ids).
+
+## Sorting
+
+| `sort` | Order |
+|---|---|
+| `price` | Cheapest first, with no speed adjustment (providers below 90% uptime still go last) |
+| `throughput` | Most output tokens per second first |
+| `latency` | Shortest time to first token first |
+| `context` | Largest context window first |
+
+`throughput` and `latency` use the median (p50) over the last 30 minutes, or over the last day when the last 30 minutes has fewer than 20 measured requests. Providers without 20 measured requests in either window follow in the default order.
+
+`order` takes precedence over `sort`. The `:nitro` and `:floor` [model variants](/routing/model-variants) are shortcuts for `sort: "throughput"` and `sort: "price"`. When both a suffix and `provider.sort` are set, `provider.sort` wins.
+
+## Allow and block providers
+
+`only` and `ignore` filter before sorting. If no provider is left, the request fails with `400`, code `no_allowed_provider`, so a typo never routes silently to a provider you excluded. An id that no model uses returns `400`, code `unknown_provider`.
+
+With `model: "auto"`, models without an allowed provider are left out of the choice instead. If none remain, the request fails with `404` `router_no_candidates`.
+
+<Info>
+`allow_fallbacks: false` also skips the temporary-unavailability check, so the first-ranked provider is tried even after recent errors. Use it when the provider matters more than availability.
+</Info>
+
+## Maximum price
+
+`max_price` removes providers whose price per million input (`prompt`) or output (`completion`) tokens is above the ceiling. Providers that do not price per token are removed whenever `max_price` is set. If none remain, the request fails with `400` and `param: "provider"`.
+
+```json
+{ "provider": { "max_price": { "prompt": 0.5, "completion": 2 } } }
+```
+
+## Performance preferences
+
+`preferred_min_throughput` and `preferred_max_latency` are soft. Providers that meet them go first; the rest stay available as fallbacks.
+
+A number applies to the median (p50). An object sets cutoffs per percentile; every given cutoff must hold:
+
+```json
+{
+  "provider": {
+    "preferred_max_latency": { "p50": 1.5, "p90": 4 },
+    "preferred_min_throughput": 40
+  }
+}
+```
+
+Keys are `p50`, `p75`, `p90`, and `p99`. Latency is in seconds, throughput in tokens per second. A provider without enough measurements counts as not meeting the preference.
+
+## Pin one provider
+
+Prefix the model id with a provider id to send the request to that provider only:
+
+```json
+{ "model": "<provider-id>/kimi-k2.6" }
+```
+
+A pin behaves like `only: ["<provider-id>"]` with `allow_fallbacks: false`, and the body cannot loosen it. Suffixes still apply after the pin, for example `<provider-id>/kimi-k2.6:high`.
+
+## Account defaults
+
+Store provider lists for every request on your account with a master API key:
+
+```bash
+curl -X PATCH https://api.electronhub.ai/v1/users/settings/routing \
+  -H "Authorization: Bearer $ELECTRONHUB_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"only": [], "ignore": ["<provider-id>"]}'
+```
+
+`GET /v1/users/settings/routing` returns the stored lists. How they combine with a request:
+
+| Setting | Result |
+|---|---|
+| `ignore` | Account and request lists are merged. |
+| `only` | A request `only` replaces the account `only`. |
+| Provider pin | Overrides both. |
+
+## Find provider ids
+
+`GET /v1/models/{model}/providers` lists a model's providers with live performance. No authentication. Responses are cached for 2 minutes.
+
+```json
+{
+  "id": "kimi-k2.6",
+  "name": "Kimi K2.6",
+  "updated_at": 1794120000,
+  "data": [
+    {
+      "id": "<provider-id>",
+      "name": "Provider name",
+      "tokens": 262000,
+      "pricing": { "type": "per_million_tokens", "input": 0.6, "output": 3, "cache_read": 0.16 },
+      "status": 0,
+      "latency": { "p50": 0.72, "p75": 0.9, "p90": 1.4, "p99": 2.8, "window_s": 1800, "samples": 412 },
+      "throughput": { "p50": 41.0, "p75": 36.2, "p90": 28.9, "p99": 17.5, "window_s": 1800, "samples": 412 },
+      "latency_last_30m": { "p50": 0.72, "p75": 0.9, "p90": 1.4, "p99": 2.8 },
+      "throughput_last_30m": { "p50": 41.0, "p75": 36.2, "p90": 28.9, "p99": 17.5 },
+      "uptime_last_5m": 100.0,
+      "uptime_last_30m": 99.2,
+      "uptime_last_1d": 99.6
+    }
+  ]
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `tokens` | Context window on this provider |
+| `pricing` | USD per million input and output tokens on this provider |
+| `status` | `0` available, `-1` temporarily unavailable |
+| `latency` | Seconds to the first token, by percentile, over `window_s` seconds (30 minutes, 1 day, or 14 days) |
+| `throughput` | Output tokens per second, by percentile, over `window_s` |
+| `*_last_30m` | Same, over the last 30 minutes only; `null` below 20 requests |
+| `uptime_last_*` | Share of successful requests, in percent |
+
+## Errors
+
+| Status | `code` | When |
+|---|---|---|
+| `400` | `unknown_provider` | A provider id in `only`, or a pin, matches no provider |
+| `400` | `no_allowed_provider` | `only` and `ignore` leave no provider for this model |
+| `400` | `400` (`param: "provider"`) | No provider is within `max_price` |
+| `503` | `no_available_provider` | Every allowed provider is temporarily unavailable |

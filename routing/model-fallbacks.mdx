@@ -1,0 +1,100 @@
+---
+title: 'Model Fallbacks'
+description: 'List backup models to try when the first model cannot serve a request'
+icon: 'life-ring'
+---
+
+`models` lists backup models in priority order. If the model in `model` cannot serve the request, the next one is tried.
+
+```json
+{
+  "model": "claude-sonnet-4-5-20250929",
+  "models": ["gpt-5.1", "deepseek-v4-flash"],
+  "messages": [{ "role": "user", "content": "Draft a release note for v2.3." }]
+}
+```
+
+The response `model` field names the model that answered, and you are billed at that model's price.
+
+## When the next model runs
+
+A request moves on only before any output has been sent. Each model's providers are tried in [provider order](/routing/provider-routing) before the next model starts.
+
+| Moves to the next provider or model | Returned to you |
+|---|---|
+| No provider of the model can take the request: none allowed by your provider settings, context window too small, above `max_price`, no image support, or all temporarily unavailable | Invalid requests (`400`, `404`, `413`, `422` from the model) |
+| `429`, `500`, `502`, `503`, `504` | Any error after output has started streaming |
+| Context-length errors | Errors on the last model in the list |
+| Connection failures, a stalled stream, or an empty answer | |
+
+`provider.allow_fallbacks: false` turns off retries after a failure, both to other providers and to the next model. Models without any usable provider are still skipped.
+
+## Format by endpoint
+
+| Endpoint | Field | Shape |
+|---|---|---|
+| Chat Completions | `models` | `["model-a", "model-b"]` |
+| Responses | `models` | `["model-a", "model-b"]` |
+| Messages | `fallbacks` or `models` | `[{ "model": "model-a" }, { "model": "model-b" }]` or `["model-a", "model-b"]` |
+
+On Messages, `fallbacks` matches the shape used by Anthropic clients. Each entry accepts only `model`. Sending both `fallbacks` and `models` returns `400`.
+
+```json
+{
+  "model": "claude-sonnet-4-5-20250929",
+  "max_tokens": 1024,
+  "fallbacks": [{ "model": "gpt-5.1" }, { "model": "glm-5.2" }],
+  "messages": [{ "role": "user", "content": "Hello" }]
+}
+```
+
+## Rules
+
+- Up to 3 fallback models. More returns `400`.
+- Entries that repeat the primary model, or each other, are skipped.
+- Entries that are not public models, or name an unknown provider pin, are skipped.
+- Routing variants and provider pins work per entry: `"models": ["kimi-k2.6:nitro", "<provider-id>/glm-5.2"]`. Effort suffixes on fallback entries are ignored; the request's `reasoning_effort` applies to every model.
+- Your account and request provider settings apply to every model in the list.
+
+## With the OpenAI SDK
+
+`models` is not an OpenAI parameter. Pass it through `extra_body`:
+
+<CodeGroup>
+
+```python Python
+from openai import OpenAI
+
+client = OpenAI(base_url="https://api.electronhub.ai/v1", api_key="YOUR_API_KEY")
+
+response = client.chat.completions.create(
+    model="claude-sonnet-4-5-20250929",
+    messages=[{"role": "user", "content": "Hello"}],
+    extra_body={"models": ["gpt-5.1", "deepseek-v4-flash"]},
+)
+print(response.model)  # the model that answered
+```
+
+```javascript Node.js
+import OpenAI from "openai";
+
+const client = new OpenAI({ baseURL: "https://api.electronhub.ai/v1", apiKey: "YOUR_API_KEY" });
+
+const response = await client.chat.completions.create({
+  model: "claude-sonnet-4-5-20250929",
+  messages: [{ role: "user", content: "Hello" }],
+  // @ts-expect-error Electron Hub extension
+  models: ["gpt-5.1", "deepseek-v4-flash"],
+});
+console.log(response.model);
+```
+
+</CodeGroup>
+
+## With the Auto Router
+
+With `model: "auto"`, the router builds its own fallback list of up to two models, and a `models` array you send is replaced. To limit which models Auto may use, set [`router.allowed_models`](/routing/auto-router#the-router-object) instead.
+
+## Free models
+
+Each model is billed at its own price. If a `:free` model falls back to a paid model, the request is billed at the paid price. To keep a request free, list only `:free` models.

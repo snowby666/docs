@@ -11,7 +11,7 @@ description: 'Create a chat completion'
 ### Request Body
 
 <ParamField body="model" type="string" required>
-  Model to use for completion (e.g., `gpt-4o`, `gpt-5.1`, `claude-sonnet-4-6`, `deepseek-r1`). Append `:reasoning-exclude` to disable reasoning output for a single request.
+  Model to use for completion (e.g., `gpt-4o`, `gpt-5.1`, `claude-sonnet-4-6`, `deepseek-r1`), or `auto` to let the [Auto Router](/routing/auto-router) choose. Accepts [model variants](/routing/model-variants) such as `:nitro`, `:floor`, `:exacto`, `:high`, and `:reasoning-exclude`.
 </ParamField>
 
 <ParamField body="messages" type="array" required>
@@ -31,14 +31,14 @@ description: 'Create a chat completion'
 </ParamField>
 
 <ParamField body="reasoning_effort" type="string">
-  Controls reasoning depth on supported models. One of `none`, `minimal`, `low`, `medium`, `high`, `xhigh`. Silently ignored for models that don't support reasoning_effort.
+  Controls reasoning depth on supported models. One of `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max`. Silently ignored for models that don't support reasoning_effort.
 </ParamField>
 
 <ParamField body="reasoning" type="object">
   Reasoning configuration object. Supports:
-  - `reasoning.effort` &mdash; same enum as `reasoning_effort`.
-  - `reasoning.exclude` (boolean) &mdash; strip reasoning from the response entirely.
-  - `reasoning.delta_field` &mdash; `"reasoning"` or `"reasoning_content"`; overrides the streaming/non-streaming field name regardless of which endpoint variant was hit.
+  - `reasoning.effort`: same enum as `reasoning_effort`.
+  - `reasoning.exclude` (boolean): strip reasoning from the response entirely.
+  - `reasoning.delta_field`: `"reasoning"` or `"reasoning_content"`; overrides the streaming/non-streaming field name regardless of which endpoint variant was hit.
 </ParamField>
 
 <ParamField body="reasoning_delta_field" type="string">
@@ -49,9 +49,27 @@ description: 'Create a chat completion'
   Shorthand: set to `true` to force the legacy `reasoning_content` field, equivalent to `reasoning.delta_field = "reasoning_content"`.
 </ParamField>
 
+### Routing
+
+<ParamField body="provider" type="object">
+  Provider preferences: `order`, `only`, `ignore`, `allow_fallbacks`, `sort`, `max_price`, `preferred_min_throughput`, `preferred_max_latency`. See [Provider Routing](/routing/provider-routing).
+</ParamField>
+
+<ParamField body="models" type="string[]">
+  Up to 3 fallback models, tried in order when `model` cannot serve the request. See [Model Fallbacks](/routing/model-fallbacks).
+</ParamField>
+
+<ParamField body="router" type="object">
+  Auto Router options for `model: "auto"`: `policy`, `cost_tier`, `allowed_models`, `excluded_models`, `strict_allowed`, `classifier`, `metadata`. See [Auto Router](/routing/auto-router#the-router-object).
+</ParamField>
+
+<ParamField body="session_id" type="string">
+  Conversation id for the Auto Router, so it keeps the same model across turns. Same as the `X-Session-Id` header.
+</ParamField>
+
 ## Endpoint Variants (Reasoning Output)
 
-Some models emit a separate reasoning / thinking stream in addition to the final answer. Three base paths control how that stream is surfaced &mdash; **all of them accept the same request shape and model names**.
+Some models emit a separate reasoning / thinking stream in addition to the final answer. Three base paths control how that stream is surfaced. **All of them accept the same request shape and model names.**
 
 | Base path | Behavior | Use when |
 | --- | --- | --- |
@@ -63,7 +81,7 @@ Per-request overrides (`reasoning.delta_field`, `reasoning_delta_field`, `reason
 
 ### Streaming output shape
 
-When reasoning is delivered as a separate field, deltas are interleaved &mdash; reasoning chunks come first, followed by content chunks:
+When reasoning is delivered as a separate field, reasoning chunks come first, followed by content chunks:
 
 ```text
 data: {"id":"chatcmpl-...","choices":[{"index":0,"delta":{"reasoning":"Let me think..."},"finish_reason":null}], ...}
@@ -104,11 +122,11 @@ data: {"choices":[{"delta":{"content":"<think>Let me think...</think>The answer 
 
 ## Disabling Reasoning Output
 
-Reasoning can be hidden in three equivalent ways &mdash; the model still pays the cost for reasoning compute, but the tokens are stripped from the response:
+Reasoning can be hidden in three equivalent ways. The model still reasons and the reasoning tokens are billed, but they are removed from the response:
 
 1. Request body: `{ "reasoning": { "exclude": true } }`
 2. Model suffix: `"model": "deepseek-r1:reasoning-exclude"`
-3. Request body: `{ "reasoning_effort": "none" }` *(only honored on OpenAI-shaped models &mdash; safely ignored elsewhere for API parity).*
+3. Request body: `{ "reasoning_effort": "none" }` *(honored on OpenAI-shaped models only; ignored elsewhere).*
 
 When excluded, neither the `reasoning` field nor `<think>` tags appear in the response, regardless of which endpoint variant was hit.
 

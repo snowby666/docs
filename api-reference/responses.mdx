@@ -8,14 +8,14 @@ Create a model response from text or message input.
 
 ## Create Response
 
-`POST /responses`
+`POST /v1/responses`
 
 Create a text response using OpenAI's response format.
 
 ### Request Body
 
 <ParamField body="model" type="string" required>
-  The model to use for response (e.g., "gpt-4o")
+  The model to use for response (e.g., "gpt-4o"), or `auto` for the [Auto Router](/routing/auto-router). Accepts [model variants](/routing/model-variants) such as `:nitro`, `:exacto`, and `:high`.
 </ParamField>
 
 <ParamField body="input" type="string | array" required>
@@ -60,6 +60,22 @@ Create a text response using OpenAI's response format.
 
 <ParamField body="metadata" type="object">
   Additional metadata as key-value pairs
+</ParamField>
+
+<ParamField body="provider" type="object">
+  Provider preferences: `order`, `only`, `ignore`, `allow_fallbacks`, `sort`, `max_price`, `preferred_min_throughput`, `preferred_max_latency`. See [Provider Routing](/routing/provider-routing).
+</ParamField>
+
+<ParamField body="models" type="string[]">
+  Up to 3 fallback models, tried in order when `model` cannot serve the request. See [Model Fallbacks](/routing/model-fallbacks).
+</ParamField>
+
+<ParamField body="router" type="object">
+  Auto Router options for `model: "auto"`. See [Auto Router](/routing/auto-router#the-router-object).
+</ParamField>
+
+<ParamField body="prompt_cache_key" type="string">
+  With `model: "auto"`, groups requests into one conversation (together with the first user message) so the router keeps the same model. Codex sends it automatically.
 </ParamField>
 
 ### Response

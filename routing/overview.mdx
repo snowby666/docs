@@ -1,0 +1,64 @@
+---
+title: 'Routing Overview'
+description: 'Choose the model, the provider behind it, and what happens when a request cannot be served'
+icon: 'route'
+---
+
+Every chat, Messages, and Responses request is routed in three layers. Each layer is optional and they combine freely.
+
+| Layer | Decides | Set it with | Page |
+|---|---|---|---|
+| Model selection | Which model answers | `model: "auto"` | [Auto Router](/routing/auto-router) |
+| Provider selection | Which provider serves the chosen model | `provider` object, `:nitro` / `:floor` / `:exacto` suffixes, `<provider-id>/<model>` | [Provider Routing](/routing/provider-routing), [Model Variants](/routing/model-variants) |
+| Fallbacks | Which model runs if the first one cannot be served | `models` (Chat, Responses) or `fallbacks` (Messages) | [Model Fallbacks](/routing/model-fallbacks) |
+
+Without any of these, a request goes to the model you name, served by the cheapest healthy provider that fits the request.
+
+## Quick examples
+
+<CodeGroup>
+
+```json Auto Router
+{
+  "model": "auto",
+  "messages": [{ "role": "user", "content": "Refactor this function to be faster." }]
+}
+```
+
+```json Fastest provider
+{
+  "model": "kimi-k2.6:nitro",
+  "messages": [{ "role": "user", "content": "Summarize this log." }]
+}
+```
+
+```json Provider controls
+{
+  "model": "kimi-k2.6",
+  "provider": { "ignore": ["<provider-id>"], "sort": "latency" },
+  "messages": [{ "role": "user", "content": "Hello" }]
+}
+```
+
+```json Model fallbacks
+{
+  "model": "claude-sonnet-4-5-20250929",
+  "models": ["gpt-5.1", "deepseek-v4-flash"],
+  "messages": [{ "role": "user", "content": "Hello" }]
+}
+```
+
+</CodeGroup>
+
+## Which model served the request
+
+The response `model` field always names the model that produced the answer. Billing uses that model's price. Auto Router responses also carry the `X-EH-Routed-Model` header.
+
+## Supported endpoints
+
+| Endpoint | `auto` | `provider` | Suffixes | Fallbacks |
+|---|---|---|---|---|
+| `POST /v1/chat/completions` (and `/v1legacy`, `/v1thinking`) | Yes | Yes | Yes | `models` |
+| `POST /v1/messages` | Yes | Yes | Yes | `fallbacks` or `models` |
+| `POST /v1/responses` | Yes | Yes | Yes | `models` |
+| Embeddings, images, audio, video, moderations | No (`400`) | No | No | No |

@@ -56,6 +56,17 @@
       ]
     },
     {
+      "group": "Routing",
+      "icon": "route",
+      "pages": [
+        "routing/overview",
+        "routing/auto-router",
+        "routing/provider-routing",
+        "routing/model-variants",
+        "routing/model-fallbacks"
+      ]
+    },
+    {
       "group": "API Reference",
       "icon": "code",
       "pages": [

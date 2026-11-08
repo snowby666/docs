@@ -24,7 +24,7 @@ Send a structured conversation to a model and receive an assistant message. Mode
 ### Body parameters
 
 <ParamField body="model" type="string" required>
-  Model ID. Examples: `claude-sonnet-4-5-20250929`, `glm-5.3:dev`.
+  Model ID. Examples: `claude-sonnet-4-5-20250929`, `glm-5.3:dev`, or `auto` for the [Auto Router](/routing/auto-router). Accepts [model variants](/routing/model-variants) such as `:nitro`, `:exacto`, and `:high`.
 </ParamField>
 
 <ParamField body="messages" type="array" required>
@@ -102,7 +102,7 @@ Send a structured conversation to a model and receive an assistant message. Mode
 </ParamField>
 
 <ParamField body="metadata" type="object">
-  Optional `{ "user_id": string }` for abuse tracking. Opaque ID only; do not put PII.
+  Optional `{ "user_id": string }` for abuse tracking. Opaque ID only; do not put PII. The Auto Router reads the session id Claude Code places here to keep one model per conversation.
 </ParamField>
 
 <ParamField body="betas" type="array">
@@ -122,7 +122,23 @@ Send a structured conversation to a model and receive an assistant message. Mode
 </ParamField>
 
 <ParamField body="output_config" type="object">
-  Output controls such as `{ "effort": "low" | "medium" | "high" }`.
+  Output controls such as `{ "effort": "low" | "medium" | "high" }`. With `model: "auto"`, the effort is a hint and is set to the effort the router picks.
+</ParamField>
+
+<ParamField body="fallbacks" type="array">
+  Up to 3 fallback models as `[{ "model": "..." }]`, tried in order when `model` cannot serve the request. Cannot be combined with `models`. See [Model Fallbacks](/routing/model-fallbacks).
+</ParamField>
+
+<ParamField body="models" type="string[]">
+  Same as `fallbacks`, as a list of model ids.
+</ParamField>
+
+<ParamField body="provider" type="object">
+  Provider preferences: `order`, `only`, `ignore`, `allow_fallbacks`, `sort`, `max_price`, `preferred_min_throughput`, `preferred_max_latency`. See [Provider Routing](/routing/provider-routing).
+</ParamField>
+
+<ParamField body="router" type="object">
+  Auto Router options for `model: "auto"`. See [Auto Router](/routing/auto-router#the-router-object).
 </ParamField>
 
 ### Content blocks

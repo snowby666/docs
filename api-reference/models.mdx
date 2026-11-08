@@ -34,3 +34,15 @@ Returns a list of model objects containing information about each available mode
   ]
 }
 ```
+
+## The `auto` entry
+
+The list includes `auto`, the [Auto Router](/routing/auto-router). Its `pricing.type` is `routed`: requests are billed at the price of the model that answers, plus `pricing.router_fee` per request.
+
+## Model variants
+
+Routing variants such as `kimi-k2.6:nitro` are valid `model` values but are not listed. Catalog variants such as `:free` and `:dev` have their own entries. See [Model Variants](/routing/model-variants).
+
+## Providers for a model
+
+`GET /v1/models/{model}/providers` lists the providers that serve a model, with price, context window, latency, throughput, and uptime. Use the ids in the [`provider`](/routing/provider-routing) object. No authentication required.

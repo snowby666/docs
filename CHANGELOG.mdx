@@ -5,6 +5,17 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-11-08] - Auto Router and routing docs
+
+`model: "auto"` picks a model and reasoning effort for each request on Chat Completions, Messages, and Responses.
+
+- **Auto Router:** ranks models on benchmark quality for the task and picks the cheapest one within your cost tier (`low`, `medium`, `high`, `xhigh`, `max`). Billed at the answering model's price plus a routing fee of $0.00005 to $0.001 per request (`usage.router_fee`).
+- **Policies:** select one with `model: "auto/<policy-id>"` or override per request with the `router` object. Manage them with `/v1/router/*`.
+- **Sessions:** keeps one model per conversation. Reads `session_id`, `X-Session-Id`, and the session ids Claude Code, Codex, and OpenCode send.
+- **Metadata:** `X-EH-Router-Metadata: enabled` returns `router_metadata`. Every routed response has `X-EH-Routed-Model` and `X-EH-Router-Decision-Id`.
+- **Variants:** when `:nitro` and `:floor`, or two effort suffixes, appear in one model id, the last one now wins.
+- New [Routing](/routing/overview) section: [Auto Router](/routing/auto-router), [Provider Routing](/routing/provider-routing), [Model Variants](/routing/model-variants), [Model Fallbacks](/routing/model-fallbacks).
+
 ## [2026-10-26] - Decisions: images are rejected
 
 `POST /v1/systemone` does not read image bytes. An image part or a `data:image/` URL in `state` returns `400` with `param: "state"`. Describe the image with a vision model and send that text.

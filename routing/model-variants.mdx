@@ -1,0 +1,113 @@
+---
+title: 'Model Variants'
+description: 'Suffixes and prefixes on the model id: :nitro, :floor, :exacto, effort, provider pins, and catalog variants'
+icon: 'tags'
+---
+
+A variant changes how a request to a model is handled without changing the model. Add it to the `model` field:
+
+```json
+{ "model": "kimi-k2.6:nitro" }
+```
+
+There are two kinds:
+
+- **Routing variants** work on any model id. They are not listed in `GET /v1/models`; the model's metadata, context window, and base price stay the same.
+- **Catalog variants** are separate entries in `GET /v1/models` with their own id, price, and limits. Use them only on models that list them.
+
+## Routing variants
+
+| Suffix | Effect | Same as |
+|---|---|---|
+| `:nitro` | Fastest provider first, by output tokens per second | `provider.sort: "throughput"` |
+| `:floor` | Cheapest provider first, with no speed adjustment | `provider.sort: "price"` |
+| `:exacto` | Most reliable provider first: highest recent uptime, then shortest time to first token | none |
+| `:<effort>` | Reasoning effort: `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max` | `reasoning_effort` |
+| `:reasoning-exclude` | The model still reasons, but reasoning is removed from the response | `reasoning.exclude: true` |
+
+### `:nitro`
+
+```json
+{ "model": "kimi-k2.6:nitro" }
+```
+
+Providers are ordered by median output tokens per second over the last 30 minutes (or the last day when there are too few recent requests). Providers without enough measurements follow in the default order. Use it for long outputs and interactive streaming.
+
+### `:floor`
+
+```json
+{ "model": "kimi-k2.6:floor" }
+```
+
+Providers are ordered by price only. The default order also penalizes much slower providers; `:floor` does not. Providers below 90% uptime still go last. Use it for batch and background jobs where cost matters more than speed.
+
+### `:exacto`
+
+```json
+{ "model": "kimi-k2.6:exacto" }
+```
+
+Providers are ordered by success rate over the last 30 minutes (or the last day), then by median time to first token, then by the default order. Use it for agents and tool calling, where a failed request costs more than a slower one. `:exacto` is ignored when the request also sets a sort (`:nitro`, `:floor`, or `provider.sort`).
+
+### `:<effort>`
+
+```json
+{ "model": "gpt-5.1:high" }
+```
+
+Sets the reasoning effort, like `reasoning_effort` in the body. `model@high` is accepted as well.
+
+- If the suffix and the body `reasoning_effort` disagree, the request fails with `400`.
+- If the model does not support that effort, the request fails with `400` and the message lists the supported values. A body-only `reasoning_effort` the model does not support is dropped silently instead.
+
+### `:reasoning-exclude`
+
+```json
+{ "model": "deepseek-r1:reasoning-exclude" }
+```
+
+Hides reasoning text from the response. You still pay for the reasoning tokens. See [Chat Completions](/api-reference/chat/completions#disabling-reasoning-output).
+
+## Prefixes
+
+| Prefix | Effect | Example |
+|---|---|---|
+| `electronhub/` | Ignored. Accepted for clients that namespace model ids. | `electronhub/kimi-k2.6` |
+| `<provider-id>/` | Pins the request to one provider with no fallback to others. See [Pin one provider](/routing/provider-routing#pin-one-provider). | `<provider-id>/kimi-k2.6` |
+
+Provider ids come from `GET /v1/models/{model}/providers`. An unknown provider id returns `400`, code `unknown_provider`.
+
+## Catalog variants
+
+| Suffix | Meaning |
+|---|---|
+| `:free` | Free version of a model, with its own rate limits and providers. Not available on every model. |
+| `:dev` | Coding Plan (DevPass) version. Requires a Coding Plan key. See [Coding Plan](/billing/coding-plan). |
+
+Check `GET /v1/models` for the ids that exist. A catalog variant is part of the model id, so routing variants go after it: `gpt-oss-20b:free:nitro`.
+
+## Combining variants
+
+Variants combine in any order:
+
+```text
+kimi-k2.6:high:nitro
+<provider-id>/kimi-k2.6:exacto
+electronhub/glm-5.2:low:floor
+```
+
+Rules when variants overlap:
+
+| Combination | Result |
+|---|---|
+| `:nitro` and `:floor` | The last one in the id wins. |
+| Two effort suffixes | The last one in the id wins. |
+| `:exacto` with `:nitro`, `:floor`, or `provider.sort` | The sort wins; `:exacto` is ignored. |
+| A suffix and `provider.sort` | `provider.sort` wins. |
+| A provider pin and `provider.only` | The pin wins. |
+
+Variants are not accepted on `auto` (`auto:nitro` returns `400`). The [Auto Router](/routing/auto-router) chooses the effort itself; send `reasoning_effort` in the body to suggest one, and use the `provider` object for provider preferences.
+
+## In-chat image generation
+
+On `/v1/chat/completions`, `@<image-model>` after the model id generates an image inside the chat reply, for example `gpt-5.1@flux-2`. This is not a routing variant. See [In-chat Image Generation](/guides/in-chat-image-generation).
