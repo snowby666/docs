@@ -3561,7 +3561,7 @@
     "/router/catalog/ranking": {
       "get": {
         "summary": "Model ranking",
-        "description": "How Auto ranks models for a category, cost tier, and difficulty: quality, estimated cost, the selected model, and its fallbacks.",
+        "description": "How Auto ranks models for a category, cost tier, and difficulty: quality, estimated cost, the selected model, and its fallbacks. Pass `category=all` (or a comma-separated list) to rank every task in one call; the Auto panel should use that instead of 14 parallel requests.",
         "operationId": "getRouterRanking",
         "tags": [
           "Router"
@@ -3579,70 +3579,42 @@
                   "costTier": "medium",
                   "difficulty": "medium",
                   "domain": null,
+                  "inputTokens": 2000,
+                  "endpoint": "chat",
                   "band": 0.07,
                   "q_star": 83.11,
                   "selected": "gemma-4-31b-it",
-                  "cascade": [
-                    "deepseek-v4.1-flash",
-                    "qwen3.6-35b-a3b",
-                    "muse-spark-1.3"
-                  ],
+                  "cascade": ["deepseek-v4.1-flash", "qwen3.6-35b-a3b"],
+                  "pick": {
+                    "model": "gemma-4-31b-it",
+                    "label": "Gemma 4 31B",
+                    "vendor": "Google",
+                    "tier": "frontier",
+                    "quality": 85,
+                    "rank_quality": 83.11,
+                    "est_cost": 0.0042,
+                    "effort": "medium"
+                  },
                   "items": [
                     {
-                      "model": "gpt-6-astra",
-                      "label": "GPT-6 Astra",
-                      "vendor": "OpenAI",
+                      "model": "gemma-4-31b-it",
+                      "label": "Gemma 4 31B",
+                      "vendor": "Google",
                       "tier": "frontier",
-                      "quality": 76,
+                      "quality": 85,
                       "rank_quality": 83.11,
-                      "est_cost": 0.06,
-                      "effort": null,
+                      "est_cost": 0.0042,
+                      "effort": "medium",
                       "eligible": true,
-                      "price_blended": 20.0,
+                      "price_blended": 0.5,
                       "speed": null,
-                      "sources": [
-                        "zeroeval"
-                      ],
-                      "basis": "zeroeval"
-                    },
-                    {
-                      "model": "qwen3.8-max",
-                      "label": "Qwen3.8 Max",
-                      "vendor": "Alibaba",
-                      "tier": "frontier",
-                      "quality": 77,
-                      "rank_quality": 81.96,
-                      "est_cost": 0.0088,
-                      "effort": null,
-                      "eligible": true,
-                      "price_blended": 3.0,
-                      "speed": null,
-                      "sources": [
-                        "zeroeval"
-                      ],
-                      "basis": "zeroeval"
-                    },
-                    {
-                      "model": "qwen3.7-max",
-                      "label": "Qwen3.7 Max",
-                      "vendor": "Alibaba",
-                      "tier": "frontier",
-                      "quality": 74,
-                      "rank_quality": 81.67,
-                      "est_cost": 0.00649,
-                      "effort": null,
-                      "eligible": true,
-                      "price_blended": 2.2125000000000004,
-                      "speed": null,
-                      "sources": [
-                        "zeroeval"
-                      ],
+                      "sources": ["zeroeval"],
                       "basis": "zeroeval"
                     }
                   ],
                   "sources": {
                     "zeroeval": true,
-                    "artificial_analysis": false,
+                    "artificial_analysis": true,
                     "epoch": true,
                     "eqbench": true
                   }
@@ -3659,9 +3631,9 @@
                 },
                 "example": {
                   "error": {
-                    "message": "Body must be an object.",
-                    "type": "invalid_request_error",
-                    "param": null,
+                    "message": "Unknown category 'nope'. Use all, or: chat, coding, reasoning, math, science, creative, vision, long_context, agentic, factuality, safety, roleplay, summarization, translation",
+                    "type": "router_invalid_request",
+                    "param": "category",
                     "code": 400
                   }
                 }
@@ -3695,7 +3667,7 @@
               "type": "string",
               "default": "chat"
             },
-            "description": "chat, coding, reasoning, math, science, creative, vision, long_context, agentic, factuality, safety, roleplay, summarization, translation."
+            "description": "One of chat, coding, reasoning, math, science, creative, vision, long_context, agentic, factuality, safety, roleplay, summarization, translation; a comma-separated subset; repeated `category` parameters; or `all`. Case is ignored. `all` cannot be combined with other categories. One category returns a flat object. Two or more return `picks` and `categories`."
           },
           {
             "name": "costTier",
@@ -3764,6 +3736,25 @@
               "type": "string"
             },
             "description": "Professional domain, e.g. legal, medical, finance."
+          },
+          {
+            "name": "frontier",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "description": "When set, each category also includes `frontier_rank` (Pareto mix of quality vs price)."
+          },
+          {
+            "name": "includeItems",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "Set false to omit per-model `items`. `frontier` still adds `frontier_rank`. Leave true for the Cost vs quality chart."
           }
         ]
       }

@@ -2,3 +2,5 @@
 title: "Model Ranking"
 openapi: "GET /router/catalog/ranking"
 ---
+
+Pass `category=all`, a comma-separated list, or repeated `category` parameters to rank several tasks in one call. One category returns a flat object (with `pick`). Two or more return `picks` and `categories`. Set `includeItems=false` to drop per-model `items`; `frontier` still adds `frontier_rank`. `pick` is null when nothing scored for that task.
