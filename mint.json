@@ -74,7 +74,8 @@
           "group": "Models",
           "icon": "brain",
           "pages": [
-            "api-reference/models"
+            "api-reference/models",
+            "api-reference/model-providers"
           ]
         },
         {
@@ -113,12 +114,50 @@
         "api-reference/systemone",
         "api-reference/embeddings",
         {
+          "group": "Router",
+          "icon": "route",
+          "pages": [
+            "api-reference/router/settings-get",
+            "api-reference/router/settings-update",
+            "api-reference/router/policies-list",
+            "api-reference/router/policies-create",
+            "api-reference/router/policies-get",
+            "api-reference/router/policies-replace",
+            "api-reference/router/policies-update",
+            "api-reference/router/policies-delete",
+            "api-reference/router/policies-validate",
+            "api-reference/router/policies-export",
+            "api-reference/router/policies-import",
+            "api-reference/router/policies-history",
+            "api-reference/router/policies-restore",
+            "api-reference/router/pins-list",
+            "api-reference/router/pins-get",
+            "api-reference/router/pins-set",
+            "api-reference/router/pins-delete",
+            "api-reference/router/pins-clear",
+            "api-reference/router/ranking",
+            "api-reference/router/decisions-list",
+            "api-reference/router/decisions-summary",
+            "api-reference/router/decisions-clear",
+            "api-reference/router/spend-get",
+            "api-reference/router/spend-reset",
+            "api-reference/router/cache-stats",
+            "api-reference/router/cache-list",
+            "api-reference/router/cache-clear",
+            "api-reference/router/cache-delete",
+            "api-reference/router/stats-usage",
+            "api-reference/router/stats-mix"
+          ]
+        },
+        {
           "group": "User",
           "icon": "user",
           "pages": [
             "api-reference/usage",
             "api-reference/user-models",
-            "api-reference/user-logs"
+            "api-reference/user-logs",
+            "api-reference/provider-settings-get",
+            "api-reference/provider-settings-update"
           ]
         },
         {

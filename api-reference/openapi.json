@@ -924,6 +924,4240 @@
           }
         }
       }
+    },
+    "/router/settings": {
+      "get": {
+        "summary": "Get Router settings",
+        "description": "Account-wide Auto Router settings and their version.",
+        "operationId": "getRouterSettings",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "settings": {
+                      "$ref": "#/components/schemas/RouterSettings"
+                    },
+                    "version": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "settings": {
+                    "steerManualPicks": false,
+                    "scope": [
+                      "chat",
+                      "agents"
+                    ],
+                    "applyMode": "silent",
+                    "defaultPolicyId": "default",
+                    "lockOverrides": false,
+                    "classifier": "auto",
+                    "shadowPercent": 0,
+                    "activitySampleApi": 100
+                  },
+                  "version": 0
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Router settings",
+        "description": "Merge-patch the settings. Send only the fields to change.",
+        "operationId": "updateRouterSettings",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "settings": {
+                      "$ref": "#/components/schemas/RouterSettings"
+                    },
+                    "version": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "settings": {
+                    "steerManualPicks": false,
+                    "scope": [
+                      "chat",
+                      "agents"
+                    ],
+                    "applyMode": "silent",
+                    "defaultPolicyId": "default",
+                    "lockOverrides": false,
+                    "classifier": "auto",
+                    "shadowPercent": 0,
+                    "activitySampleApi": 100
+                  },
+                  "version": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version conflict. `current` holds the stored document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Version conflict",
+                    "type": "router_conflict",
+                    "param": null,
+                    "code": 409
+                  },
+                  "current": {
+                    "policy": {
+                      "policyId": "work",
+                      "name": "Work",
+                      "schemaVersion": 4,
+                      "mode": "auto",
+                      "auto": {
+                        "costTier": "high",
+                        "qualityFloor": 0,
+                        "preferFast": false,
+                        "preferVendor": null,
+                        "preferStrength": 0,
+                        "maxTtft": 0,
+                        "perCategory": {}
+                      },
+                      "custom": {
+                        "rules": [],
+                        "default": [
+                          {
+                            "action": "useAuto"
+                          }
+                        ]
+                      },
+                      "models": {
+                        "allowed": [],
+                        "excluded": [
+                          "*:free"
+                        ],
+                        "strictAllowed": false
+                      },
+                      "guardrails": {
+                        "maxCostPerReq": null,
+                        "blockOverCost": false,
+                        "budgetUsd": 5,
+                        "budgetWindow": "daily",
+                        "budgetScope": "routed",
+                        "blockOverBudget": false,
+                        "pii": {
+                          "enabled": false,
+                          "action": "block",
+                          "model": null,
+                          "entities": {},
+                          "labels": {},
+                          "custom": [],
+                          "scanAll": false
+                        }
+                      },
+                      "cache": {
+                        "enabled": false,
+                        "ttlMin": 1440,
+                        "maxEntries": 100,
+                        "semantic": false,
+                        "semanticThreshold": 0.9
+                      }
+                    },
+                    "version": 4,
+                    "updatedAt": "2026-11-08T07:34:14.937184Z",
+                    "updatedBy": "client"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RouterSettings"
+                  }
+                ],
+                "properties": {
+                  "expected_version": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "defaultPolicyId": "work",
+                "lockOverrides": false,
+                "expected_version": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/policies": {
+      "get": {
+        "summary": "List policies",
+        "description": "Every saved policy, newest first. `default` always exists.",
+        "operationId": "listRouterPolicies",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "items": [
+                    {
+                      "policyId": "default",
+                      "name": "My routing policy",
+                      "mode": "auto",
+                      "version": 0,
+                      "updatedAt": null
+                    },
+                    {
+                      "policyId": "imported",
+                      "name": "Work",
+                      "mode": "auto",
+                      "version": 1,
+                      "updatedAt": "2026-11-08T07:34:14.941183Z"
+                    },
+                    {
+                      "policyId": "work",
+                      "name": "Work",
+                      "mode": "auto",
+                      "version": 4,
+                      "updatedAt": "2026-11-08T07:34:14.937184Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create policy",
+        "description": "Create a policy. Use it with `model: \"auto/<policyId>\"`. At most 50 policies.",
+        "operationId": "createRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPolicyEnvelope"
+                },
+                "example": {
+                  "policy": {
+                    "policyId": "work",
+                    "name": "Work",
+                    "schemaVersion": 4,
+                    "mode": "auto",
+                    "auto": {
+                      "costTier": "high",
+                      "qualityFloor": 0,
+                      "preferFast": false,
+                      "preferVendor": null,
+                      "preferStrength": 0,
+                      "maxTtft": 0,
+                      "perCategory": {}
+                    },
+                    "custom": {
+                      "rules": [],
+                      "default": [
+                        {
+                          "action": "useAuto"
+                        }
+                      ]
+                    },
+                    "models": {
+                      "allowed": [],
+                      "excluded": [
+                        "*:free"
+                      ],
+                      "strictAllowed": false
+                    },
+                    "guardrails": {
+                      "maxCostPerReq": null,
+                      "blockOverCost": false,
+                      "budgetUsd": 5,
+                      "budgetWindow": "daily",
+                      "budgetScope": "routed",
+                      "blockOverBudget": false,
+                      "pii": {
+                        "enabled": false,
+                        "action": "block",
+                        "model": null,
+                        "entities": {},
+                        "labels": {},
+                        "custom": [],
+                        "scanAll": false
+                      }
+                    },
+                    "cache": {
+                      "enabled": false,
+                      "ttlMin": 1440,
+                      "maxEntries": 100,
+                      "semantic": false,
+                      "semanticThreshold": 0.9
+                    }
+                  },
+                  "version": 1,
+                  "warnings": []
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A policy with this id exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "A policy with this id already exists",
+                    "type": "router_conflict",
+                    "param": null,
+                    "code": 409
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouterPolicy"
+              },
+              "example": {
+                "policyId": "work",
+                "name": "Work",
+                "mode": "auto",
+                "auto": {
+                  "costTier": "high"
+                },
+                "models": {
+                  "excluded": [
+                    "*:free"
+                  ]
+                },
+                "guardrails": {
+                  "budgetUsd": 5,
+                  "budgetWindow": "daily"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/policies/validate": {
+      "post": {
+        "summary": "Validate policy",
+        "description": "Check a policy or an exported file without saving it. Returns errors, warnings, and the normalized policy.",
+        "operationId": "validateRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPolicyValidation"
+                },
+                "example": {
+                  "ok": false,
+                  "errors": [
+                    "auto.costTier must be one of: low, medium, high, xhigh, max"
+                  ],
+                  "warnings": [],
+                  "policy": null,
+                  "migrated": false,
+                  "diff": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouterPolicy"
+              },
+              "example": {
+                "schemaVersion": 4,
+                "mode": "auto",
+                "auto": {
+                  "costTier": "nope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/policies/{policy_id}": {
+      "get": {
+        "summary": "Get policy",
+        "description": "One policy with its version.",
+        "operationId": "getRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPolicyEnvelope"
+                },
+                "example": {
+                  "policy": {
+                    "policyId": "work",
+                    "name": "Work",
+                    "schemaVersion": 4,
+                    "mode": "auto",
+                    "auto": {
+                      "costTier": "high",
+                      "qualityFloor": 0,
+                      "preferFast": false,
+                      "preferVendor": null,
+                      "preferStrength": 0,
+                      "maxTtft": 0,
+                      "perCategory": {}
+                    },
+                    "custom": {
+                      "rules": [],
+                      "default": [
+                        {
+                          "action": "useAuto"
+                        }
+                      ]
+                    },
+                    "models": {
+                      "allowed": [],
+                      "excluded": [
+                        "*:free"
+                      ],
+                      "strictAllowed": false
+                    },
+                    "guardrails": {
+                      "maxCostPerReq": null,
+                      "blockOverCost": false,
+                      "budgetUsd": 5,
+                      "budgetWindow": "daily",
+                      "budgetScope": "routed",
+                      "blockOverBudget": false,
+                      "pii": {
+                        "enabled": false,
+                        "action": "block",
+                        "model": null,
+                        "entities": {},
+                        "labels": {},
+                        "custom": [],
+                        "scanAll": false
+                      }
+                    },
+                    "cache": {
+                      "enabled": false,
+                      "ttlMin": 1440,
+                      "maxEntries": 100,
+                      "semantic": false,
+                      "semanticThreshold": 0.9
+                    }
+                  },
+                  "version": 1,
+                  "updatedAt": "2026-11-08T07:34:14.922183Z",
+                  "updatedBy": "client"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Router policy “missing” was not found.",
+                    "type": "router_policy_not_found",
+                    "param": null,
+                    "code": 404
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,40}$"
+            },
+            "example": "work"
+          }
+        ]
+      },
+      "put": {
+        "summary": "Replace policy",
+        "description": "Replace the whole policy, or create it. Missing fields take defaults.",
+        "operationId": "replaceRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPolicyEnvelope"
+                },
+                "example": {
+                  "policy": {
+                    "policyId": "work",
+                    "name": "Work",
+                    "schemaVersion": 4,
+                    "mode": "auto",
+                    "auto": {
+                      "costTier": "medium",
+                      "qualityFloor": 0,
+                      "preferFast": false,
+                      "preferVendor": null,
+                      "preferStrength": 0,
+                      "maxTtft": 0,
+                      "perCategory": {}
+                    },
+                    "custom": {
+                      "rules": [],
+                      "default": [
+                        {
+                          "action": "useAuto"
+                        }
+                      ]
+                    },
+                    "models": {
+                      "allowed": [],
+                      "excluded": [
+                        "*:free"
+                      ],
+                      "strictAllowed": false
+                    },
+                    "guardrails": {
+                      "maxCostPerReq": null,
+                      "blockOverCost": false,
+                      "budgetUsd": 5,
+                      "budgetWindow": "daily",
+                      "budgetScope": "routed",
+                      "blockOverBudget": false,
+                      "pii": {
+                        "enabled": false,
+                        "action": "block",
+                        "model": null,
+                        "entities": {},
+                        "labels": {},
+                        "custom": [],
+                        "scanAll": false
+                      }
+                    },
+                    "cache": {
+                      "enabled": false,
+                      "ttlMin": 1440,
+                      "maxEntries": 100,
+                      "semantic": false,
+                      "semanticThreshold": 0.9
+                    }
+                  },
+                  "version": 2,
+                  "warnings": []
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version conflict. `current` holds the stored document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Version conflict",
+                    "type": "router_conflict",
+                    "param": null,
+                    "code": 409
+                  },
+                  "current": {
+                    "policy": {
+                      "policyId": "work",
+                      "name": "Work",
+                      "schemaVersion": 4,
+                      "mode": "auto",
+                      "auto": {
+                        "costTier": "high",
+                        "qualityFloor": 0,
+                        "preferFast": false,
+                        "preferVendor": null,
+                        "preferStrength": 0,
+                        "maxTtft": 0,
+                        "perCategory": {}
+                      },
+                      "custom": {
+                        "rules": [],
+                        "default": [
+                          {
+                            "action": "useAuto"
+                          }
+                        ]
+                      },
+                      "models": {
+                        "allowed": [],
+                        "excluded": [
+                          "*:free"
+                        ],
+                        "strictAllowed": false
+                      },
+                      "guardrails": {
+                        "maxCostPerReq": null,
+                        "blockOverCost": false,
+                        "budgetUsd": 5,
+                        "budgetWindow": "daily",
+                        "budgetScope": "routed",
+                        "blockOverBudget": false,
+                        "pii": {
+                          "enabled": false,
+                          "action": "block",
+                          "model": null,
+                          "entities": {},
+                          "labels": {},
+                          "custom": [],
+                          "scanAll": false
+                        }
+                      },
+                      "cache": {
+                        "enabled": false,
+                        "ttlMin": 1440,
+                        "maxEntries": 100,
+                        "semantic": false,
+                        "semanticThreshold": 0.9
+                      }
+                    },
+                    "version": 4,
+                    "updatedAt": "2026-11-08T07:34:14.937184Z",
+                    "updatedBy": "client"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,40}$"
+            },
+            "example": "work"
+          },
+          {
+            "name": "expected_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Fail with 409 when the stored version differs. Can also be sent in the body."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouterPolicy"
+              },
+              "example": {
+                "policyId": "work",
+                "name": "Work",
+                "mode": "auto",
+                "auto": {
+                  "costTier": "high"
+                },
+                "models": {
+                  "excluded": [
+                    "*:free"
+                  ]
+                },
+                "guardrails": {
+                  "budgetUsd": 5,
+                  "budgetWindow": "daily"
+                },
+                "expected_version": 2
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update policy",
+        "description": "Merge-patch a policy. Send only the fields to change.",
+        "operationId": "updateRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPolicyEnvelope"
+                },
+                "example": {
+                  "policy": {
+                    "policyId": "work",
+                    "name": "Work",
+                    "schemaVersion": 4,
+                    "mode": "auto",
+                    "auto": {
+                      "costTier": "medium",
+                      "qualityFloor": 0,
+                      "preferFast": false,
+                      "preferVendor": null,
+                      "preferStrength": 0,
+                      "maxTtft": 0,
+                      "perCategory": {}
+                    },
+                    "custom": {
+                      "rules": [],
+                      "default": [
+                        {
+                          "action": "useAuto"
+                        }
+                      ]
+                    },
+                    "models": {
+                      "allowed": [],
+                      "excluded": [
+                        "*:free"
+                      ],
+                      "strictAllowed": false
+                    },
+                    "guardrails": {
+                      "maxCostPerReq": null,
+                      "blockOverCost": false,
+                      "budgetUsd": 5,
+                      "budgetWindow": "daily",
+                      "budgetScope": "routed",
+                      "blockOverBudget": false,
+                      "pii": {
+                        "enabled": false,
+                        "action": "block",
+                        "model": null,
+                        "entities": {},
+                        "labels": {},
+                        "custom": [],
+                        "scanAll": false
+                      }
+                    },
+                    "cache": {
+                      "enabled": false,
+                      "ttlMin": 1440,
+                      "maxEntries": 100,
+                      "semantic": false,
+                      "semanticThreshold": 0.9
+                    }
+                  },
+                  "version": 2,
+                  "warnings": []
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version conflict. `current` holds the stored document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Version conflict",
+                    "type": "router_conflict",
+                    "param": null,
+                    "code": 409
+                  },
+                  "current": {
+                    "policy": {
+                      "policyId": "work",
+                      "name": "Work",
+                      "schemaVersion": 4,
+                      "mode": "auto",
+                      "auto": {
+                        "costTier": "high",
+                        "qualityFloor": 0,
+                        "preferFast": false,
+                        "preferVendor": null,
+                        "preferStrength": 0,
+                        "maxTtft": 0,
+                        "perCategory": {}
+                      },
+                      "custom": {
+                        "rules": [],
+                        "default": [
+                          {
+                            "action": "useAuto"
+                          }
+                        ]
+                      },
+                      "models": {
+                        "allowed": [],
+                        "excluded": [
+                          "*:free"
+                        ],
+                        "strictAllowed": false
+                      },
+                      "guardrails": {
+                        "maxCostPerReq": null,
+                        "blockOverCost": false,
+                        "budgetUsd": 5,
+                        "budgetWindow": "daily",
+                        "budgetScope": "routed",
+                        "blockOverBudget": false,
+                        "pii": {
+                          "enabled": false,
+                          "action": "block",
+                          "model": null,
+                          "entities": {},
+                          "labels": {},
+                          "custom": [],
+                          "scanAll": false
+                        }
+                      },
+                      "cache": {
+                        "enabled": false,
+                        "ttlMin": 1440,
+                        "maxEntries": 100,
+                        "semantic": false,
+                        "semanticThreshold": 0.9
+                      }
+                    },
+                    "version": 4,
+                    "updatedAt": "2026-11-08T07:34:14.937184Z",
+                    "updatedBy": "client"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Router policy “missing” was not found.",
+                    "type": "router_policy_not_found",
+                    "param": null,
+                    "code": 404
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,40}$"
+            },
+            "example": "work"
+          },
+          {
+            "name": "expected_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Fail with 409 when the stored version differs. Can also be sent in the body."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouterPolicy"
+              },
+              "example": {
+                "auto": {
+                  "costTier": "medium"
+                },
+                "expected_version": 1
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete policy",
+        "description": "Delete a policy. `default` cannot be deleted. If it was the default policy, settings fall back to `default`.",
+        "operationId": "deleteRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Deleted"
+                },
+                "example": {
+                  "deleted": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Router policy “missing” was not found.",
+                    "type": "router_policy_not_found",
+                    "param": null,
+                    "code": 404
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version conflict. `current` holds the stored document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Version conflict",
+                    "type": "router_conflict",
+                    "param": null,
+                    "code": 409
+                  },
+                  "current": {
+                    "policy": {
+                      "policyId": "work",
+                      "name": "Work",
+                      "schemaVersion": 4,
+                      "mode": "auto",
+                      "auto": {
+                        "costTier": "high",
+                        "qualityFloor": 0,
+                        "preferFast": false,
+                        "preferVendor": null,
+                        "preferStrength": 0,
+                        "maxTtft": 0,
+                        "perCategory": {}
+                      },
+                      "custom": {
+                        "rules": [],
+                        "default": [
+                          {
+                            "action": "useAuto"
+                          }
+                        ]
+                      },
+                      "models": {
+                        "allowed": [],
+                        "excluded": [
+                          "*:free"
+                        ],
+                        "strictAllowed": false
+                      },
+                      "guardrails": {
+                        "maxCostPerReq": null,
+                        "blockOverCost": false,
+                        "budgetUsd": 5,
+                        "budgetWindow": "daily",
+                        "budgetScope": "routed",
+                        "blockOverBudget": false,
+                        "pii": {
+                          "enabled": false,
+                          "action": "block",
+                          "model": null,
+                          "entities": {},
+                          "labels": {},
+                          "custom": [],
+                          "scanAll": false
+                        }
+                      },
+                      "cache": {
+                        "enabled": false,
+                        "ttlMin": 1440,
+                        "maxEntries": 100,
+                        "semantic": false,
+                        "semanticThreshold": 0.9
+                      }
+                    },
+                    "version": 4,
+                    "updatedAt": "2026-11-08T07:34:14.937184Z",
+                    "updatedBy": "client"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,40}$"
+            },
+            "example": "work"
+          },
+          {
+            "name": "expected_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Fail with 409 when the stored version differs. Can also be sent in the body."
+          }
+        ]
+      }
+    },
+    "/router/policies/{policy_id}/export": {
+      "get": {
+        "summary": "Export policy",
+        "description": "A portable copy of the policy for backup or sharing. Import it with the import endpoint.",
+        "operationId": "exportRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPolicy"
+                },
+                "example": {
+                  "policyId": "work",
+                  "name": "Work",
+                  "schemaVersion": 4,
+                  "mode": "auto",
+                  "auto": {
+                    "costTier": "high",
+                    "qualityFloor": 0,
+                    "preferFast": false,
+                    "preferVendor": null,
+                    "preferStrength": 0,
+                    "maxTtft": 0,
+                    "perCategory": {}
+                  },
+                  "custom": {
+                    "rules": [],
+                    "default": [
+                      {
+                        "action": "useAuto"
+                      }
+                    ]
+                  },
+                  "models": {
+                    "allowed": [],
+                    "excluded": [
+                      "*:free"
+                    ],
+                    "strictAllowed": false
+                  },
+                  "guardrails": {
+                    "maxCostPerReq": null,
+                    "blockOverCost": false,
+                    "budgetUsd": 5,
+                    "budgetWindow": "daily",
+                    "budgetScope": "routed",
+                    "blockOverBudget": false,
+                    "pii": {
+                      "enabled": false,
+                      "action": "block",
+                      "model": null,
+                      "entities": {},
+                      "labels": {},
+                      "custom": [],
+                      "scanAll": false
+                    }
+                  },
+                  "cache": {
+                    "enabled": false,
+                    "ttlMin": 1440,
+                    "maxEntries": 100,
+                    "semantic": false,
+                    "semanticThreshold": 0.9
+                  },
+                  "kind": "electron-hub.router-policy",
+                  "exportedAt": "2026-11-08T07:34:14.933183Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Router policy “missing” was not found.",
+                    "type": "router_policy_not_found",
+                    "param": null,
+                    "code": 404
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,40}$"
+            },
+            "example": "work"
+          }
+        ]
+      }
+    },
+    "/router/policies/{policy_id}/import": {
+      "post": {
+        "summary": "Import policy",
+        "description": "Save an exported policy under `policy_id`. Returns the changes from the stored version in `diff`.",
+        "operationId": "importRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPolicyValidation"
+                },
+                "example": {
+                  "ok": true,
+                  "errors": [],
+                  "warnings": [],
+                  "policy": {
+                    "policyId": "imported",
+                    "name": "Work",
+                    "schemaVersion": 4,
+                    "mode": "auto",
+                    "auto": {
+                      "costTier": "high",
+                      "qualityFloor": 0,
+                      "preferFast": false,
+                      "preferVendor": null,
+                      "preferStrength": 0,
+                      "maxTtft": 0,
+                      "perCategory": {}
+                    },
+                    "custom": {
+                      "rules": [],
+                      "default": [
+                        {
+                          "action": "useAuto"
+                        }
+                      ]
+                    },
+                    "models": {
+                      "allowed": [],
+                      "excluded": [
+                        "*:free"
+                      ],
+                      "strictAllowed": false
+                    },
+                    "guardrails": {
+                      "maxCostPerReq": null,
+                      "blockOverCost": false,
+                      "budgetUsd": 5,
+                      "budgetWindow": "daily",
+                      "budgetScope": "routed",
+                      "blockOverBudget": false,
+                      "pii": {
+                        "enabled": false,
+                        "action": "block",
+                        "model": null,
+                        "entities": {},
+                        "labels": {},
+                        "custom": [],
+                        "scanAll": false
+                      }
+                    },
+                    "cache": {
+                      "enabled": false,
+                      "ttlMin": 1440,
+                      "maxEntries": 100,
+                      "semantic": false,
+                      "semanticThreshold": 0.9
+                    }
+                  },
+                  "migrated": false,
+                  "diff": [
+                    {
+                      "label": "Cost tier",
+                      "from": "medium",
+                      "to": "high"
+                    },
+                    {
+                      "label": "Excluded models",
+                      "from": 0,
+                      "to": 1
+                    },
+                    {
+                      "label": "Budget",
+                      "from": null,
+                      "to": 5
+                    }
+                  ],
+                  "version": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version conflict. `current` holds the stored document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Version conflict",
+                    "type": "router_conflict",
+                    "param": null,
+                    "code": 409
+                  },
+                  "current": {
+                    "policy": {
+                      "policyId": "work",
+                      "name": "Work",
+                      "schemaVersion": 4,
+                      "mode": "auto",
+                      "auto": {
+                        "costTier": "high",
+                        "qualityFloor": 0,
+                        "preferFast": false,
+                        "preferVendor": null,
+                        "preferStrength": 0,
+                        "maxTtft": 0,
+                        "perCategory": {}
+                      },
+                      "custom": {
+                        "rules": [],
+                        "default": [
+                          {
+                            "action": "useAuto"
+                          }
+                        ]
+                      },
+                      "models": {
+                        "allowed": [],
+                        "excluded": [
+                          "*:free"
+                        ],
+                        "strictAllowed": false
+                      },
+                      "guardrails": {
+                        "maxCostPerReq": null,
+                        "blockOverCost": false,
+                        "budgetUsd": 5,
+                        "budgetWindow": "daily",
+                        "budgetScope": "routed",
+                        "blockOverBudget": false,
+                        "pii": {
+                          "enabled": false,
+                          "action": "block",
+                          "model": null,
+                          "entities": {},
+                          "labels": {},
+                          "custom": [],
+                          "scanAll": false
+                        }
+                      },
+                      "cache": {
+                        "enabled": false,
+                        "ttlMin": 1440,
+                        "maxEntries": 100,
+                        "semantic": false,
+                        "semanticThreshold": 0.9
+                      }
+                    },
+                    "version": 4,
+                    "updatedAt": "2026-11-08T07:34:14.937184Z",
+                    "updatedBy": "client"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,40}$"
+            },
+            "example": "work"
+          },
+          {
+            "name": "expected_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Fail with 409 when the stored version differs. Can also be sent in the body."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouterPolicy"
+              },
+              "example": {
+                "policyId": "work",
+                "name": "Work",
+                "mode": "auto",
+                "auto": {
+                  "costTier": "high"
+                },
+                "models": {
+                  "excluded": [
+                    "*:free"
+                  ]
+                },
+                "guardrails": {
+                  "budgetUsd": 5,
+                  "budgetWindow": "daily"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/policies/{policy_id}/history": {
+      "get": {
+        "summary": "Policy history",
+        "description": "Previous versions of a policy, newest first (up to 20).",
+        "operationId": "getRouterPolicyHistory",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "items": [
+                    {
+                      "version": 2,
+                      "savedAt": "2026-11-08T07:34:14.929184Z",
+                      "updatedBy": "client",
+                      "policy": {
+                        "policyId": "work",
+                        "name": "Work",
+                        "schemaVersion": 4,
+                        "mode": "auto",
+                        "auto": {
+                          "costTier": "medium",
+                          "qualityFloor": 0,
+                          "preferFast": false,
+                          "preferVendor": null,
+                          "preferStrength": 0,
+                          "maxTtft": 0,
+                          "perCategory": {}
+                        },
+                        "custom": {
+                          "rules": [],
+                          "default": [
+                            {
+                              "action": "useAuto"
+                            }
+                          ]
+                        },
+                        "models": {
+                          "allowed": [],
+                          "excluded": [
+                            "*:free"
+                          ],
+                          "strictAllowed": false
+                        },
+                        "guardrails": {
+                          "maxCostPerReq": null,
+                          "blockOverCost": false,
+                          "budgetUsd": 5,
+                          "budgetWindow": "daily",
+                          "budgetScope": "routed",
+                          "blockOverBudget": false,
+                          "pii": {
+                            "enabled": false,
+                            "action": "block",
+                            "model": null,
+                            "entities": {},
+                            "labels": {},
+                            "custom": [],
+                            "scanAll": false
+                          }
+                        },
+                        "cache": {
+                          "enabled": false,
+                          "ttlMin": 1440,
+                          "maxEntries": 100,
+                          "semantic": false,
+                          "semanticThreshold": 0.9
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,40}$"
+            },
+            "example": "work"
+          }
+        ]
+      }
+    },
+    "/router/policies/{policy_id}/restore": {
+      "post": {
+        "summary": "Restore policy version",
+        "description": "Save a version from the history as the current policy.",
+        "operationId": "restoreRouterPolicy",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPolicyEnvelope"
+                },
+                "example": {
+                  "policy": {
+                    "policyId": "work",
+                    "name": "Work",
+                    "schemaVersion": 4,
+                    "mode": "auto",
+                    "auto": {
+                      "costTier": "high",
+                      "qualityFloor": 0,
+                      "preferFast": false,
+                      "preferVendor": null,
+                      "preferStrength": 0,
+                      "maxTtft": 0,
+                      "perCategory": {}
+                    },
+                    "custom": {
+                      "rules": [],
+                      "default": [
+                        {
+                          "action": "useAuto"
+                        }
+                      ]
+                    },
+                    "models": {
+                      "allowed": [],
+                      "excluded": [
+                        "*:free"
+                      ],
+                      "strictAllowed": false
+                    },
+                    "guardrails": {
+                      "maxCostPerReq": null,
+                      "blockOverCost": false,
+                      "budgetUsd": 5,
+                      "budgetWindow": "daily",
+                      "budgetScope": "routed",
+                      "blockOverBudget": false,
+                      "pii": {
+                        "enabled": false,
+                        "action": "block",
+                        "model": null,
+                        "entities": {},
+                        "labels": {},
+                        "custom": [],
+                        "scanAll": false
+                      }
+                    },
+                    "cache": {
+                      "enabled": false,
+                      "ttlMin": 1440,
+                      "maxEntries": 100,
+                      "semantic": false,
+                      "semanticThreshold": 0.9
+                    }
+                  },
+                  "version": 4,
+                  "warnings": []
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Router policy “missing” was not found.",
+                    "type": "router_policy_not_found",
+                    "param": null,
+                    "code": 404
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Version conflict. `current` holds the stored document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Version conflict",
+                    "type": "router_conflict",
+                    "param": null,
+                    "code": 409
+                  },
+                  "current": {
+                    "policy": {
+                      "policyId": "work",
+                      "name": "Work",
+                      "schemaVersion": 4,
+                      "mode": "auto",
+                      "auto": {
+                        "costTier": "high",
+                        "qualityFloor": 0,
+                        "preferFast": false,
+                        "preferVendor": null,
+                        "preferStrength": 0,
+                        "maxTtft": 0,
+                        "perCategory": {}
+                      },
+                      "custom": {
+                        "rules": [],
+                        "default": [
+                          {
+                            "action": "useAuto"
+                          }
+                        ]
+                      },
+                      "models": {
+                        "allowed": [],
+                        "excluded": [
+                          "*:free"
+                        ],
+                        "strictAllowed": false
+                      },
+                      "guardrails": {
+                        "maxCostPerReq": null,
+                        "blockOverCost": false,
+                        "budgetUsd": 5,
+                        "budgetWindow": "daily",
+                        "budgetScope": "routed",
+                        "blockOverBudget": false,
+                        "pii": {
+                          "enabled": false,
+                          "action": "block",
+                          "model": null,
+                          "entities": {},
+                          "labels": {},
+                          "custom": [],
+                          "scanAll": false
+                        }
+                      },
+                      "cache": {
+                        "enabled": false,
+                        "ttlMin": 1440,
+                        "maxEntries": 100,
+                        "semantic": false,
+                        "semanticThreshold": 0.9
+                      }
+                    },
+                    "version": 4,
+                    "updatedAt": "2026-11-08T07:34:14.937184Z",
+                    "updatedBy": "client"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,40}$"
+            },
+            "example": "work"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "version"
+                ],
+                "properties": {
+                  "version": {
+                    "type": "integer"
+                  },
+                  "expected_version": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "version": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/pins": {
+      "get": {
+        "summary": "List pins",
+        "description": "Sessions pinned to a fixed model.",
+        "operationId": "listRouterPins",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/RouterPin"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "items": [
+                    {
+                      "model": "deepseek-v4-flash",
+                      "pinnedAt": 1794123254949.1838,
+                      "lastUsedAt": "2026-11-08T07:34:14.949184Z",
+                      "sessionKey": "chat:id_demo_1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete all pins",
+        "description": "Remove every pin.",
+        "operationId": "clearRouterPins",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Deleted"
+                },
+                "example": {
+                  "deleted": 0
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/pins/{session_key}": {
+      "get": {
+        "summary": "Get pin",
+        "description": "The pin for one session.",
+        "operationId": "getRouterPin",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPin"
+                },
+                "example": {
+                  "model": "deepseek-v4-flash",
+                  "pinnedAt": 1794123254949.1838,
+                  "lastUsedAt": "2026-11-08T07:34:14.949184Z",
+                  "sessionKey": "chat:id_demo_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No pin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "No pin for this session.",
+                    "type": "not_found",
+                    "param": null,
+                    "code": 404
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "session_key",
+            "in": "path",
+            "required": true,
+            "example": "chat:id_demo_1",
+            "schema": {
+              "type": "string",
+              "pattern": "^(sid|run|chat|fp):[A-Za-z0-9._:-]{1,160}$"
+            },
+            "description": "`sid:<id>`, `run:<id>`, `chat:<id>`, or `fp:<hash>`."
+          }
+        ]
+      },
+      "put": {
+        "summary": "Pin session",
+        "description": "Always use `model` for this session. The session key is shown in `router_metadata`.",
+        "operationId": "pinRouterSession",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouterPin"
+                },
+                "example": {
+                  "sessionKey": "chat:id_demo_1",
+                  "model": "deepseek-v4-flash",
+                  "pinnedAt": 1794123254949.1838,
+                  "lastUsedAt": "2026-11-08T07:34:14.949184Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "session_key",
+            "in": "path",
+            "required": true,
+            "example": "chat:id_demo_1",
+            "schema": {
+              "type": "string",
+              "pattern": "^(sid|run|chat|fp):[A-Za-z0-9._:-]{1,160}$"
+            },
+            "description": "`sid:<id>`, `run:<id>`, `chat:<id>`, or `fp:<hash>`."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "model"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "model": "deepseek-v4-flash"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete pin",
+        "description": "Remove the pin for one session.",
+        "operationId": "deleteRouterPin",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Deleted"
+                },
+                "example": {
+                  "deleted": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "session_key",
+            "in": "path",
+            "required": true,
+            "example": "chat:id_demo_1",
+            "schema": {
+              "type": "string",
+              "pattern": "^(sid|run|chat|fp):[A-Za-z0-9._:-]{1,160}$"
+            },
+            "description": "`sid:<id>`, `run:<id>`, `chat:<id>`, or `fp:<hash>`."
+          }
+        ]
+      }
+    },
+    "/router/catalog/ranking": {
+      "get": {
+        "summary": "Model ranking",
+        "description": "How Auto ranks models for a category, cost tier, and difficulty: quality, estimated cost, the selected model, and its fallbacks.",
+        "operationId": "getRouterRanking",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "category": "coding",
+                  "costTier": "medium",
+                  "difficulty": "medium",
+                  "domain": null,
+                  "band": 0.07,
+                  "q_star": 83.11,
+                  "selected": "gemma-4-31b-it",
+                  "cascade": [
+                    "deepseek-v4.1-flash",
+                    "qwen3.6-35b-a3b",
+                    "muse-spark-1.3"
+                  ],
+                  "items": [
+                    {
+                      "model": "gpt-6-astra",
+                      "label": "GPT-6 Astra",
+                      "vendor": "OpenAI",
+                      "tier": "frontier",
+                      "quality": 76,
+                      "rank_quality": 83.11,
+                      "est_cost": 0.06,
+                      "effort": null,
+                      "eligible": true,
+                      "price_blended": 20.0,
+                      "speed": null,
+                      "sources": [
+                        "zeroeval"
+                      ],
+                      "basis": "zeroeval"
+                    },
+                    {
+                      "model": "qwen3.8-max",
+                      "label": "Qwen3.8 Max",
+                      "vendor": "Alibaba",
+                      "tier": "frontier",
+                      "quality": 77,
+                      "rank_quality": 81.96,
+                      "est_cost": 0.0088,
+                      "effort": null,
+                      "eligible": true,
+                      "price_blended": 3.0,
+                      "speed": null,
+                      "sources": [
+                        "zeroeval"
+                      ],
+                      "basis": "zeroeval"
+                    },
+                    {
+                      "model": "qwen3.7-max",
+                      "label": "Qwen3.7 Max",
+                      "vendor": "Alibaba",
+                      "tier": "frontier",
+                      "quality": 74,
+                      "rank_quality": 81.67,
+                      "est_cost": 0.00649,
+                      "effort": null,
+                      "eligible": true,
+                      "price_blended": 2.2125000000000004,
+                      "speed": null,
+                      "sources": [
+                        "zeroeval"
+                      ],
+                      "basis": "zeroeval"
+                    }
+                  ],
+                  "sources": {
+                    "zeroeval": true,
+                    "artificial_analysis": false,
+                    "epoch": true,
+                    "eqbench": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "chat"
+            },
+            "description": "chat, coding, reasoning, math, science, creative, vision, long_context, agentic, factuality, safety, roleplay, summarization, translation."
+          },
+          {
+            "name": "costTier",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ],
+              "default": "medium"
+            }
+          },
+          {
+            "name": "difficulty",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "trivial",
+                "easy",
+                "medium",
+                "hard",
+                "extreme"
+              ],
+              "default": "medium"
+            }
+          },
+          {
+            "name": "inputTokens",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 2000
+            }
+          },
+          {
+            "name": "maxOutputTokens",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "endpoint",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "chat",
+                "messages",
+                "responses"
+              ],
+              "default": "chat"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Professional domain, e.g. legal, medical, finance."
+          }
+        ]
+      }
+    },
+    "/router/decisions": {
+      "get": {
+        "summary": "List decisions",
+        "description": "Recent routing decisions, newest first. Page with `next_cursor`.",
+        "operationId": "listRouterDecisions",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "next_cursor": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "items": [
+                    {
+                      "decisionId": "rdec_be9434a77bff0385a2369c1d",
+                      "at": "2026-11-08T07:34:18.527515Z",
+                      "surface": "api",
+                      "agentic": false,
+                      "trigger": "explicit",
+                      "requested": "auto/cached",
+                      "policyId": "cached",
+                      "mode": "auto",
+                      "costTier": "medium",
+                      "turn": null,
+                      "newWork": false,
+                      "classifier": {
+                        "source": "skipped",
+                        "ms": 0
+                      },
+                      "routerFeeUsd": 0.0,
+                      "model": "muse-spark-1.3-contributor",
+                      "blocked": false,
+                      "fromCache": true,
+                      "reason": "Served from cache."
+                    }
+                  ],
+                  "next_cursor": "1794123258417_rdec_b43f3798bf3c0b80583c99a1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "surface",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "chat",
+                "agents",
+                "api"
+              ]
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "blocked",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete decisions",
+        "description": "Delete the decision log.",
+        "operationId": "clearRouterDecisions",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Deleted"
+                },
+                "example": {
+                  "deleted": 4
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/decisions/summary": {
+      "get": {
+        "summary": "Decisions summary",
+        "description": "Totals for a window: routed requests, estimated savings, top category, and how often sessions kept their model.",
+        "operationId": "getRouterDecisionsSummary",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "routed": 2,
+                  "savedUsd": null,
+                  "topCategory": "coding",
+                  "ab": {
+                    "n": 0,
+                    "winRate": null,
+                    "avgQDelta": null,
+                    "avgCostDelta": null
+                  },
+                  "stickyRate": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "window",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "24h",
+                "7d",
+                "30d"
+              ],
+              "default": "24h"
+            }
+          }
+        ]
+      }
+    },
+    "/router/spend": {
+      "get": {
+        "summary": "Get spend",
+        "description": "Spend and reservations in the current budget window of a policy.",
+        "operationId": "getRouterSpend",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "policyId": "work",
+                  "window": "daily",
+                  "scope": "routed",
+                  "periodKey": "d2026-11-8",
+                  "spentUsd": 0.0,
+                  "reservedUsd": 0,
+                  "budgetUsd": 5,
+                  "remainingUsd": 5.0
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "policy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Policy id. Defaults to the default policy."
+          }
+        ]
+      }
+    },
+    "/router/spend/reset": {
+      "post": {
+        "summary": "Reset spend",
+        "description": "Reset the spend counters of every budget window.",
+        "operationId": "resetRouterSpend",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "reset": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/cache/stats": {
+      "get": {
+        "summary": "Cache stats",
+        "description": "Response cache hits, misses, and savings.",
+        "operationId": "getRouterCacheStats",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "hits": 2,
+                  "misses": 2,
+                  "semanticHits": 0,
+                  "savedTokens": 104,
+                  "savedUsd": 0.00020096999999999997,
+                  "entries": 2,
+                  "hitRate": 0.5
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/cache": {
+      "get": {
+        "summary": "List cache entries",
+        "description": "Cached answers with a short preview.",
+        "operationId": "listRouterCache",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "items": [
+                    {
+                      "key": "212cffb83c8affa0ff8a304e4c403eee7e358742638afd128427b0abe3e180dd",
+                      "model": "muse-spark-1.3-contributor",
+                      "at": "2026-11-08T07:34:18.417515Z",
+                      "lastUsed": "2026-11-08T07:34:18.527515Z",
+                      "ageSeconds": 0,
+                      "hits": 1,
+                      "tokens": 52,
+                      "costUsd": 0.00016069999999999998,
+                      "preview": "Answer from muse-spark-1.3-contributor.",
+                      "semantic": false
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Clear cache",
+        "description": "Delete every cached answer and reset cache stats.",
+        "operationId": "clearRouterCache",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Deleted"
+                },
+                "example": {
+                  "deleted": 1
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/router/cache/{key}": {
+      "delete": {
+        "summary": "Delete cache entry",
+        "description": "Delete one cached answer.",
+        "operationId": "deleteRouterCacheEntry",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Deleted"
+                },
+                "example": {
+                  "deleted": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "key must be a cache key from GET /v1/router/cache.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "More than 60 Router writes in a minute",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Too many Router changes. Retry in a minute.",
+                    "type": "rate_limit_exceeded",
+                    "param": null,
+                    "code": 429
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ]
+      }
+    },
+    "/router/stats/usage": {
+      "get": {
+        "summary": "Routing usage",
+        "description": "Requests per hour and model share. `scope=global` covers all users, needs no API key, and is cached for 60 seconds; models under 50 requests are grouped as `Other`.",
+        "operationId": "getRouterUsageStats",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "total": 4,
+                  "buckets": [
+                    {
+                      "t": "2026-11-08T07:00:00Z",
+                      "byModel": {
+                        "deepseek-v4-flash": 2,
+                        "muse-spark-1.3-contributor": 2
+                      }
+                    }
+                  ],
+                  "share": [
+                    {
+                      "model": "deepseek-v4-flash",
+                      "pct": 50.0
+                    },
+                    {
+                      "model": "muse-spark-1.3-contributor",
+                      "pct": 50.0
+                    }
+                  ],
+                  "other_pct": 0.0
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "me",
+                "global"
+              ],
+              "default": "me"
+            }
+          },
+          {
+            "name": "window",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1h",
+                "24h",
+                "7d"
+              ],
+              "default": "24h"
+            }
+          },
+          {
+            "name": "surface",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "agentic",
+                "non_agentic",
+                "all"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "name": "tier",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "new_work",
+                "all"
+              ],
+              "default": "all"
+            }
+          }
+        ],
+        "security": [
+          {},
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/router/stats/mix": {
+      "get": {
+        "summary": "Routing mix",
+        "description": "Which models Auto picks by difficulty, with task shares and a simulation for new work. `scope=global` needs no API key.",
+        "operationId": "getRouterMixStats",
+        "tags": [
+          "Router"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "difficulty_axis": [
+                    "trivial",
+                    "easy",
+                    "medium",
+                    "hard",
+                    "extreme"
+                  ],
+                  "series": [
+                    {
+                      "model": "Other",
+                      "effort": null,
+                      "shares": [
+                        100.0,
+                        100.0,
+                        0.0,
+                        0.0,
+                        0.0
+                      ]
+                    }
+                  ],
+                  "average": [
+                    {
+                      "model": "Other",
+                      "effort": null,
+                      "pct": 100.0
+                    }
+                  ],
+                  "task_shares": {
+                    "code_changes": 25.0,
+                    "unknown": 50.0,
+                    "factuality": 25.0
+                  },
+                  "simulation": {
+                    "label": "simulation",
+                    "tier": "medium",
+                    "by_difficulty": [
+                      {
+                        "difficulty": "trivial",
+                        "picks": [
+                          {
+                            "model": "deepseek-v4-flash",
+                            "effort": null,
+                            "share": 62.5
+                          },
+                          {
+                            "model": "muse-spark-1.3-contributor",
+                            "effort": null,
+                            "share": 29.2
+                          },
+                          {
+                            "model": "glm-5.3-flash",
+                            "effort": "low",
+                            "share": 8.3
+                          }
+                        ]
+                      },
+                      {
+                        "difficulty": "easy",
+                        "picks": [
+                          {
+                            "model": "deepseek-v4-flash",
+                            "effort": null,
+                            "share": 62.5
+                          },
+                          {
+                            "model": "muse-spark-1.3-contributor",
+                            "effort": null,
+                            "share": 29.2
+                          },
+                          {
+                            "model": "glm-5.3-flash",
+                            "effort": "low",
+                            "share": 8.3
+                          }
+                        ]
+                      },
+                      {
+                        "difficulty": "medium",
+                        "picks": [
+                          {
+                            "model": "gemma-4-31b-it",
+                            "effort": null,
+                            "share": 25.0
+                          },
+                          {
+                            "model": "deepseek-v4.1-flash",
+                            "effort": null,
+                            "share": 12.5
+                          },
+                          {
+                            "model": "qwen3.6-plus",
+                            "effort": null,
+                            "share": 12.5
+                          },
+                          {
+                            "model": "deepseek-v4-flash",
+                            "effort": null,
+                            "share": 12.5
+                          },
+                          {
+                            "model": "qwen3.7-max",
+                            "effort": null,
+                            "share": 12.5
+                          },
+                          {
+                            "model": "kimi-k2.6",
+                            "effort": null,
+                            "share": 12.5
+                          },
+                          {
+                            "model": "qwen3.6-35b-a3b",
+                            "effort": null,
+                            "share": 12.5
+                          }
+                        ]
+                      },
+                      {
+                        "difficulty": "hard",
+                        "picks": [
+                          {
+                            "model": "qwen3.7-plus",
+                            "effort": null,
+                            "share": 37.5
+                          },
+                          {
+                            "model": "qwen3.7-max",
+                            "effort": null,
+                            "share": 25.0
+                          },
+                          {
+                            "model": "claude-opus-5-5",
+                            "effort": null,
+                            "share": 25.0
+                          },
+                          {
+                            "model": "qwen3.6-27b",
+                            "effort": null,
+                            "share": 8.3
+                          },
+                          {
+                            "model": "qwen3.5-27b-anko",
+                            "effort": null,
+                            "share": 4.2
+                          }
+                        ]
+                      },
+                      {
+                        "difficulty": "extreme",
+                        "picks": [
+                          {
+                            "model": "qwen3.7-max",
+                            "effort": null,
+                            "share": 50.0
+                          },
+                          {
+                            "model": "gpt-6-astra",
+                            "effort": null,
+                            "share": 37.5
+                          },
+                          {
+                            "model": "qwen3.6-plus",
+                            "effort": null,
+                            "share": 12.5
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "global",
+                "me"
+              ],
+              "default": "global"
+            }
+          },
+          {
+            "name": "task",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "all"
+            },
+            "description": "`all`, `code_changes`, `coding_questions`, `general`, a task, or a category."
+          },
+          {
+            "name": "window",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "24h",
+                "7d",
+                "30d"
+              ],
+              "default": "7d"
+            }
+          },
+          {
+            "name": "surface",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "agentic",
+                "non_agentic",
+                "all"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "name": "tier",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ],
+              "default": "all"
+            }
+          }
+        ],
+        "security": [
+          {},
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/models/{model}/providers": {
+      "get": {
+        "summary": "List providers for a model",
+        "operationId": "listModelProviders",
+        "tags": [
+          "Models"
+        ],
+        "description": "Providers that serve a model, with price, context window, latency, throughput, and uptime. Cached for 2 minutes.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "kimi-k2.6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": "kimi-k2.6",
+                  "name": "Kimi K2.6",
+                  "updated_at": 1794120000,
+                  "data": [
+                    {
+                      "id": "<provider-id>",
+                      "name": "Provider name",
+                      "tokens": 262000,
+                      "pricing": {
+                        "type": "per_million_tokens",
+                        "input": 0.6,
+                        "output": 3,
+                        "cache_read": 0.16
+                      },
+                      "status": 0,
+                      "latency": {
+                        "p50": 0.72,
+                        "p75": 0.9,
+                        "p90": 1.4,
+                        "p99": 2.8,
+                        "window_s": 1800,
+                        "samples": 412
+                      },
+                      "throughput": {
+                        "p50": 41.0,
+                        "p75": 36.2,
+                        "p90": 28.9,
+                        "p99": 17.5,
+                        "window_s": 1800,
+                        "samples": 412
+                      },
+                      "latency_last_30m": {
+                        "p50": 0.72,
+                        "p75": 0.9,
+                        "p90": 1.4,
+                        "p99": 2.8
+                      },
+                      "throughput_last_30m": {
+                        "p50": 41.0,
+                        "p75": 36.2,
+                        "p90": 28.9,
+                        "p99": 17.5
+                      },
+                      "uptime_last_5m": 100.0,
+                      "uptime_last_30m": 99.2,
+                      "uptime_last_1d": 99.6
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown model",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Invalid model.",
+                    "type": "error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/settings/routing": {
+      "get": {
+        "summary": "Get provider settings",
+        "operationId": "getProviderSettings",
+        "tags": [
+          "User"
+        ],
+        "description": "Account-wide provider lists applied to every request. Master key only.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "routing": {
+                      "type": "object",
+                      "properties": {
+                        "only": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Allow only these provider ids."
+                        },
+                        "ignore": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Never use these provider ids."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "routing": {
+                    "only": [],
+                    "ignore": [
+                      "<provider-id>"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update provider settings",
+        "operationId": "updateProviderSettings",
+        "tags": [
+          "User"
+        ],
+        "description": "Replace the account-wide provider lists. A request `provider.only` replaces `only`; `ignore` lists are merged.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "only": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Allow only these provider ids."
+                  },
+                  "ignore": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Never use these provider ids."
+                  }
+                }
+              },
+              "example": {
+                "only": [],
+                "ignore": [
+                  "<provider-id>"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "routing": {
+                      "type": "object",
+                      "properties": {
+                        "only": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Allow only these provider ids."
+                        },
+                        "ignore": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Never use these provider ids."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "routing": {
+                    "only": [],
+                    "ignore": [
+                      "<provider-id>"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Body must be an object.",
+                    "type": "invalid_request_error",
+                    "param": null,
+                    "code": 400
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Proxy keys cannot manage Router settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "message": "Only master keys can manage Router settings.",
+                    "type": "error",
+                    "param": null,
+                    "code": 403
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3835,6 +8069,374 @@
           "metadata": {
             "type": "boolean",
             "description": "Return router_metadata in the response."
+          }
+        }
+      },
+      "RouterSettings": {
+        "type": "object",
+        "properties": {
+          "defaultPolicyId": {
+            "type": "string",
+            "description": "Policy used by `model: \"auto\"`."
+          },
+          "lockOverrides": {
+            "type": "boolean",
+            "description": "Ignore request `router` fields except `metadata`."
+          },
+          "classifier": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "rules"
+            ],
+            "description": "`rules` skips the routing model and its fee."
+          },
+          "shadowPercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Share of requests that also record a comparison against a baseline pick."
+          },
+          "activitySampleApi": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Share of API requests stored in the decision log."
+          },
+          "steerManualPicks": {
+            "type": "boolean",
+            "description": "Electron Hub app: route manual model picks."
+          },
+          "scope": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "chat",
+                "agents"
+              ]
+            },
+            "description": "Electron Hub app surfaces where steering applies."
+          },
+          "applyMode": {
+            "type": "string",
+            "enum": [
+              "silent",
+              "preview"
+            ],
+            "description": "Electron Hub app: apply picks directly or preview them first."
+          }
+        }
+      },
+      "RouterPolicy": {
+        "type": "object",
+        "description": "Missing fields take defaults. See https://docs.electronhub.ai/routing/auto-router#policies",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]{1,40}$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "integer",
+            "example": 4
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "custom"
+            ],
+            "description": "`custom` evaluates `custom.rules` first."
+          },
+          "auto": {
+            "type": "object",
+            "properties": {
+              "costTier": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "xhigh",
+                  "max"
+                ],
+                "default": "medium"
+              },
+              "qualityFloor": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Minimum benchmark score (0 = off)."
+              },
+              "preferFast": {
+                "type": "boolean",
+                "description": "Prefer models with the fastest end-to-end response."
+              },
+              "preferVendor": {
+                "type": "string",
+                "nullable": true,
+                "description": "Vendor to favour, e.g. `Anthropic`."
+              },
+              "preferStrength": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 0.2,
+                "description": "How strongly to favour `preferVendor`."
+              },
+              "maxTtft": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Maximum seconds to the first answer token (0 = off)."
+              },
+              "perCategory": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Fixed model per category, e.g. `{\"coding\": \"claude-sonnet-5-5\"}`."
+              }
+            }
+          },
+          "custom": {
+            "type": "object",
+            "properties": {
+              "rules": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                },
+                "description": "Ordered rules: `when` conditions on request signals, `then` actions."
+              },
+              "default": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                },
+                "description": "Actions when no rule matches. Default `[{\"action\": \"useAuto\"}]`."
+              }
+            }
+          },
+          "models": {
+            "type": "object",
+            "properties": {
+              "allowed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Model patterns, e.g. `anthropic/*`."
+              },
+              "excluded": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "strictAllowed": {
+                "type": "boolean",
+                "description": "Fail with 404 when `allowed` matches nothing."
+              }
+            }
+          },
+          "guardrails": {
+            "type": "object",
+            "properties": {
+              "maxCostPerReq": {
+                "type": "number",
+                "nullable": true,
+                "description": "Estimated cost cap per request, in USD."
+              },
+              "blockOverCost": {
+                "type": "boolean",
+                "description": "Block instead of downgrading when over `maxCostPerReq`."
+              },
+              "budgetUsd": {
+                "type": "number",
+                "nullable": true,
+                "description": "Spend budget per window, in USD."
+              },
+              "budgetWindow": {
+                "type": "string",
+                "enum": [
+                  "daily",
+                  "weekly",
+                  "monthly"
+                ],
+                "description": "Windows start at 00:00 UTC."
+              },
+              "budgetScope": {
+                "type": "string",
+                "enum": [
+                  "routed",
+                  "all"
+                ],
+                "description": "Count Auto requests only, or all spend."
+              },
+              "blockOverBudget": {
+                "type": "boolean",
+                "description": "Block instead of using the cheapest model when the budget is spent."
+              },
+              "pii": {
+                "type": "object",
+                "description": "Privacy guard.",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "block",
+                      "redact",
+                      "route"
+                    ]
+                  },
+                  "model": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Model for `action: route`."
+                  },
+                  "entities": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "boolean"
+                    },
+                    "description": "Entity types to detect; empty means all except `name`."
+                  },
+                  "scanAll": {
+                    "type": "boolean",
+                    "description": "Scan every message, not only the latest."
+                  }
+                }
+              }
+            }
+          },
+          "cache": {
+            "type": "object",
+            "description": "Response cache for repeated requests.",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "ttlMin": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 43200
+              },
+              "maxEntries": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5000
+              },
+              "semantic": {
+                "type": "boolean",
+                "description": "Also match similar, not only identical, requests."
+              },
+              "semanticThreshold": {
+                "type": "number",
+                "minimum": 0.8,
+                "maximum": 0.99
+              }
+            }
+          }
+        }
+      },
+      "RouterPolicyEnvelope": {
+        "type": "object",
+        "properties": {
+          "policy": {
+            "$ref": "#/components/schemas/RouterPolicy"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedBy": {
+            "type": "string"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RouterPolicyValidation": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "policy": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RouterPolicy"
+              }
+            ],
+            "nullable": true
+          },
+          "migrated": {
+            "type": "boolean"
+          },
+          "diff": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "RouterPin": {
+        "type": "object",
+        "properties": {
+          "sessionKey": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "pinnedAt": {
+            "type": "number",
+            "description": "Epoch milliseconds."
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Deleted": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "integer"
+              }
+            ]
           }
         }
       }
