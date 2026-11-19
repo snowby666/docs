@@ -27,12 +27,14 @@ A dedicated `ek-dev-` key. Unlimited tokens. No credits. Independent of every ot
 
 | Series | Model ID | Input | Context · Quant | Notes |
 |---|---|---|---|---|
-| Flash · 0.5× | `glm-5.3-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 1M · FP8 | 320B-A18B. Native multimodal (text, image, video). Hybrid sparse and linear attention. |
-| Flash · 0.5× | `mimo-v2.6-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 1M | 309B-A15B MoE (256 experts, 8 active). Hybrid sliding-window and global attention. Native vision. |
-| Standard · 1× | `deepseek-v4.1-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 1M · FP8 + FP4 (FP4 experts) | 552B backbone. 8B prefill / 16B decode active. Native vision. |
+| Flash · 0.5× | `glm-5.3-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite · FP8 | 320B-A18B. Native multimodal (text, image, video). Hybrid sparse and linear attention. |
+| Flash · 0.5× | `mimo-v2.6-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite | 309B-A15B MoE (256 experts, 8 active). Hybrid sliding-window and global attention. Native vision. |
+| Standard · 1× | `deepseek-v4.1-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite · FP8 + FP4 (FP4 experts) | 552B backbone. 8B prefill / 16B decode active. Native vision. |
 | Standard · 1× | `qwen3.8-27b:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · BF16 | Multimodal agentic coding. |
 | Standard · 1× | `minimax-m2.7:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 180K · FP8 | Agentic productivity and multi-agent work. |
 | Heavy · 2× | `glm-5.3:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · FP8 | 744B-A40B. Text-only. Same GLM-5.2 base, post-trained. Stronger complex coding and long-horizon agents. Uses 2 concurrency slots per request. |
+
+Tier-clamped context applies to the three Flash/Standard models above that list **524K Turbo / 262K Lite**. Send your `ek-dev-` key on `/v1/models` (list, detail, or providers) to see your tier’s window; request enforcement matches that value. Without the key, the public catalog shows the Turbo max.
 
 All models support function calling on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
 
@@ -91,13 +93,13 @@ High-duty-cycle or multi-user traffic belongs on a regular Electron Hub API key 
 
     Series can be mixed in any combination that fits the slot total. If the slots a request needs are not free, you get a `429` with `Retry-After`. Wait for a request to finish, then retry. Coding agents handle this automatically.
 
-    To keep parallel work moving on Lite, route subagents and background tasks to a Flash model and reserve the Heavy model for the main session. While the plan is temporarily reduced to one slot, a Heavy request uses that single slot.
+    To keep parallel work moving on Lite, route subagents and background tasks to a Flash model and reserve the Heavy model for the main session. While the plan is temporarily reduced to **one** slot (slow lane), Heavy models that need 2 slots are refused until capacity returns — Flash and Standard still run.
   </Accordion>
   <Accordion title="Full-speed soft headroom (daily)" icon="gauge">
-    Each plan includes full-speed headroom that resets at **21:00 UTC**. Going past it never blocks you. Requests continue with reduced concurrency and paced admission (consumption-scaled spacing, up to 30 seconds when far into overage) until the reset. The dashboard shows how close you are to full-speed headroom.
+    Each plan includes full-speed headroom that resets at **21:00 UTC**. Going past it never blocks you. Requests continue with reduced concurrency and paced admission (consumption-scaled spacing, up to 30 seconds when far into overage) until the reset. The dashboard shows how close you are to full-speed headroom. Turbo’s headroom is **6×** Lite.
   </Accordion>
   <Accordion title="Full-speed soft headroom (weekly)" icon="calendar-week">
-    A rolling weekly soft headroom sits above the daily one. Past it, the same slow lane applies (lower concurrency and paced admission). This is not a hard stop. It keeps sustained 24/7 grinders from crowding out interactive work across the week.
+    A weekly soft headroom sits above the daily one (**5×** the daily amount). It resets at **Sunday 21:00 UTC** (the same instant as account weekly balance), not on a rolling 7-day window. Past it, the same slow lane applies (lower concurrency and paced admission). This is not a hard stop. It keeps sustained 24/7 grinders from crowding out interactive work across the week.
   </Accordion>
   <Accordion title="Requests per minute" icon="wave-sine">
     Request starts refill continuously at **8 per minute on Lite** and **20 per minute on Turbo**. Up to **4** (Lite) or **8** (Turbo) can start back-to-back after a quiet moment. Every request counts as one start, Heavy included. In the slow lane (past full-speed headroom, or in low-interactivity mode) it is 3 per minute (burst 2).

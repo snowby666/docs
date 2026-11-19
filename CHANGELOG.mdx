@@ -5,6 +5,15 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-11-19] - DevPass: soft headroom and Flash context
+
+Coding Plan soft full-speed headroom and long-context Flash windows are tightened. Token usage stays unlimited (soft demote, not a hard stop).
+
+- **Soft headroom:** Lite **10M** daily / **50M** weekly; Turbo **60M** daily / **300M** weekly (weighted units; weekly = 5× daily, resets Sunday 21:00 UTC).
+- **Context:** `glm-5.3-flash:dev`, `mimo-v2.6-flash:dev`, and `deepseek-v4.1-flash:dev` are **524K on Turbo** / **262K on Lite** (was 1M). Enforcement matches authenticated `/v1/models`.
+- **Heavy slots:** while concurrency is reduced to 1, `glm-5.3:dev` is refused (`model_slots_exceeded`); Flash and Standard still run.
+- See [Coding Plan (DevPass)](/billing/coding-plan)
+
 ## [2026-11-08] - Auto Router and routing docs
 
 `model: "auto"` picks a model and reasoning effort for each request on Chat Completions, Messages, and Responses.
@@ -50,7 +59,7 @@ Coding Plan concurrency returns to its launch levels, Heavy-series requests are 
 
 - **Concurrency slots:** Lite **1 → 2**, Turbo **3 → 5**. Existing keys pick up the new limits automatically.
 - **Heavy weighting:** each `glm-5.3:dev` request holds **2** slots for its full duration. Flash and Standard models hold 1. On Lite, one Heavy request uses the whole allowance. On Turbo, two Heavy requests run alongside one Flash or Standard request.
-- A plan temporarily reduced to one slot can still run a Heavy request in that slot.
+- A plan temporarily reduced to one slot cannot start a Heavy request (needs 2 slots); Flash and Standard still run.
 - **Requests per minute:** Lite **8** (burst 4), Turbo **20** (burst 8); 3 (burst 2) in the slow lane. Every request is one start. Over the limit returns `429` with an exact `Retry-After`. These `429`s never count toward the temporary pause.
 - `X-RateLimit-Limit` / `-Remaining` / `-Reset` on `ek-dev-` responses now report the RPM budget, matching master keys.
 - See [Coding Plan (DevPass)](/billing/coding-plan)
