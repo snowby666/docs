@@ -82,7 +82,7 @@ Provider ids come from `GET /v1/models/{model}/providers`. An unknown provider i
 | Suffix | Meaning |
 |---|---|
 | `:free` | Free version of a model, with its own rate limits and providers. Not available on every model. |
-| `:dev` | Coding Plan (DevPass) version. Requires a Coding Plan key. See [Coding Plan](/billing/coding-plan). |
+| `:dev` | Coding Plan model. Requires an `ek-dev-` key. See [Coding Plan](/billing/coding-plan). |
 
 Check `GET /v1/models` for the ids that exist. A catalog variant is part of the model id, so routing variants go after it: `gpt-oss-20b:free:nitro`.
 

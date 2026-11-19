@@ -4,53 +4,50 @@ description: 'Flat monthly plan for coding agents. Unlimited tokens, no credits.
 icon: 'terminal'
 ---
 
-The **Coding Plan** (DevPass) is a flat monthly plan for coding agents and CLIs — Claude Code, Cursor, Cline, Roo Code, or any OpenAI- or Anthropic-compatible tool.
+The **Coding Plan** (DevPass) is a flat-rate plan for coding agents and CLIs — Claude Code, Cursor, Cline, Roo Code, and any OpenAI- or Anthropic-compatible client.
 
-A dedicated `ek-dev-` key. Unlimited tokens. No credits. Independent of every other Electron Hub plan.
+You get a dedicated `ek-dev-` key, a curated `:dev` model list, and **unlimited tokens with no credit burn**. It does not replace a subscription or pay-as-you-go balance; it stacks with them.
 
 ## Tiers
 
 | | **Lite** | **Turbo** |
 |---|---|---|
 | Price | **$10**/month | **$40**/month |
-| Token usage | **Unlimited** | **Unlimited** |
-| Concurrency slots | 2 | 5 |
-| Requests per minute | 8 (burst 4) | 20 (burst 8) |
-| Priority when busy | Standard | High |
-| Full-speed soft headroom | Generous | 6× Lite |
+| Concurrent slots | 2 | 5 |
+| Request starts / min | 8 (burst 4) | 20 (burst 8) |
+| Queue when busy | Standard | Priority |
+| Full-speed headroom | Baseline | **6×** Lite |
+
+Token usage is unlimited on both tiers. Past full-speed headroom you stay online in a slower lane (see [Limits](#limits)) — you are never cut off for burning tokens.
 
 <Warning>
-  Launch seats are capped per tier. If a tier is sold out, join the waitlist on the dashboard. You are notified when a seat opens (first come, first served).
+  Seats are capped per tier. If a tier is sold out, join the waitlist on the dashboard. Openings are first come, first served.
 </Warning>
 
-## Included models
+## Models
 
-| Series | Model ID | Input | Context · Quant | Notes |
+Only `:dev` models. Only with an `ek-dev-` key. Use your master key for everything else in the catalog.
+
+| Series | Model | Input | Context | Notes |
 |---|---|---|---|---|
-| Flash · 0.5× | `glm-5.3-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite · FP8 | 320B-A18B. Native multimodal (text, image, video). Hybrid sparse and linear attention. |
-| Flash · 0.5× | `mimo-v2.6-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite | 309B-A15B MoE (256 experts, 8 active). Hybrid sliding-window and global attention. Native vision. |
-| Standard · 1× | `deepseek-v4.1-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite · FP8 + FP4 (FP4 experts) | 552B backbone. 8B prefill / 16B decode active. Native vision. |
-| Standard · 1× | `qwen3.8-27b:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · BF16 | Multimodal agentic coding. |
-| Standard · 1× | `minimax-m2.7:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 180K · FP8 | Agentic productivity and multi-agent work. |
-| Heavy · 2× | `glm-5.3:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · FP8 | 744B-A40B. Text-only. Same GLM-5.2 base, post-trained. Stronger complex coding and long-horizon agents. Uses 2 concurrency slots per request. |
+| Flash · 0.5× | `glm-5.3-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite · FP8 | 320B-A18B. Text, image, video in. |
+| Flash · 0.5× | `mimo-v2.6-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite | 309B-A15B MoE. Vision. |
+| Standard · 1× | `deepseek-v4.1-flash:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 524K Turbo / 262K Lite · FP8+FP4 | 552B backbone. Vision. |
+| Standard · 1× | `qwen3.8-27b:dev` | <Icon src="/images/modality-text.svg" size={18} /> <Icon src="/images/modality-image.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · BF16 | Vision. |
+| Standard · 1× | `minimax-m2.7:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 180K · FP8 | Text only. |
+| Heavy · 2× | `glm-5.3:dev` | <Icon src="/images/modality-text.svg" size={18} /> → <Icon src="/images/modality-text.svg" size={18} /> | 262K · FP8 | Text only. Uses **2** concurrent slots. |
 
-Tier-clamped context applies to the three Flash/Standard models above that list **524K Turbo / 262K Lite**. Send your `ek-dev-` key on `/v1/models` (list, detail, or providers) to see your tier’s window; request enforcement matches that value. Without the key, the public catalog shows the Turbo max.
+All of them support tools on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
 
-All models support function calling on `/v1/chat/completions`, `/v1/messages`, and `/v1/responses`.
+**Context:** the three long-window models above are **524K on Turbo** and **262K on Lite**. That limit is enforced on every request. `GET /v1/models` is public and shows the Turbo max; send your `ek-dev-` key (list) or call authenticated `/v1/models/{id}` to see your tier’s window.
 
-Series weight (0.5× / 1× / 2×) affects soft full-speed headroom (`ceil(raw × weight)`). It does not stop you from using the plan. Dashboard per-model stats stay raw.
-
-Heavy models also hold **2 concurrency slots** per request; Flash and Standard models hold 1. See [Concurrency slots](#concurrency-slots).
-
-<Note>
-  `:dev` models accept only `ek-dev-` keys. DevPass keys can call only `:dev` models. Keep your master key configured if you need the rest of the catalog.
-</Note>
+**Series weight (0.5× / 1× / 2×):** raw tokens are multiplied when scoring soft headroom (`ceil(raw × weight)`). Flash burns headroom slower; Heavy burns it faster. Dashboard per-model charts stay unweighted.
 
 ## Quickstart
 
-1. Subscribe on the [Dashboard](https://app.electronhub.ai) → **Console** → **Coding Plan**.
-2. Your `ek-dev-...` key is provisioned within seconds. It is always retrievable from the Coding Plan tab. Regenerating it immediately invalidates the old key.
-3. Use it as a Bearer token:
+1. Subscribe at [Dashboard](https://app.electronhub.ai) → **Console** → **Coding Plan**.
+2. Copy the `ek-dev-...` key from that tab (regen invalidates the old key immediately).
+3. Call the API:
 
 ```bash
 curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
@@ -63,100 +60,86 @@ curl -X POST "https://api.electronhub.ai/v1/chat/completions" \
   }'
 ```
 
-## Fair use
+## Limits
 
-One person, one seat. Lite and Turbo are alternative tiers, not stackable. If two concurrency slots are not enough, upgrade. Do not open another account, email, or payment method to hold a second seat.
+These controls keep the pool usable. None of them are a hard token cap.
 
-The `ek-dev-` key may run on machines you personally use (home, work, laptop, CI, VPN). All of that usage counts against the same seat.
+### Concurrent slots
 
-The plan is for interactive coding by that one person. These are violations and lead to suspension:
+| Series | Slots / request | Lite (2) | Turbo (5) |
+|---|---|---|---|
+| Flash · Standard | 1 | 2 at once | 5 at once |
+| Heavy (`glm-5.3:dev`) | 2 | 1 Heavy | 2 Heavy + 1 Flash/Standard |
 
-- a second seat under any identity you control
-- sharing the key with anyone else
-- pooling keys or seats to raise throughput
-- resale, subletting, or access-as-a-service
-- a deployed app or backend that serves other people
-- unattended or multi-user production traffic
+A request holds its slots until it finishes. If it needs more slots than are free → `429` with `Retry-After`.
 
-We treat extra seats, shared keys, and resale as the same violation. Chargebacks are account-level violations.
+In the slow lane (concurrency collapsed to **1**), Heavy is refused with `403` / `model_slots_exceeded` until the cap rises again. Flash and Standard still run. On Lite, prefer Flash for subagents and keep Heavy for the main session.
 
-High-duty-cycle or multi-user traffic belongs on a regular Electron Hub API key billed on credits.
+### Full-speed headroom
 
-<AccordionGroup>
-  <Accordion title="Concurrency slots" icon="layer-group">
-    Each plan has a fixed number of concurrency slots: **2 on Lite, 5 on Turbo**. A request holds its slots until it finishes. Request starts are limited separately (see [Requests per minute](#requests-per-minute)).
+| Window | Size | Resets |
+|---|---|---|
+| Daily | Soft budget (Turbo = 6× Lite) | Every day at **21:00 UTC** |
+| Weekly | **5×** the daily budget | **Sunday 21:00 UTC** (fixed week, not rolling) |
 
-    | Series | Slots per request | Lite (2 slots) | Turbo (5 slots) |
-    |---|---|---|---|
-    | Flash · Standard | 1 | 2 requests | 5 requests |
-    | Heavy (`glm-5.3:dev`) | 2 | 1 request | 2 requests, plus 1 Flash or Standard request |
+Past either budget you keep running, but admission slows: concurrency drops to 1, RPM shrinks, and inter-request spacing grows with consumption (up to ~30s when far over). The dashboard meters show remaining headroom. Series weight applies to these budgets; see [Models](#models).
 
-    Series can be mixed in any combination that fits the slot total. If the slots a request needs are not free, you get a `429` with `Retry-After`. Wait for a request to finish, then retry. Coding agents handle this automatically.
+### Requests per minute
 
-    To keep parallel work moving on Lite, route subagents and background tasks to a Flash model and reserve the Heavy model for the main session. While the plan is temporarily reduced to **one** slot (slow lane), Heavy models that need 2 slots are refused until capacity returns — Flash and Standard still run.
-  </Accordion>
-  <Accordion title="Full-speed soft headroom (daily)" icon="gauge">
-    Each plan includes full-speed headroom that resets at **21:00 UTC**. Going past it never blocks you. Requests continue with reduced concurrency and paced admission (consumption-scaled spacing, up to 30 seconds when far into overage) until the reset. The dashboard shows how close you are to full-speed headroom. Turbo’s headroom is **6×** Lite.
-  </Accordion>
-  <Accordion title="Full-speed soft headroom (weekly)" icon="calendar-week">
-    A weekly soft headroom sits above the daily one (**5×** the daily amount). It resets at **Sunday 21:00 UTC** (the same instant as account weekly balance), not on a rolling 7-day window. Past it, the same slow lane applies (lower concurrency and paced admission). This is not a hard stop. It keeps sustained 24/7 grinders from crowding out interactive work across the week.
-  </Accordion>
-  <Accordion title="Requests per minute" icon="wave-sine">
-    Request starts refill continuously at **8 per minute on Lite** and **20 per minute on Turbo**. Up to **4** (Lite) or **8** (Turbo) can start back-to-back after a quiet moment. Every request counts as one start, Heavy included. In the slow lane (past full-speed headroom, or in low-interactivity mode) it is 3 per minute (burst 2).
+Continuous refill: **8/min** Lite (burst 4), **20/min** Turbo (burst 8). Every start counts once, including Heavy. Slow lane: **3/min** (burst 2).
 
-    Past the limit you get a `429` with an exact `Retry-After` (Lite: about 8 seconds per start). `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` report this budget on every response. These `429`s never count toward the temporary pause.
-  </Accordion>
-  <Accordion title="Temporary pause after concurrency hammering" icon="pause">
-    Repeatedly hitting the parallel-slot limit (about 100 concurrency `429`s in a usage day) can pause admission for **5 hours**. While paused, requests return **`403`**. Your key stays valid. Service resumes automatically at the time shown on the dashboard. Regenerating the key clears an automatic concurrency pause.
-  </Accordion>
-</AccordionGroup>
+Over the limit → `429` with `Retry-After`. Headers: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`. These RPM `429`s do **not** count toward the concurrency pause below.
+
+### Concurrency pause
+
+About **100** concurrency `429`s in a usage day can pause admission for **5 hours**. Paused requests return `403`. The key remains valid; service resumes at the dashboard time. Regenerating the key clears an automatic pause.
 
 ### Low-interactivity mode
 
-Plans are sized for a person coding, even intensively, all day. When an account shows a usage pattern far beyond typical interactive work, the plan enters **low-interactivity mode** for about **24 hours**:
+If usage looks far beyond one person coding, the seat may enter this mode for ~**24 hours**:
 
-- Under light load, behavior is unchanged.
-- When the platform is busy, requests may be queued behind interactive sessions and may need a retry.
-- Nothing is blocked. Your plan, models, and answer quality stay the same.
-- Interactive mode resumes automatically at the time shown on the Coding Plan tab. No action is required.
+- Light load: unchanged.
+- Busy periods: may queue behind interactive traffic; retry if needed.
+- Models, quality, and entitlement stay the same. Not a suspension.
 
-Low-interactivity mode is a temporary fairness control so interactive subscribers keep responsive access during busy periods. It is **not** a suspension.
+It clears automatically at the time on the Coding Plan tab. If it surprises you, check for runaway automation first, then ask on [Discord](https://discord.com/invite/electronhub).
 
-If this surprises you, check for a runaway automation first, then ask on [Discord](https://discord.com/invite/electronhub).
+## Fair use
+
+**One person, one seat.** Lite and Turbo are alternatives, not stackable — upgrade instead of buying twice.
+
+You may use the key on machines you personally use (home, work, laptop, CI, VPN). All of that counts as the same seat.
+
+**Suspended for:** second seats under identities you control; sharing the key; pooling seats for throughput; resale or access-as-a-service; backends that serve other people; unattended multi-user production traffic. Chargebacks are account-level.
+
+High-duty-cycle or multi-user traffic belongs on a credit-billed master key.
 
 ## Errors
 
-| Status | Meaning | What to do |
+| Status | Cause | What to do |
 |---|---|---|
-| `429` | Not enough free concurrency slots (Heavy requests need 2), or the per-minute request limit was reached | Honor `Retry-After`, then retry |
-| `404` model error | Model not in the Coding Plan list | Use a `:dev` model from the table above |
-| `403` | Temporarily paused after concurrency hammering | Wait for the resume time on the dashboard, or regenerate your key to clear the pause |
-| `403` | Subscription suspended or ended | Check payment, or resubscribe. A second seat or shared use can also cause this. |
+| `429` | No free slots, or RPM budget empty | Honor `Retry-After` |
+| `403` `model_slots_exceeded` | Heavy needs 2 slots; current cap is 1 | Use Flash/Standard until the slow lane ends |
+| `403` | Concurrency pause | Wait for the dashboard resume time, or regen the key |
+| `403` | Suspended / ended / fair-use enforcement | Fix payment, resubscribe, or contact support |
+| `404` | Model not on the Coding Plan list | Pick a `:dev` id from [Models](#models) |
 
-## Terms
+## Billing
 
-- Monthly billing via **Creem**, auto-renewing, non-refundable. Cancel any time. Your key stays active until the period ends.
-- Fair use is binding. Extra seats, shared keys, pooling, and resale are suspended. Chargebacks are account-level violations.
+- Monthly via **Creem**, auto-renew, non-refundable. Cancel anytime; the key stays live until period end.
+- Founding / beta buyers keep their launch price while the subscription stays active. Cancel and resubscribe later → current public price.
+- Upgrade Lite → Turbo in the Creem portal; the same `ek-dev-` key picks up Turbo limits.
 
 ## FAQ
 
 <AccordionGroup>
-  <Accordion title="Is token usage really unlimited?">
-    Yes. There is no hard token cap and no per-token charge. Soft full-speed headroom only affects concurrency, request rate, and latency when you are far past typical interactive use. Requests are never blocked for burning tokens.
+  <Accordion title="Is usage really unlimited?">
+    Yes — no hard token stop and no per-token charge. Soft headroom only slows concurrency, RPM, and spacing when you are far past typical interactive use.
   </Accordion>
-  <Accordion title="I bought during beta. Do I keep the old price?">
-    Yes. Founding and beta subscribers who purchased at the launch rate keep that price for as long as the subscription stays active. If you cancel and subscribe again later, the current public price applies.
+  <Accordion title="Can I hold two seats?">
+    No. One person, one seat. Upgrade to Turbo for more parallel slots.
   </Accordion>
-  <Accordion title="Can I buy a second Coding Plan seat?">
-    No. See [Fair use](#fair-use). One person, one seat. Upgrade Lite to Turbo if you need more parallel slots.
-  </Accordion>
-  <Accordion title="Can I upgrade Lite to Turbo?">
-    Yes. Change plans in the Creem billing portal. Your existing key picks up Turbo limits automatically.
-  </Accordion>
-  <Accordion title="What happens when my subscription ends?">
-    Your `ek-dev-` key is deactivated. Resubscribe any time to restore it.
-  </Accordion>
-  <Accordion title="What does the Low-interactivity mode banner mean?">
-    See [Low-interactivity mode](#low-interactivity-mode). Requests remain available. Under load they may queue behind interactive sessions until interactive mode resumes automatically.
+  <Accordion title="What happens when the subscription ends?">
+    The `ek-dev-` key is deactivated. Resubscribe to restore it.
   </Accordion>
 </AccordionGroup>

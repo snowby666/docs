@@ -14,10 +14,10 @@ Electron Hub issues three kinds of API keys, all used the same way (Bearer token
 |---|---|---|
 | `ek-` | **Master key** | Your main account key — full model catalog, billed against your credits |
 | `ek-proxy-` | **Proxy key** | Scoped sub-keys you create under your master key, with per-key budgets and model allowlists |
-| `ek-dev-` | **DevPass key** | [Coding Plan](/billing/coding-plan) key — flat-rate access to the dedicated `:dev` coding models, never touches credits |
+| `ek-dev-` | **DevPass key** | [Coding Plan](/billing/coding-plan) — flat-rate `:dev` models only; never spends credits |
 
 <Note>
-  `:dev` models accept only `ek-dev-` keys, and DevPass keys work only on the Coding Plan model list — the key types don't overlap.
+  `:dev` models require an `ek-dev-` key. An `ek-dev-` key cannot call the rest of the catalog. Use your master key for non-`:dev` models.
 </Note>
 
 ## Getting Your API Key

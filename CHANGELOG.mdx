@@ -7,11 +7,11 @@ Track all updates, changes, and new features to the Electron Hub API.
 
 ## [2026-11-19] - DevPass: soft headroom and Flash context
 
-Coding Plan soft full-speed headroom and long-context Flash windows are tightened. Token usage stays unlimited (soft demote, not a hard stop).
+Coding Plan slows heavy users sooner; long-context Flash windows shrink. Tokens stay unlimited (slow lane, not a hard stop).
 
-- **Soft headroom:** Lite **10M** daily / **50M** weekly; Turbo **60M** daily / **300M** weekly (weighted units; weekly = 5× daily, resets Sunday 21:00 UTC).
-- **Context:** `glm-5.3-flash:dev`, `mimo-v2.6-flash:dev`, and `deepseek-v4.1-flash:dev` are **524K on Turbo** / **262K on Lite** (was 1M). Enforcement matches authenticated `/v1/models`.
-- **Heavy slots:** while concurrency is reduced to 1, `glm-5.3:dev` is refused (`model_slots_exceeded`); Flash and Standard still run.
+- **Soft headroom (weighted):** Lite **10M**/day · **50M**/week; Turbo **60M**/day · **300M**/week. Week = 5× day, resets Sunday 21:00 UTC.
+- **Context:** `glm-5.3-flash:dev`, `mimo-v2.6-flash:dev`, `deepseek-v4.1-flash:dev` → **524K Turbo / 262K Lite** (was 1M). Enforced on requests; `/v1/models` with an `ek-dev-` key reports the same.
+- **Heavy on 1 slot:** `glm-5.3:dev` returns `403` `model_slots_exceeded` while the slow-lane cap is 1; Flash/Standard still run.
 - See [Coding Plan (DevPass)](/billing/coding-plan)
 
 ## [2026-11-08] - Auto Router and routing docs

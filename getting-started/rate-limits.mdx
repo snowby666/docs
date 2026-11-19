@@ -109,7 +109,14 @@ When you encounter rate limits, you'll receive different error codes depending o
 
 ### Coding Plan (DevPass) Keys
 
-`ek-dev-` keys have their own RPM limit: **8 on Lite (burst 4), 20 on Turbo (burst 8)**. Every request counts once, and `X-RateLimit-*` headers report this budget. They also have concurrency slots (2 on Lite, 5 on Turbo; a Heavy-series request such as `glm-5.3:dev` holds 2), plus daily/weekly fair-use headroom and optional low-interactivity / pause controls — see [Coding Plan → Fair Use](/billing/coding-plan#fair-use) and [Low-interactivity mode](/billing/coding-plan#low-interactivity-mode).
+`ek-dev-` keys use a separate budget from master keys:
+
+| | Lite | Turbo |
+|---|---|---|
+| RPM (burst) | 8 (4) | 20 (8) |
+| Concurrent slots | 2 | 5 |
+
+Every request start counts once toward RPM (`X-RateLimit-*` on responses). `glm-5.3:dev` holds **2** slots. Soft daily/weekly headroom, slow-lane pacing, low-interactivity mode, and the concurrency pause are documented on [Coding Plan → Limits](/billing/coding-plan#limits).
 
 ## Special Model Limits
 
