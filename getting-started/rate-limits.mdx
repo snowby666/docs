@@ -114,9 +114,10 @@ When you encounter rate limits, you'll receive different error codes depending o
 | | Lite | Turbo |
 |---|---|---|
 | RPM (burst) | 8 (4) | 20 (8) |
-| Concurrent slots | 2 | 5 |
+| Concurrent slots | 2 | 6 |
+| Slow-lane slots | 1 | 2 |
 
-Every request start counts once toward RPM (`X-RateLimit-*` on responses). `glm-5.3:dev` holds **2** slots. Soft daily/weekly headroom, slow-lane pacing, low-interactivity mode, and the concurrency pause are documented on [Coding Plan → Limits](/billing/coding-plan#limits).
+Every request start counts once toward RPM (`X-RateLimit-*` on responses). `glm-5.3:dev` (Heavy) holds **3** slots — Turbo-only; Lite and demoted caps refuse it with `403` `model_slots_exceeded`. Soft daily/weekly headroom, slow-lane pacing, low-interactivity mode, and the concurrency pause are documented on [Coding Plan → Limits](/billing/coding-plan#limits).
 
 ## Special Model Limits
 

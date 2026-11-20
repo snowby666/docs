@@ -5,13 +5,22 @@ description: 'API updates, changes, and release notes'
 
 Track all updates, changes, and new features to the Electron Hub API.
 
+## [2026-11-19] - DevPass: series weights, Turbo slots, Heavy Turbo-only
+
+Coding Plan retunes how fast each series burns soft headroom and who can run Heavy.
+
+- **Series weights:** Flash **0.25×**, Standard **1×**, Heavy **3×** (was 0.5 / 1 / 2). Soft/weekly caps unchanged.
+- **Concurrency:** Turbo healthy **6** (was 5); demoted Turbo **2** (was 1). Lite stays **2** healthy / **1** demoted.
+- **Heavy slots:** `glm-5.3:dev` costs **3** slots → **Turbo-only** (Lite always `403` `model_slots_exceeded`). Demoted Turbo also blocks Heavy.
+- See [Coding Plan (DevPass)](/billing/coding-plan)
+
 ## [2026-11-19] - DevPass: soft headroom and Flash context
 
 Coding Plan slows heavy users sooner; long-context Flash windows shrink. Tokens stay unlimited (slow lane, not a hard stop).
 
 - **Soft headroom (weighted):** Lite **10M**/day · **50M**/week; Turbo **60M**/day · **300M**/week. Week = 5× day, resets Sunday 21:00 UTC.
 - **Context:** `glm-5.3-flash:dev`, `mimo-v2.6-flash:dev`, `deepseek-v4.1-flash:dev` → **524K Turbo / 262K Lite** (was 1M). Enforced on requests; `/v1/models` with an `ek-dev-` key reports the same.
-- **Heavy on 1 slot:** `glm-5.3:dev` returns `403` `model_slots_exceeded` while the slow-lane cap is 1; Flash/Standard still run.
+- **Heavy on reduced caps:** `glm-5.3:dev` returns `403` `model_slots_exceeded` while the effective cap is below its slot cost; Flash/Standard still run.
 - See [Coding Plan (DevPass)](/billing/coding-plan)
 
 ## [2026-11-08] - Auto Router and routing docs
