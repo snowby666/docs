@@ -42,6 +42,10 @@ Generate images from text descriptions.
   Format of the generated images ("url" or "b64_json")
 </ParamField>
 
+<ParamField body="public" type="boolean" default="false">
+  Add the prompt and image to the public gallery. Generated images are always hosted at public URLs, whether or not this is set; `public` only controls the gallery. Free-plan generations are added to the gallery regardless.
+</ParamField>
+
 ### Response
 
 Returns an array of image objects with URLs or base64-encoded images.

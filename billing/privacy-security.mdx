@@ -1,29 +1,44 @@
 ---
 title: 'Privacy & Security'
-description: 'Data protection, moderation, and privacy policies'
+description: 'What we keep, how moderation works, and where your requests go'
 icon: 'shield-check'
 ---
 
-## No-Log Policy for Prompts
+This page summarises how Electron Hub handles your data. The [Privacy Policy](https://tos.electronhub.ai/privacy) is the full, binding version; all of our policies are in the [Legal Center](https://tos.electronhub.ai/legal).
+
+## What We Keep
 
 <Info>
-  **We do not log your prompt content.** Your prompts and AI responses are not stored in our logs. We only log:
+  **We don't keep a copy of your conversations.** For each request we log metadata only:
   - Request metadata (model used, tokens, credits, timestamp, status)
   - Technical information (IP address, API key used, route accessed)
   - Usage statistics (for billing and analytics)
+
+  Request logs are kept for **30 days**, up to the latest **1,000** requests per account. They are what you see in [User Logs](/api-reference/user-logs).
 </Info>
 
 <Note>
-  **What this means:**
-  - Your conversations and prompts remain private
-  - We cannot see what you're asking the AI
-  - We cannot reconstruct your conversations from our logs
-  - Your data privacy is protected
+  **When content is kept:** only in the limited cases described in [section 5 of the Privacy Policy](https://tos.electronhub.ai/privacy#content):
+  - **Router cache**, if you turn it on: responses are kept for the period you choose (1 minute to 30 days), for your account only
+  - **Error diagnostics**: when a request fails with an error other than a rate limit, the diagnostic record can include the request content
+  - **Coding Plan**: short samples of recent requests per `ek-dev-` key, used for fair-use enforcement
+  - **Image generation**: free-plan generations and requests sent with `public: true` are added to the gallery
+  - **Abuse cases**: content linked to a suspected violation, an abuse investigation or a legal report
 </Note>
+
+## Model Providers
+
+Your requests are sent to the model provider that serves the model you choose, and that provider processes them under its own terms. Some providers keep data for a period or review it for abuse.
+
+<Warning>
+  **Free models:** `:free` and experimental models are served by third-party providers who may use your prompts and outputs to train their models. Don't send anything sensitive to them.
+</Warning>
+
+Electron Hub does not train models on your prompts or outputs.
 
 ## Content Moderation
 
-To comply with our AI provider content policies and legal requirements, we apply moderation to detect and flag requests involving:
+Image and video generation prompts (including images you ask for in chat) and images submitted for editing are screened before generation. They are checked against our [Usage Policy](https://tos.electronhub.ai/usage-policy), which prohibits, among other things:
 
 <Columns cols={3}>
   <Card title="CSAM Detection" icon="ban" color="#EF4444">
@@ -41,16 +56,18 @@ To comply with our AI provider content policies and legal requirements, we apply
 
 <Info>
   **How it works:**
-  - Requests are automatically scanned before being sent to AI providers
-  - Flagged requests are blocked and not processed
+  - Image and video prompts are checked automatically before generation, using automated classifiers, some run by third-party moderation providers
+  - Flagged requests are blocked with a `403` and nothing is generated
   - No credits are charged for blocked requests
-  - This helps us maintain compliance with provider policies and legal requirements
+  - Chat text is not screened before it reaches the model; model providers apply their own policies
 </Info>
 
 <Note>
-  **Your privacy is still protected:**
-  - Moderation checks are automated and do not involve human review of your content
-  - We do not store the content of blocked requests
-  - This is a necessary measure to ensure service availability and legal compliance
+  **Review:**
+  - Blocking is automated. Content linked to a suspected violation, an abuse investigation or a legal report may be kept and reviewed by our team, and suspected CSAM is reported to the authorities as the law requires
+  - To ask for a person to review an automated decision, email support@electronhub.ai with the subject "Review"
 </Note>
 
+## Security
+
+Traffic to Electron Hub is encrypted in transit (TLS). We don't offer end-to-end encryption: requests are decrypted on our servers so they can be routed to the model provider. See [Security](https://tos.electronhub.ai/security) for details and [Subprocessors](https://tos.electronhub.ai/subprocessors) for the services we use.

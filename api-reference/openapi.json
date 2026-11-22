@@ -6656,7 +6656,7 @@
           "public": {
             "type": "boolean",
             "default": false,
-            "description": "Whether to make the image publicly accessible"
+            "description": "Add the prompt and image to the public gallery. Generated images are always hosted at public URLs, whether or not this is set; this only controls the gallery. Free-plan generations are added to the gallery regardless."
           }
         }
       },

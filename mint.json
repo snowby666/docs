@@ -23,6 +23,10 @@
     {
       "name": "Discord",
       "url": "https://discord.com/invite/electronhub"
+    },
+    {
+      "name": "Legal",
+      "url": "https://tos.electronhub.ai/legal"
     }
   ],
   "topbarCtaButton": {

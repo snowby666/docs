@@ -1,12 +1,12 @@
 ---
 title: 'Coding Plan (DevPass)'
-description: 'Flat monthly plan for coding agents. Unlimited tokens, no credits.'
+description: 'Flat monthly plan for coding agents. No token cap or credits, subject to fair use.'
 icon: 'terminal'
 ---
 
 The **Coding Plan** (DevPass) is a flat-rate plan for coding agents and CLIs — Claude Code, Cursor, Cline, Roo Code, and any OpenAI- or Anthropic-compatible client.
 
-You get a dedicated `ek-dev-` key, a curated `:dev` model list, and **unlimited tokens with no credit burn**. It does not replace a subscription or pay-as-you-go balance; it stacks with them.
+You get a dedicated `ek-dev-` key, a curated `:dev` model list, and **unlimited tokens with no credit burn, subject to [fair use](#fair-use)**: usage is not capped by a token allowance, but speed and concurrency are limited. It does not replace a subscription or pay-as-you-go balance; it stacks with them.
 
 ## Tiers
 
@@ -18,7 +18,7 @@ You get a dedicated `ek-dev-` key, a curated `:dev` model list, and **unlimited 
 | Queue when busy | Standard | Priority |
 | Full-speed headroom | Baseline | **6×** Lite |
 
-Token usage is unlimited on both tiers. Past full-speed headroom you stay online in a slower lane (see [Limits](#limits)) — you are never cut off for burning tokens.
+Token usage is not capped on either tier, subject to [fair use](#fair-use). Past full-speed headroom you stay online in a slower lane (see [Limits](#limits)) — you are never cut off for burning tokens.
 
 <Warning>
   Seats are capped per tier. If a tier is sold out, join the waitlist on the dashboard. Openings are first come, first served.
@@ -110,9 +110,13 @@ It clears automatically at the time on the Coding Plan tab. If it surprises you,
 
 You may use the key on machines you personally use (home, work, laptop, CI, VPN). All of that counts as the same seat.
 
-**Suspended for:** second seats under identities you control; sharing the key; pooling seats for throughput; resale or access-as-a-service; backends that serve other people; unattended multi-user production traffic. Chargebacks are account-level.
+**Suspended for:** second seats under identities you control; sharing the key; pooling seats for throughput; resale or access-as-a-service; backends that serve other people; unattended multi-user production traffic.
+
+**Payment disputes:** a payment dispute or chargeback suspends or closes the whole account, including the `ek-dev-` key. Please contact support before disputing a charge.
 
 High-duty-cycle or multi-user traffic belongs on a credit-billed master key.
+
+To enforce fair use we keep short samples of recent requests per `ek-dev-` key (up to 20), plus request timing and network data, as described in the [Privacy Policy](https://tos.electronhub.ai/privacy#content).
 
 ## Errors
 
@@ -126,7 +130,7 @@ High-duty-cycle or multi-user traffic belongs on a credit-billed master key.
 
 ## Billing
 
-- Monthly via **Creem**, auto-renew, non-refundable. Cancel anytime; the key stays live until period end.
+- Monthly via **Creem**, auto-renew, non-refundable once your key is activated, except where the law requires. Cancel anytime; the key stays live until period end. See the [Service-Specific Terms](https://tos.electronhub.ai/service-terms#coding-plan) and the [Refund & Billing Policy](https://tos.electronhub.ai/refunds).
 - Founding / beta buyers keep their launch price while the subscription stays active. Cancel and resubscribe later → current public price.
 - Upgrade Lite → Turbo in the Creem portal; the same `ek-dev-` key picks up Turbo limits.
 
@@ -134,7 +138,7 @@ High-duty-cycle or multi-user traffic belongs on a credit-billed master key.
 
 <AccordionGroup>
   <Accordion title="Is usage really unlimited?">
-    Yes — no hard token stop and no per-token charge. Soft headroom only slows concurrency, RPM, and spacing when you are far past typical interactive use.
+    Tokens are not capped and there is no per-token charge, subject to fair use: speed, concurrency and priority are not unlimited. Soft headroom slows concurrency, RPM, and spacing when you are far past typical interactive use, and the plan is for one person's own use (see [Fair use](#fair-use)).
   </Accordion>
   <Accordion title="Can I hold two seats?">
     No. One person, one seat. Upgrade to Turbo for more parallel slots.

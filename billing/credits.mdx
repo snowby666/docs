@@ -25,8 +25,8 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   <Warning>
     <strong>Important Notes:</strong>
     - Weekly credits refill every **Sunday at 21:00 UTC**
-    - Unused weekly credits do <strong>not</strong> carry over to the next week
-    - Your balance is automatically set to your weekly credits amount at refill time
+    - At each refill your balance is topped up to your plan's weekly allowance. Unused weekly credits are <strong>not</strong> added on top: with \$3 left on an \$8 allowance, you start the week with \$8, not \$11
+    - On a paid plan, a balance already above the allowance (for example from a bonus) is left as it is; on the Free plan it is reset to \$0.25
     - Weekly credits are separate from permanent credits
   </Warning>
 </Accordion>
@@ -35,7 +35,7 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   **Permanent Credits** are credits you purchase with real money. 
   
   <Card title="Key Features" icon="infinity" color="#10B981">
-    - Never expire
+    - Don't expire while your account is open
     - Volume discounts available
     - Can be used alongside weekly credits
   </Card>
@@ -52,7 +52,7 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
     - The total cap is **50% of your weekly credits** (e.g., if you get \$50/week, your flex wallet can hold up to \$25)
     - You can save at any time (no cooldown) — but the weekly save limit resets every Sunday at 21:00 UTC
     - Flex credits are used automatically when your regular balance runs out (if flex credits are enabled)
-    - Flex balance rolls over until you use it
+    - Flex balance rolls over until you use it, while your plan stays active. Flex credits are removed when your plan ends
   </Info>
 
   <Card title="Example" icon="calculator" color="#F59E0B">
@@ -88,7 +88,7 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   </Card>
 
   <Warning>
-    <strong>Important:</strong> Neutrinos are charged for <strong>all requests</strong> (failed, cancelled, and successful) - unlike regular credits which are only charged for successful/cancelled requests.
+    <strong>Important:</strong> Neutrinos are deducted when a request is accepted and are not returned if it later fails - unlike regular credits, which are only charged for successful/cancelled requests. Unused Neutrinos don't carry over to the next day.
   </Warning>
 </Accordion>
 
@@ -106,7 +106,7 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   
   **Regular Credits:** Only charged for **successful** and **cancelled** requests. **Failed requests are NOT charged.**
   
-  **Neutrinos:** Charged for **all requests** (failed, cancelled, and successful) - this is different from regular credits.
+  **Neutrinos:** Deducted when a request is **accepted** and **not returned** if it fails - this is different from regular credits.
 </Warning>
 
 <Card title="Example: Successful Request" icon="check-circle" color="#10B981">
@@ -118,7 +118,7 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
 <Card title="Example: Failed Request" icon="x" color="#F59E0B">
   - You make a request that fails (e.g., model unavailable, timeout)
   - **Regular credits**: NOT charged (you keep your credits)
-  - **Neutrinos**: Still charged (if using a `:free` model)
+  - **Neutrinos**: Not returned (if using a `:free` model, the Neutrino was deducted when the request was accepted)
 </Card>
 
 ## Credit Reset Times
@@ -131,8 +131,8 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   </Card>
   
   <Card title="Never Reset" icon="infinity" color="#10B981">
-    - **Permanent credits**: Never reset (they're permanent!)
-    - **Flex credits balance**: Rolls over until used
+    - **Permanent credits**: Never reset; they don't expire while your account is open
+    - **Flex credits balance**: Rolls over until used, while your plan stays active
   </Card>
 </Columns>
 

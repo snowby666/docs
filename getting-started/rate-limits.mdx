@@ -43,6 +43,14 @@ Electron Hub implements rate limiting to ensure fair usage and maintain service 
 **Cooldown Period**: If you exceed your rate limit, you must wait 3 minutes (180 seconds) before making any new requests. This cooldown is enforced even if your normal rate limit window would have reset.
 </Warning>
 
+### Network Limit (per IP)
+
+Separately from your plan's RPM, our network edge (Cloudflare) limits each IP address to **120 requests per minute** across `POST /v1/chat/completions`, `/v1/messages` (including `/v1/messages/count_tokens`) and `/v1/responses`. Above that, the IP is **blocked for 10 minutes**. This applies to every plan, including higher limits from [rate limit scaling](/billing/advanced#rate-limit-scaling).
+
+<Note>
+  The block comes from the network edge, not the API, so blocked requests get Cloudflare's own `429` page rather than the JSON errors below, with no `X-RateLimit-*` headers. If you run many workers behind one IP, keep their combined rate under 120 requests per minute.
+</Note>
+
 ### Rate Limit Headers
 
 Every API response includes headers showing your current status:

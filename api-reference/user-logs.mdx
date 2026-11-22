@@ -5,6 +5,10 @@ openapi: "GET /user/logs"
 
 Retrieve recent API request logs for the authenticated user. This endpoint provides detailed information about your API usage history, including model usage, costs, timestamps, and request status.
 
+<Note>
+  Request logs are kept for **30 days**, up to the latest **1,000** requests per account; older entries are removed. Logs hold request metadata only, not prompt or response content.
+</Note>
+
 ## Response
 
 Returns an array of log entries containing information about recent API requests made with your API key.
