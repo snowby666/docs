@@ -38,60 +38,63 @@ Electron Hub has three main model categories:
   </Card>
 </Accordion>
 
-<Accordion title="Premium/Ultimate Models" icon="crown">
-  <Card title="Premium Models" icon="crown" color="#F59E0B">
-    - Models that **require a subscription** (Starter plan or higher) **OR permanent credits**
-    - Free tier users with permanent credits can access premium models
-    - Also deduct credits from your balance
-    - Better uptime than free/freemium models
+<Accordion title="Pro and Ultimate Models" icon="crown">
+  <Card title="Pro Models" icon="crown" color="#F59E0B">
+    - Models that **need a Starter plan or above**, or **pay-as-you-go credits** on a free account
+    - Deduct credits from your balance
+    - Better uptime than free models
+    - Marked `premium_model: true` in [`/v1/models`](/api-reference/models)
   </Card>
-  
+
   <Card title="Ultimate Models" icon="infinity" color="#EF4444">
-    - Models that **require a Pro tier or higher** subscription
-    - Also deduct credits from your balance
-    - Best for: Production applications, critical workloads
+    - The top frontier models: **need the Pro plan or above** (Pro, Business, Enterprise)
+    - Deduct credits from your balance
+    - Marked `ultimate_model: true` in [`/v1/models`](/api-reference/models) (they are also Pro models)
   </Card>
 </Accordion>
 
-## Premium Model Examples
+## Examples
 
-<Card title="Popular Premium Models" icon="star" color="#8B5CF6">
-  - `gpt-4`
-  - `o1`, `o1-low`, `o1-high`
-  - `o3-pro`, `o3-pro-low`, `o3-pro-high`
-  - `o3-deep-research`
-  - `claude-sonnet-4-5-20250929`
-  - `gemini-3-pro-preview`
+<Card title="Pro models" icon="crown" color="#F59E0B">
+  - `gpt-6.2-sol`, `gpt-5.5`
+  - `claude-opus-4-7`, `claude-sonnet-5-5`
+  - `gemini-3.1-pro-preview`
+  - `grok-4.6`
 </Card>
 
-## Model Access by Tier
+<Card title="Ultimate models" icon="infinity" color="#EF4444">
+  - `gpt-6.2-astra`, `gpt-6-astra`
+  - `claude-fable-5-2`, `claude-fable-5-1`, `claude-fable-5`
+</Card>
+
+## Model Access by Plan
 
 <Columns cols={2}>
-  <Card title="Free Tier" icon="gift" color="#10B981">
+  <Card title="Free" icon="gift" color="#10B981">
     - Free models (with Neutrinos)
     - Freemium models (with credits)
   </Card>
-  
-  <Card title="Free + Permanent Credits" icon="wallet" color="#8B5CF6">
+
+  <Card title="Free + pay-as-you-go credits" icon="wallet" color="#8B5CF6">
     - Free models
     - Freemium models
-    - **Premium models** (credits required)
+    - **Pro models**
   </Card>
-  
-  <Card title="Starter/Plus/Core" icon="star" color="#F59E0B">
-    - All freemium models
-    - Premium models
+
+  <Card title="Starter / Plus / Core" icon="star" color="#F59E0B">
+    - Free and freemium models
+    - Pro models
   </Card>
-  
-  <Card title="Pro/Business/Enterprise" icon="infinity" color="#EF4444">
-    - All models including
-    - Premium models
-    - Ultimate models
+
+  <Card title="Pro / Business / Enterprise" icon="infinity" color="#EF4444">
+    - Every model, including
+    - Pro models
+    - **Ultimate models**
   </Card>
 </Columns>
 
 <Info>
-  <strong>Note:</strong> Free tier users who have purchased permanent credits can access premium models (but not ultimate models). Ultimate models still require a Pro tier or higher subscription. Check the model list in the dashboard or API documentation to see which models require which tier.
+  <strong>Note:</strong> "Pro models" is a group of models, not the Pro plan: any paid plan from Starter up (or pay-as-you-go credits) unlocks them. Ultimate models need the Pro plan or above. The app and the [model list](https://www.electronhub.ai/models) badge both groups.
 </Info>
 
 ## Why don't free models guarantee 100% uptime?
@@ -103,7 +106,7 @@ Electron Hub has three main model categories:
 <Tip>
   For better uptime and performance, we recommend:
   - Using freemium models (deduct credits but better uptime)
-  - Subscribing to a premium tier to access premium models (routed to multiple providers)
+  - Subscribing to a paid plan to use Pro models (routed to multiple providers)
 </Tip>
 
 ## Model Status

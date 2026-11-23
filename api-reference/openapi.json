@@ -5226,7 +5226,11 @@
           },
           "premium_model": {
             "type": "boolean",
-            "description": "Whether this is a premium model"
+            "description": "Pro model: needs a Starter plan or above, or pay-as-you-go credits"
+          },
+          "ultimate_model": {
+            "type": "boolean",
+            "description": "Ultimate model: needs the Pro plan or above (always also a Pro model)"
           },
           "voices": {
             "type": "array",
