@@ -88,15 +88,22 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   </Card>
 
   <Warning>
-    <strong>Important:</strong> Neutrinos are deducted when a request is accepted and are not returned if it later fails - unlike regular credits, which are only charged for successful/cancelled requests. Unused Neutrinos don't carry over to the next day.
+    <strong>Important:</strong> Neutrinos are deducted when a request is accepted and given back if it fails before you receive any output. Unused Neutrinos don't carry over to the next day.
   </Warning>
 </Accordion>
 
 ## How Credits are Deducted
 
 <Card title="Deduction Priority" icon="list" color="#8B5CF6">
-  Credits are deducted in this priority order:
-  1. **Permanent credits** (if enabled and within monthly limit)
+  You choose the order in **Console → Pay-as-you-go → Spending order**:
+
+  **Plan first** (default)
+  1. **Regular balance** (weekly credits)
+  2. **Flex credits** (if enabled)
+  3. **Permanent credits** (if enabled and within your monthly limit)
+
+  **Permanent first**
+  1. **Permanent credits** (if enabled and within your monthly limit)
   2. **Regular balance** (weekly credits)
   3. **Flex credits** (if enabled)
 </Card>
@@ -106,19 +113,19 @@ Credits are the currency used in Electron Hub to pay for AI model usage. This gu
   
   **Regular Credits:** Only charged for **successful** and **cancelled** requests. **Failed requests are NOT charged.**
   
-  **Neutrinos:** Deducted when a request is **accepted** and **not returned** if it fails - this is different from regular credits.
+  **Neutrinos:** Deducted when a `:free` request is **accepted**, and **given back** if the request fails before you receive any output.
 </Warning>
 
 <Card title="Example: Successful Request" icon="check-circle" color="#10B981">
-  - You have 5 permanent credits, 10 regular credits, and 3 flex credits
+  - You have 10 regular credits, 3 flex credits and 5 permanent credits, on **Plan first**
   - You make a request costing 15 credits
-  - System uses: 5 permanent + 10 regular + 3 flex = 18 credits total (you have enough!)
+  - It uses 10 regular + 3 flex + 2 permanent = 15 credits. You have 3 permanent credits left.
 </Card>
 
 <Card title="Example: Failed Request" icon="x" color="#F59E0B">
   - You make a request that fails (e.g., model unavailable, timeout)
   - **Regular credits**: NOT charged (you keep your credits)
-  - **Neutrinos**: Not returned (if using a `:free` model, the Neutrino was deducted when the request was accepted)
+  - **Neutrinos**: Given back (if using a `:free` model, the Neutrinos taken when the request was accepted are returned)
 </Card>
 
 ## Credit Reset Times
